@@ -42,7 +42,7 @@ export default {
     return {
 
     }
-  }
+  },
   methods:{
     resizeTextArea(event){
       var textarea = event.target;

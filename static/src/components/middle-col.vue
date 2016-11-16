@@ -10,11 +10,15 @@
 </template>
 
 <script>
+import sendWeiboInput from './comp/send-weibo-input';
 export default {
   data () {
     return {
 
     }
+  },
+  component: {
+    sendWeiboInput
   }
 }
 </script>

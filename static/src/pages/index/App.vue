@@ -8,11 +8,20 @@
 </template>
 
 <script>
+import leftCol from '../../components/left-col';
+import middleCol from '../../components/middle-col';
+import rightCol from '../../components/right-col';
+
 export default {
   data () {
     return {
 
     }
+  },
+  components: {
+    leftCol,
+    middleCol,
+    rightCol
   }
 }
 </script>
