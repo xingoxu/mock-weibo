@@ -1,5 +1,5 @@
 <template>
-  <div class="weibo-right-col">
+  <div>
     <div class="personal-card">
       <div class="upper">
         <a href="" class="avatar"></a>

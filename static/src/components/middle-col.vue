@@ -11,13 +11,14 @@
 
 <script>
 import sendWeiboInput from './comp/send-weibo-input';
+
 export default {
   data () {
     return {
 
     }
   },
-  component: {
+  components: {
     sendWeiboInput
   }
 }
