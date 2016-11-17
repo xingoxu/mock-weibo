@@ -13,6 +13,7 @@
 import leftCol from '../../components/left-col';
 import middleCol from '../../components/middle-col';
 import rightCol from '../../components/right-col';
+import topNav from '../../components/comp/top-nav';
 
 export default {
   data () {
@@ -23,7 +24,8 @@ export default {
   components: {
     leftCol,
     middleCol,
-    rightCol
+    rightCol,
+    topNav
   }
 }
 </script>

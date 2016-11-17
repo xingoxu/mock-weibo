@@ -224,14 +224,15 @@ export default {
     }
     >ul{
       position: relative;
-      padding: 16px;
-      height: 140px; //子元素position absolute，只能定死line-height并测量
+      padding: 0 16px;
+      height: 171px; //子元素position absolute，只能定死line-height并测量
     }
     .hot-topic-page {
       width: ~"calc(100% - 32px)";
       .topic {
         line-height: 1.3;
-        padding: 8px 0 5px;
+        margin: 16px 0;
+        // padding: 8px 0 5px;
         .pull-right {
           color: #999;
         }
