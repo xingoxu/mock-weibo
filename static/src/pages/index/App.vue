@@ -55,6 +55,7 @@ body {
     margin-right: 10px;
     >div{
       position: fixed;
+      width: 230px;
     }
   }
   .weibo-mid-col {

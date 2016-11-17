@@ -46,16 +46,18 @@ export default {
       isEditing: false,
       successSended: false,
       inputWeibo: "",
+      textareaFirstHeight: 77,
     }
   },
   methods:{
     resizeTextArea(event){
       var textarea = event.target;
       setTimeout(()=>{
+        textarea.style.height = this.textareaFirstHeight + 'px';
         var height = textarea.scrollHeight;
-        if(textarea.style.height == height+'px')
-          return;
-        textarea.style.height = height+'px';
+        if(this.textareaFirstHeight < height)
+          textarea.style.height = height+'px';
+
       },0)
     },
     submit(){
@@ -76,7 +78,7 @@ export default {
   border-radius: 2px;
 
   textarea {
-    height: 68px;
+    height: 77px;
     overflow: hidden;
     font-size: 14px;
     resize: none;
@@ -85,6 +87,8 @@ export default {
     width: 100%;
     background: transparent;
     color: #999;
+    word-wrap: break-word;
+    word-break: break-all;
     &:focus{
       outline: 0;
       color: #c8c8cc;
