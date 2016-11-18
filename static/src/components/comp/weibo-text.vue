@@ -18,8 +18,8 @@ export default {
   methods: {
     compileText(text){
       //微博字符转换
-      var atRegex = /(@[0-9a-zA-Z_\u0391-\uFFE5]+$)|(@[0-9a-zA-Z_\u0391-\uFFE5]+\s)/g;
-      return text.replace(atRegex,(match)=>{ console.log(match); return `<user-card name="${match.substr(1).trim()}"></user-card>` });
+      var atRegex = /(@[0-9a-zA-Z_\u0391-\uFFE5-]+$)|(@[0-9a-zA-Z_\u0391-\uFFE5-]+\s)/g;
+      return text.replace(atRegex,(match)=>{ console.log(match); return `<user-card name="${match.substr(1).trim()}"><span>@${match.substr(1).trim()}</span></user-card>` });
     }
   },
 }

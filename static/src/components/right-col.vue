@@ -26,7 +26,7 @@
         <button class="pull-right" @click="(++topicPageNow)>= hotTopicPages.length ? topicPageNow=0 : topicPageNow"><em class="W_ficon ficon_rotate S_ficon">e</em>换一换</button>
       </header>
       <ul>
-        <li v-for="hotTopicPage in hotTopicPages" v-show="$index == topicPageNow" transition="fade" class="hot-topic-page" >
+        <li v-for="hotTopicPage in hotTopicPages" v-show="$index == topicPageNow" transition="right-hot-topic" class="hot-topic-page" >
           <ul>
             <li v-for="hotTopic in hotTopicPage" class="topic">
               <a href="/topic/{{hotTopic.text}}">#{{hotTopic.text}}#</a>
@@ -240,17 +240,17 @@ export default {
     }
 
   }
-  .fade-transition {
+  .right-hot-topic-transition {
     transition: .3s all ease;
     opacity: 1;
     transform: translateX(0);
     position: absolute;
   }
-  .fade-enter{
+  .right-hot-topic-enter{
     opacity: 0;
     transform: translateX(100%);
   }
-  .fade-leave  {
+  .right-hot-topic-leave  {
     opacity: 0;
     transform: translateX(-100%);
   }

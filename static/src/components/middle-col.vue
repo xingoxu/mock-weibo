@@ -3,7 +3,7 @@
     <send-weibo-input class="weibo-send-weibo-wrapper"></send-weibo-input>
     <weibo-homepage-filter></weibo-homepage-filter>
     <div class="weibo-wrapper">
-      <single-weibo></single-weibo>
+      <single-weibo class="weibo-single-weibo"></single-weibo>
     </div>
   </div>
 
@@ -30,5 +30,10 @@ export default {
 <style lang="less">
   .weibo-send-weibo-wrapper {
     // margin-bottom: 10px;
+  }
+  .weibo-wrapper {
+    .weibo-single-weibo {
+      margin-top: 10px;
+    }
   }
 </style>
