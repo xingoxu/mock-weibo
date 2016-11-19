@@ -1,9 +1,7 @@
 <template lang="html">
   <span class="user-card-component">
-    <span @mouseenter="isHover=true" @mouseleave="isHover=false">
-      <a href="/{{name}}">
-        <slot></slot>
-      </a>
+    <span class="content-wrapper" @mouseenter="isHover=true" @mouseleave="isHover=false">
+      <slot></slot>
     </span>
     <div class="card" v-show="isHover" @mouseenter="isHover=true" @mouseleave="isHover=false" transition="user-card">
       <div class="wrapper" v-if="user">
@@ -215,12 +213,15 @@ export default {
     }
     .user-card-transition {
       transition: .2s all ease;
+      transition-property: visibility,opacity,transform;
+      visibility: visible;
       opacity: 1;
       transform: translateY(0);
-      transition-delay: .2s;
+      transition-delay: .5s;
     }
     .user-card-enter,.user-card-leave{
       opacity: 0;
+      visibility: hidden;
       transform: translateY(10px);
     }
   }
