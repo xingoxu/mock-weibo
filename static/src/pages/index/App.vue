@@ -6,6 +6,7 @@
     <div class="weibo-right-col">
       <right-col></right-col>
     </div>
+    <forward-popup v-ref:forward-popup></forward-popup>
   </div>
 </template>
 
@@ -14,6 +15,7 @@ import leftCol from '../../components/left-col';
 import middleCol from '../../components/middle-col';
 import rightCol from '../../components/right-col';
 import topNav from '../../components/comp/top-nav';
+import forwardPopup from '../../components/comp/forward-popup';
 
 export default {
   data () {
@@ -21,11 +23,22 @@ export default {
 
     }
   },
+  methods: {
+    test(){
+      this.$refs.forwardPopup.$emit('show');
+    }
+  },
+  events: {
+    expandForward(){
+      this.$refs.forwardPopup.$emit('show');
+    }
+  },
   components: {
     leftCol,
     middleCol,
     rightCol,
-    topNav
+    topNav,
+    forwardPopup
   }
 }
 </script>

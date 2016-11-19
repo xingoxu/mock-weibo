@@ -11,7 +11,7 @@
 
 <script>
 import sendWeiboInput from './comp/send-weibo-input';
-import singleWeibo from './comp/single-weibo';
+import singleWeibo from './comp/index-single-weibo';
 
 export default {
   data () {

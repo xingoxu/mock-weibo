@@ -17,8 +17,8 @@
       <span class="pull-right length-calc"></span>
     </header>
     <div class="input-wrapper" :class="{'editing': isEditing}">
-      <textarea v-model="inputWeibo" @keydown="resizeTextArea" @focus="isEditing=true" @blur="isEditing=false"></textarea>
-      <div class="success-tip" v-show="successSended">
+      <auto-resize-textarea :model.sync="inputWeibo" :init_height="textareaFirstHeight" @focus="isEditing=true" @blur="isEditing=false"></auto-resize-textarea>
+      <div class="success-sended-tip" v-show="successSended">
         <i class="icon icon-background send-success"></i>
         <span>发布成功</span>
       </div>
@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import autoResizeTextarea from './auto-resize-textarea';
 export default {
   data () {
     return {
@@ -50,22 +51,15 @@ export default {
     }
   },
   methods:{
-    resizeTextArea(event){
-      var textarea = event.target;
-      setTimeout(()=>{
-        textarea.style.height = this.textareaFirstHeight + 'px';
-        var height = textarea.scrollHeight;
-        if(this.textareaFirstHeight < height)
-          textarea.style.height = height+'px';
-
-      },0)
-    },
     submit(){
       this.successSended = true;
       setTimeout(()=>{
         this.successSended = false;
       },2000)//animation 2s
     },
+  },
+  components: {
+    autoResizeTextarea
   }
 }
 </script>
@@ -78,19 +72,13 @@ export default {
   border-radius: 2px;
 
   textarea {
-    height: 77px;
-    overflow: hidden;
     font-size: 14px;
     resize: none;
     padding: 0;
     border: 0;
     width: 100%;
-    background: transparent;
     color: #999;
-    word-wrap: break-word;
-    word-break: break-all;
     &:focus{
-      outline: 0;
       color: #c8c8cc;
     }
   }
@@ -124,60 +112,6 @@ export default {
     position: relative;
     &.editing {
       border-color: #fa7d3c;
-    }
-
-    .success-tip {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 42px;
-      margin-top: -21px;
-      text-align: center;
-
-      >i,>span {
-        vertical-align: middle;
-      }
-      >i {
-        animation: successTipIcon 2s ease both;
-      }
-      >span {
-        color: #c8c8cc;
-        display: inline-block;
-        margin: 0 0 0 10px;
-        font-size: 16px;
-        line-height: 22px;
-        vertical-align: middle;
-        animation: successTipText 2s ease both;
-      }
-      @keyframes successTipIcon {
-        0% {
-          opacity: 0;
-          transform: translateY(-10px);
-        }
-        10%,90% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        100% {
-          opacity: 0;
-          transform: translateY(0);
-        }
-      }
-      @keyframes successTipText {
-        0%,10% {
-          opacity: 0;
-          transform: translateX(-15px);
-        }
-        50%,90% {
-          opacity: 1;
-          transform: translateX(0px);
-        }
-        100% {
-          opacity: 0;
-          transform: translateX(0px);
-        }
-      }
     }
   }
   .input-func {

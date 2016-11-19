@@ -2,7 +2,7 @@
   <div class="weibo-single-weibo">
     <div class="upper">
       <div class="avatar">
-        <user-avatar></user-avatar>
+        <user-avatar size="50"></user-avatar>
       </div>
       <div class="right">
         <div class="nickname-title">
@@ -45,6 +45,10 @@ export default {
     border-radius: 2px;
     >.upper {
       padding: 20px 20px 4px;
+      >.avatar {
+        width: 50px;
+        float: left;
+      }
       .right {
         padding-left: 60px;
       }
@@ -52,14 +56,6 @@ export default {
     >.lower {
       >.operation {
         border-top: 1px solid #282829;
-      }
-    }
-    .avatar {
-      width: 50px;
-      float: left;
-      .normal-user-avatar .content-wrapper img {
-        width: 50px;
-        height: 50px;
       }
     }
     .nickname-title {

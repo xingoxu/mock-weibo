@@ -72,6 +72,7 @@ export default {
       left: ~"calc(50% - 187px)";
       margin-bottom: 8px;
       z-index: 999;
+      font-size: 12px;
       .wrapper {
         // position: relative;
         background: #fff;
@@ -141,6 +142,10 @@ export default {
                 em {
                   font-style: normal;
                   font-family: Arial;
+                  padding-left: 3px;
+                }
+                &:hover {
+                  color: #eb7350;
                 }
               }
             }

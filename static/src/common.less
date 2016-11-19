@@ -23,6 +23,13 @@ ul,li{
 .pull-left {
   float: left;
 }
+.clrfloat {
+  &:after {
+    clear: both;
+    content: '';
+    display: block;
+  }
+}
 ::selection {
   background: #eb7350;
   color: #fff;
@@ -101,8 +108,26 @@ em.W_ficon {
     -webkit-text-stroke-width: 0.2px;
     vertical-align: middle;
 }
+.W_loading {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url(./assets/img/loading.png);
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  animation: loading 0.8s linear infinite;
+}
+@keyframes loading {
+    0% {
+        transform: rotate(0deg);
+    }
 
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
+//common icon
 i.icon {
   display: inline-block;
 }
@@ -114,4 +139,78 @@ i.send-success {
   width: 38px;
   height: 42px;
   background-position: -375px 0;
+}
+
+//commonComponents
+.success-sended-tip {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 42px;
+  margin-top: -21px;
+  text-align: center;
+
+  >i,>span {
+    vertical-align: middle;
+  }
+  >i {
+    animation: successTipIcon 2s ease both;
+  }
+  >span {
+    color: #c8c8cc;
+    display: inline-block;
+    margin: 0 0 0 10px;
+    font-size: 16px;
+    line-height: 22px;
+    vertical-align: middle;
+    animation: successTipText 2s ease both;
+  }
+  @keyframes successTipIcon {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    10%,90% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(0);
+    }
+  }
+  @keyframes successTipText {
+    0%,10% {
+      opacity: 0;
+      transform: translateX(-15px);
+    }
+    50%,90% {
+      opacity: 1;
+      transform: translateX(0px);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(0px);
+    }
+  }
+}
+
+
+//transition and animation
+.opacity-transition {
+  transition: opacity .2s ease;
+  opacity: 1;
+}
+.opacity-enter, .opacity-leave {
+  opacity: 0;
+}
+
+@keyframes likeStep {
+  0% {
+    background-position: left;
+  }
+  100% {
+    background-position: right;
+  }
 }
