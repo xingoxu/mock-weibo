@@ -2,11 +2,13 @@
   <div class="weibo-frame">
     <top-nav></top-nav>
     <left-col class="weibo-left-col"></left-col>
-    <middle-col class="weibo-mid-col"></middle-col>
+    <middle-col class="weibo-mid-col" v-ref:middle-col></middle-col>
     <div class="weibo-right-col">
       <right-col></right-col>
     </div>
     <forward-popup v-ref:forward-popup></forward-popup>
+    <cancel-favourite-popup v-ref:cancel-favourite-popup></cancel-favourite-popup>
+    <favourite-success-popup v-ref:favourite-success-popup></favourite-popup>
   </div>
 </template>
 
@@ -16,6 +18,8 @@ import middleCol from '../../components/middle-col';
 import rightCol from '../../components/right-col';
 import topNav from '../../components/comp/top-nav';
 import forwardPopup from '../../components/comp/forward-popup';
+import favouriteSuccessPopup from '../../components/comp/favourite-success-popup';
+import cancelFavouritePopup from '../../components/comp/cancel-favourite-popup';
 
 export default {
   data () {
@@ -23,22 +27,28 @@ export default {
 
     }
   },
-  methods: {
-    test(){
-      this.$refs.forwardPopup.$emit('show');
-    }
-  },
   events: {
     expandForward(){
       this.$refs.forwardPopup.$emit('show');
-    }
+    },
+    weiboFavourited(){
+      this.$refs.favouriteSuccessPopup.$emit('show');
+    },
+    cancelFavourite(){
+      this.$refs.cancelFavouritePopup.$emit('show');
+    },
+    weiboFavouritCancelled(weiboID) {
+      this.$refs.middleCol.$broadcast('weiboFavouritCancelled',weiboID);
+    },
   },
   components: {
     leftCol,
     middleCol,
     rightCol,
     topNav,
-    forwardPopup
+    forwardPopup,
+    favouriteSuccessPopup,
+    cancelFavouritePopup
   }
 }
 </script>

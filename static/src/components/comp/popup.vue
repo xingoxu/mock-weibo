@@ -118,14 +118,40 @@ export default {
       }
     }
   }
-  .popup-transition {
-    transition: all .2s cubic-bezier(.27,.57,.78,1.68);
-    transition-property: opacity,transform;
-    transform: scale(1);
-    opacity: 1;
+  .popup-enter {
+    animation: popup-bounceIn .2s ease;
   }
-  .popup-enter, .popup-leave {
-    transform: scale(.5);
-    opacity: 0;
+  .popup-leave {
+    animation: popup-bounceOut .2s ease;
+  }
+  @keyframes popup-bounceIn {
+    0% {
+        transform: scale(.5);
+        opacity: 0;
+    }
+
+    70% {
+        transform: scale(1.03);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+  }
+  @keyframes popup-bounceOut {
+    100% {
+        transform: scale(.7);
+        opacity: 0;
+    }
+
+    30% {
+        transform: scale(1.03);
+    }
+
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
   }
 </style>

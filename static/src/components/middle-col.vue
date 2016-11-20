@@ -4,6 +4,7 @@
     <weibo-homepage-filter></weibo-homepage-filter>
     <div class="weibo-wrapper">
       <single-weibo class="weibo-single-weibo"></single-weibo>
+      <single-weibo class="weibo-single-weibo"></single-weibo>
     </div>
   </div>
 

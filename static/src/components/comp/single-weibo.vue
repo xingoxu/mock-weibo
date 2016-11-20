@@ -14,6 +14,51 @@
           <weibo-text weibo-text="今天是个好天气@测试"></weibo-text>
         </div>
         <!-- 扩展here （图片/转发） -->
+        <div class="forward-weibo">
+          <div class="content-wrapper">
+            <div class="nickname-title">
+              <user-card>
+                <a href="#" class="name-title-link">@xingo</a>
+              </user-card>
+            </div>
+            <div class="weibo-text-content">
+              <weibo-text weibo-text="今天是个好天气@测试"></weibo-text>
+            </div>
+            <div class="time-func clrfloat">
+              <div class="time pull-left">
+                <a href="#">7分钟前</a>
+              </div>
+              <div class="pull-right">
+                <ul>
+                  <li>
+                    <span class="line S_line1">
+                      <a class="S_txt2" target="_blank" href="/1199444583/Eij3crYHz?type=repost" >
+                        <!-- 转发 -->
+                        <span><em class="W_ficon ficon_forward S_ficon"></em><em>53</em></span>
+                      </a>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="line S_line1">
+                      <a class="S_txt2" target="_blank" href="/1199444583/Eij3crYHz" >
+                        <!-- 回复 -->
+                        <span><em class="W_ficon ficon_repeat S_ficon"></em><em>4</em></span>
+                      </a>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="line S_line1">
+                      <a class="S_txt2" href="javascript:void(0);">
+                        <!-- 点赞 -->
+                        <span><em class="W_ficon ficon_praised S_txt2">ñ</em><em>9</em></span>
+                      </a>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="time">
           <a href="#">7分钟前</a>
         </div>
@@ -51,6 +96,12 @@ export default {
       }
       .right {
         padding-left: 60px;
+        >.forward-weibo {
+          >.content-wrapper {
+            margin: 0 -20px 0 -80px;
+            padding: 4px 20px 1px 80px;
+          }
+        }
       }
     }
     >.lower {
@@ -61,8 +112,8 @@ export default {
     .nickname-title {
       margin: 0 0 7px;
       padding: 5px 0 0;
+      font-size: 14px;
       .name-title-link {
-        font-size: 14px;
         font-weight: bold;
         color: #c8c8cc;
         &:hover {
@@ -89,6 +140,52 @@ export default {
         color: #999;
         &:hover {
           color: #eb7350;
+        }
+      }
+    }
+    .forward-weibo {
+      >.content-wrapper {
+        background: #232324;
+      }
+      .nickname-title {
+        font-size: 12px;
+        margin-bottom: 5px;
+      }
+      .weibo-text-content {
+        font-size: 12px;
+        margin-top: -3px;
+        margin-bottom: 4px;
+      }
+      .time-func {
+        margin: 4px 0 7px;
+        color: #999;
+        >.time {
+          padding: 0;
+        }
+        >.pull-right {
+          ul {
+            margin-right: -9px;
+            li {
+              display: inline-block;
+              border-right: 1px solid #19191a;
+              margin: 2px 0;
+              padding: 0 10px;
+              line-height: 12px;
+              &:last-child {
+                border-right: 0;
+              }
+              em {
+                font-style: normal;
+                color: #999;
+              }
+              em.W_ficon {
+                margin-right: 5px;
+              }
+              a {
+                color: #999;
+              }
+            }
+          }
         }
       }
     }

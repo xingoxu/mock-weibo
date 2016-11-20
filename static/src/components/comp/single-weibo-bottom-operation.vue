@@ -1,11 +1,11 @@
 <template lang="html">
   <div class="single-weibo-operation">
     <ul class="WB_row_line WB_row_r4 clearfix S_line2">
-      <li>
-        <a href="javascript:void(0);" class="S_txt2">
+      <li :class="{'favourited': weiboFavourited }">
+        <a href="javascript:void(0);" class="S_txt2" @click="favouriteWeibo">
           <span class="line S_line1">
             <span>
-              <em class="W_ficon ficon_favorite S_ficon">û</em><em>收藏</em>
+              <em class="W_ficon ficon_favorite S_ficon">û</em><em>{{weiboFavourited ? '已收藏' : '收藏'}}</em>
             </span>
           </span>
         </a>
@@ -49,6 +49,7 @@ export default {
       isLiked: false,
       commentExpanded: false,
       forwardExpanded: false,
+      weiboFavourited: false, //转props
     }
   },
   methods:{
@@ -65,7 +66,23 @@ export default {
         this.forwardExpanded = true;
       }
       this.$dispatch('expandForward');
-    }
+    },
+    favouriteWeibo(){
+      if(!this.weiboFavourited){
+        //处理业务
+        this.$dispatch('weiboFavourited');
+        this.weiboFavourited = true;
+      }
+      else {
+        this.$dispatch('cancelFavourite'/* , weiboID */);//发送事件给顶层，让顶层转发给popup
+      }
+    },
+  },
+  events: {
+    weiboFavouritCancelled: function(weiboID){
+      if(weiboID /*==自身weiboid*/) /*关闭显示*/;
+      this.weiboFavourited = false;
+    },
   }
 }
 </script>
@@ -106,6 +123,11 @@ export default {
             border-left: 9px solid transparent;
             border-right: 9px solid transparent;
             border-bottom: 6px solid #232324;
+          }
+        }
+        &.favourited {
+          em.W_ficon {
+            color: #fa7d3c;
           }
         }
         em {

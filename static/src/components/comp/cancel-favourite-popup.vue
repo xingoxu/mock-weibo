@@ -1,15 +1,16 @@
 <template lang="html">
-  <popup class="favourite popup-wrapper" :show.sync="showFavouriteSuccess">
-    <span slot="title">收藏</span>
+  <popup class="favourite popup-wrapper" :show.sync="showCancelFavouritePopup">
+    <span slot="title">取消收藏</span>
     <div class="popup-body-wrapper" slot="body">
-      <div class="favourite-success-tip">
+      <div class="cancel-favourite-tip">
         <div>
-          <i class="icon icon-background send-success"></i>
+          <i class="icon icon-background questionB"></i>
         </div>
-        <div class="text">收藏成功</div>
+        <div class="text">确定要取消收藏吗</div>
       </div>
       <div class="button-wrapper">
-        <button type="button" @click="showFavouriteSuccess=false">确定</button>
+        <button type="button" @click="cancelWeiboFavourite">确定</button>
+        <button type="button" @click="showCancelFavouritePopup=false" class="cancel">取消</button>
       </div>
     </div>
   </popup>
@@ -20,12 +21,19 @@
   export default {
     data(){
       return {
-        showFavouriteSuccess: false
+        showCancelFavouritePopup: false
+      }
+    },
+    methods: {
+      cancelWeiboFavourite(){
+        //业务
+        this.$dispatch('weiboFavouritCancelled'/*,weiboID*/);
+        this.showCancelFavouritePopup = false;
       }
     },
     events: {
       show(weibo){
-        this.showFavouriteSuccess = true;
+        this.showCancelFavouritePopup = true;
       }
     },
     components: {
@@ -39,7 +47,7 @@
     .popup-body {
       padding-bottom: 0;
     }
-    div.favourite-success-tip {
+    div.cancel-favourite-tip {
       padding: 10px 0 20px;
       text-align: center;
       font-size: 14px;
@@ -65,6 +73,15 @@
         box-shadow: 0px 1px 2px rgba(0,0,0,0.25);
         box-sizing: content-box;
         cursor: pointer;
+        &.cancel {
+          background: #FFF;
+          color: #333;
+          border-color: #d9d9d9;
+          &:hover {
+            border-color: #cccccc;
+            background: #FFF;
+          }
+        }
         &:hover {
           background: #f7671d;
           border: 1px solid #f06923;
