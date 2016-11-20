@@ -1,11 +1,14 @@
 import Vue from 'vue';
+import VueResource from 'vue-resource';
+Vue.use(VueResource);
 import App from './App';
-import commonjs from '../../common.js';
-
+import { app as commonApp } from '../../common.js';
+import { timeline } from '../../mockdata/weiboData.js';
 /* eslint-disable no-new */
+Vue.component('App', App);
 new Vue({
   el: 'body',
-  components: {
-    App
+  data: {
+    timeline: timeline,
   }
 });

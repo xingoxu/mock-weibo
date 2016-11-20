@@ -3,8 +3,7 @@
     <send-weibo-input class="weibo-send-weibo-wrapper"></send-weibo-input>
     <weibo-homepage-filter></weibo-homepage-filter>
     <div class="weibo-wrapper">
-      <single-weibo class="weibo-single-weibo"></single-weibo>
-      <single-weibo class="weibo-single-weibo"></single-weibo>
+      <single-weibo class="weibo-single-weibo" v-for="weibo in timeline" :weibo="weibo"></single-weibo>
     </div>
   </div>
 
@@ -15,6 +14,7 @@ import sendWeiboInput from './comp/send-weibo-input';
 import singleWeibo from './comp/index-single-weibo';
 
 export default {
+  props:['timeline'],
   data () {
     return {
 

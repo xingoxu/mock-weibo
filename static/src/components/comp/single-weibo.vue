@@ -2,31 +2,31 @@
   <div class="weibo-single-weibo">
     <div class="upper">
       <div class="avatar">
-        <user-avatar size="50"></user-avatar>
+        <user-avatar size="50" :src="weibo.user.avatar" :userid="weibo.user.userid"></user-avatar>
       </div>
       <div class="right">
         <div class="nickname-title">
           <user-card>
-            <a href="#" class="name-title-link">xingo</a>
+            <a href="/user/{{weibo.user.userid}}" class="name-title-link">{{weibo.user.username}}</a>
           </user-card>
         </div>
         <div class="weibo-text-content">
-          <weibo-text weibo-text="今天是个好天气@测试"></weibo-text>
+          <weibo-text :weibo-text="weibo.text"></weibo-text>
         </div>
         <!-- 扩展here （图片/转发） -->
-        <div class="forward-weibo">
+        <div class="forward-weibo" v-if="weibo.forwardWeibo">
           <div class="content-wrapper">
             <div class="nickname-title">
               <user-card>
-                <a href="#" class="name-title-link">@xingo</a>
+                <a href="/user/{{weibo.forwardWeibo.user.userid}}" class="name-title-link">@{{weibo.forwardWeibo.user.username}}</a>
               </user-card>
             </div>
             <div class="weibo-text-content">
-              <weibo-text weibo-text="今天是个好天气@测试"></weibo-text>
+              <weibo-text :weibo-text="weibo.forwardWeibo.text"></weibo-text>
             </div>
             <div class="time-func clrfloat">
               <div class="time pull-left">
-                <a href="#">7分钟前</a>
+                <a href="/weibo/{{weibo.forwardWeibo.weiboid}}">{{weibo.forwardWeibo.time | showTime}}</a>
               </div>
               <div class="pull-right">
                 <ul>
@@ -34,7 +34,7 @@
                     <span class="line S_line1">
                       <a class="S_txt2" target="_blank" href="/1199444583/Eij3crYHz?type=repost" >
                         <!-- 转发 -->
-                        <span><em class="W_ficon ficon_forward S_ficon"></em><em>53</em></span>
+                        <span><em class="W_ficon ficon_forward S_ficon"></em><em>{{weibo.forwardWeibo.forward>0 ? weibo.forwardWeibo.forward : '转发'}}</em></span>
                       </a>
                     </span>
                   </li>
@@ -42,15 +42,15 @@
                     <span class="line S_line1">
                       <a class="S_txt2" target="_blank" href="/1199444583/Eij3crYHz" >
                         <!-- 回复 -->
-                        <span><em class="W_ficon ficon_repeat S_ficon"></em><em>4</em></span>
+                        <span><em class="W_ficon ficon_repeat S_ficon"></em><em>{{weibo.forwardWeibo.forward>0 ? weibo.forwardWeibo.comment : '评论'}}</em></span>
                       </a>
                     </span>
                   </li>
-                  <li>
+                  <li :class="{'liked': weibo.forwardWeibo.liked}">
                     <span class="line S_line1">
-                      <a class="S_txt2" href="javascript:void(0);">
+                      <a class="S_txt2" href="javascript:void(0);" @click="weibo.forwardWeibo.liked = !weibo.forwardWeibo.liked">
                         <!-- 点赞 -->
-                        <span><em class="W_ficon ficon_praised S_txt2">ñ</em><em>9</em></span>
+                        <span><em class="W_ficon ficon_praised S_txt2">ñ</em><em>{{weibo.forwardWeibo.like>0 ? weibo.forwardWeibo.like : '赞'}}</em></span>
                       </a>
                     </span>
                   </li>
@@ -60,12 +60,12 @@
           </div>
         </div>
         <div class="time">
-          <a href="#">7分钟前</a>
+          <a href="/weibo/{{weibo.weiboid}}">{{weibo.time | showTime}}</a>
         </div>
       </div>
     </div>
     <div class="lower">
-      <operation class="operation"></operation>
+      <operation class="operation" :weibo="weibo" :is-single-weibo="isSingleWeibo"></operation>
     </div>
   </div>
 </template>
@@ -75,6 +75,9 @@ import weiboText from './weibo-text';
 import userAvatar from './normal-user-avatar';
 import operation from './single-weibo-bottom-operation';
 export default {
+  props: ['weibo','isSingleWeibo'],
+  ready(){
+  },
   components: {
     weiboText,
     userAvatar,
@@ -183,6 +186,34 @@ export default {
               }
               a {
                 color: #999;
+                &:hover {
+                  color: #eb7350;
+                  em {
+                    color: #eb7350;
+                  }
+                }
+              }
+              &.liked {
+                a {
+                  position: relative;
+                  .W_ficon {
+                    visibility: hidden;
+                  }
+                  &:before{
+                    content: '';
+                    display: inline-block;
+                    position: absolute;
+                    left: -5px;
+                    top: -10px;
+                    width: 23px;
+                    height: 28px;
+                    background: url(../../assets/img/steps_praised.png);
+                    background-position: right;
+                    background-repeat: no-repeat;
+                    background-size: 483px 28px;
+                    animation: likeStep .65s steps(20) both;
+                  }
+                }
               }
             }
           }

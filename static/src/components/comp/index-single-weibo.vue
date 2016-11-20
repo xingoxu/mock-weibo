@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="index-weibo-single-weibo">
-    <single-weibo class="single-weibo-component" @click="showForward=true"></single-weibo>
+    <single-weibo class="single-weibo-component" @click="showForward=true" :weibo="weibo" :is-single-weibo="false"></single-weibo>
     <expand-operation class="comment expand-operation-wrapper" v-show="showCommentWrapper">
       <div class="container" v-show="commentLoaded">
         <publish-container></publish-container>
@@ -26,6 +26,7 @@ import comment from './single-list-weibo';
 import publishContainer from './small-publish';
 
 export default {
+  props: ['weibo','currentUser'],
   data() {
     return {
       showCommentWrapper: false,

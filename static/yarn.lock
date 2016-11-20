@@ -3658,6 +3658,10 @@ vue-loader@^8.3.0:
     source-map "^0.5.3"
     vue-template-validator "^1.0.0"
 
+vue-resource:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/vue-resource/-/vue-resource-1.0.3.tgz#8d52d0d8a9ed5f2ae704c68d530c84ceaf97be14"
+
 vue-style-loader@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/vue-style-loader/-/vue-style-loader-1.0.0.tgz#abeb7bd0f46313083741244d3079d4f14449e049"

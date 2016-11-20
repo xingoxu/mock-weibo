@@ -2,7 +2,7 @@
   <div class="weibo-frame">
     <top-nav></top-nav>
     <left-col class="weibo-left-col"></left-col>
-    <middle-col class="weibo-mid-col" v-ref:middle-col></middle-col>
+    <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline"></middle-col>
     <div class="weibo-right-col">
       <right-col></right-col>
     </div>
@@ -22,6 +22,7 @@ import favouriteSuccessPopup from '../../components/comp/favourite-success-popup
 import cancelFavouritePopup from '../../components/comp/cancel-favourite-popup';
 
 export default {
+  props: ['timeline'],
   data () {
     return {
 

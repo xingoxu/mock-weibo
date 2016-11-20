@@ -1,8 +1,8 @@
 <template lang="html">
   <div class="normal-user-avatar">
     <user-card name="" class="user-card-component">
-      <a href="#">
-        <img src="http://tva2.sinaimg.cn/crop.802.675.420.420.180/6b8bbe7ejw8f8ixud41otj21kw17uqmz.jpg" :width="size" :height="size" />
+      <a href="/user/{{userid ? userid : username}}">
+        <img :src="src ? src :'https://cdn.v2ex.co/gravatar/5ec95789500564dba72703b6a2cbbbb8?s=48&d=retro'" :width="size" :height="size" />
       </a>
     </user-card>
   </div>
@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  props:['size'],
+  props:['size','src','userid','username'],
 }
 </script>
 

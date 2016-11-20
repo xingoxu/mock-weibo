@@ -58,7 +58,7 @@
      * isForward 表示其是转发功能
      * hasForward 表示评论/转发的这条微博 已经是别人的转发，开启同时评论给原文作者
      **/
-    props: ['isWhite','isPopup','isForward','hasForward'],
+    props: ['isWhite','isPopup','isForward','hasForward','currentUser'],
     data(){
       return {
         text: '',

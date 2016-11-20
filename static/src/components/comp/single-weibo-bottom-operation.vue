@@ -1,11 +1,11 @@
 <template lang="html">
   <div class="single-weibo-operation">
     <ul class="WB_row_line WB_row_r4 clearfix S_line2">
-      <li :class="{'favourited': weiboFavourited }">
+      <li :class="{'favourited': weibo.favourited }">
         <a href="javascript:void(0);" class="S_txt2" @click="favouriteWeibo">
           <span class="line S_line1">
             <span>
-              <em class="W_ficon ficon_favorite S_ficon">û</em><em>{{weiboFavourited ? '已收藏' : '收藏'}}</em>
+              <em class="W_ficon ficon_favorite S_ficon">û</em><em>{{weibo.favourited ? '已收藏' : '收藏'}}</em>
             </span>
           </span>
         </a>
@@ -14,7 +14,7 @@
         <a href="javascript:void(0);" class="S_txt2" @click="expandForward">
           <span class="line S_line1">
             <span>
-              <em class="W_ficon ficon_forward S_ficon"></em><em>转发</em>
+              <em class="W_ficon ficon_forward S_ficon"></em><em>{{weibo.forward>0 ? weibo.forward : '转发'}}</em>
             </span>
           </span>
         </a>
@@ -23,16 +23,16 @@
         <a href="javascript:void(0);" class="S_txt2" @click="expandComment">
           <span class="line S_line1">
             <span>
-              <em class="W_ficon ficon_repeat S_ficon"></em><em>评论</em>
+              <em class="W_ficon ficon_repeat S_ficon"></em><em>{{weibo.comment>0 ? weibo.comment : '评论'}}</em>
             </span>
           </span>
         </a>
       </li>
       <li>
-        <a href="javascript:;" class="S_txt2" @click="isLiked=!isLiked" :class="{'liked': isLiked}">
+        <a href="javascript:;" class="S_txt2" @click="weibo.liked=!weibo.liked" :class="{'liked': weibo.liked}">
           <span class="line S_line1">
             <span>
-              <em class="W_ficon ficon_praised S_txt2">ñ</em><em>赞</em>
+              <em class="W_ficon ficon_praised S_txt2">ñ</em><em>{{weibo.like>0 ? weibo.like : '赞'}}</em>
             </span>
           </span>
         </a>
@@ -43,13 +43,11 @@
 
 <script>
 export default {
-  props: ['isSingleWeibo'],//是否为单条微博，是的话转发则显示三角形
+  props: ['isSingleWeibo','weibo'],//是否为单条微博，是的话转发则显示三角形
   data(){
     return {
-      isLiked: false,
       commentExpanded: false,
       forwardExpanded: false,
-      weiboFavourited: false, //转props
     }
   },
   methods:{
@@ -68,20 +66,20 @@ export default {
       this.$dispatch('expandForward');
     },
     favouriteWeibo(){
-      if(!this.weiboFavourited){
+      if(!this.weibo.favourited){
         //处理业务
         this.$dispatch('weiboFavourited');
-        this.weiboFavourited = true;
+        this.weibo.favourited = true;
       }
       else {
-        this.$dispatch('cancelFavourite'/* , weiboID */);//发送事件给顶层，让顶层转发给popup
+        this.$dispatch('cancelFavourite',this.weibo.weiboid);//发送事件给顶层，让顶层转发给popup
       }
     },
   },
   events: {
     weiboFavouritCancelled: function(weiboID){
       if(weiboID /*==自身weiboid*/) /*关闭显示*/;
-      this.weiboFavourited = false;
+      this.weibo.favourited = false;
     },
   }
 }
