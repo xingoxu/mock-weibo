@@ -1,5 +1,5 @@
 <template lang="html">
-  <popup class="favourite popup-wrapper" :show.sync="showCancelFavouritePopup">
+  <popup class="cancel-favourite popup-wrapper" :show.sync="showCancelFavouritePopup">
     <span slot="title">取消收藏</span>
     <div class="popup-body-wrapper" slot="body">
       <div class="cancel-favourite-tip">
@@ -21,18 +21,20 @@
   export default {
     data(){
       return {
+        weiboID: 0,
         showCancelFavouritePopup: false
       }
     },
     methods: {
       cancelWeiboFavourite(){
         //业务
-        this.$dispatch('weiboFavouritCancelled'/*,weiboID*/);
+        this.$dispatch('weiboFavouritCancelled',this.weiboID);
         this.showCancelFavouritePopup = false;
       }
     },
     events: {
-      show(weibo){
+      show(weiboID){
+        this.weiboID = weiboID;
         this.showCancelFavouritePopup = true;
       }
     },
@@ -43,7 +45,7 @@
 </script>
 
 <style lang="less">
-  .favourite.popup-wrapper{
+  .cancel-favourite.popup-wrapper{
     .popup-body {
       padding-bottom: 0;
     }

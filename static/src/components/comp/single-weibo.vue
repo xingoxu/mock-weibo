@@ -32,7 +32,7 @@
                 <ul>
                   <li>
                     <span class="line S_line1">
-                      <a class="S_txt2" target="_blank" href="/1199444583/Eij3crYHz?type=repost" >
+                      <a class="S_txt2" target="_blank" href="/weibo/{{weibo.forwardWeibo.weiboid}}?type=repost" >
                         <!-- 转发 -->
                         <span><em class="W_ficon ficon_forward S_ficon"></em><em>{{weibo.forwardWeibo.forward>0 ? weibo.forwardWeibo.forward : '转发'}}</em></span>
                       </a>
@@ -40,7 +40,7 @@
                   </li>
                   <li>
                     <span class="line S_line1">
-                      <a class="S_txt2" target="_blank" href="/1199444583/Eij3crYHz" >
+                      <a class="S_txt2" target="_blank" href="/weibo/{{weibo.forwardWeibo.weiboid}}" >
                         <!-- 回复 -->
                         <span><em class="W_ficon ficon_repeat S_ficon"></em><em>{{weibo.forwardWeibo.forward>0 ? weibo.forwardWeibo.comment : '评论'}}</em></span>
                       </a>
@@ -48,7 +48,7 @@
                   </li>
                   <li :class="{'liked': weibo.forwardWeibo.liked}">
                     <span class="line S_line1">
-                      <a class="S_txt2" href="javascript:void(0);" @click="weibo.forwardWeibo.liked = !weibo.forwardWeibo.liked">
+                      <a class="S_txt2" href="javascript:void(0);" @click="forwardWeiboLike">
                         <!-- 点赞 -->
                         <span><em class="W_ficon ficon_praised S_txt2">ñ</em><em>{{weibo.forwardWeibo.like>0 ? weibo.forwardWeibo.like : '赞'}}</em></span>
                       </a>
@@ -77,6 +77,18 @@ import operation from './single-weibo-bottom-operation';
 export default {
   props: ['weibo','isSingleWeibo'],
   ready(){
+  },
+  methods: {
+    forwardWeiboLike(){
+      //提交业务逻辑
+      this.weibo.forwardWeibo.liked = !this.weibo.forwardWeibo.liked;
+      if(this.weibo.forwardWeibo.liked){
+        this.weibo.forwardWeibo.like++;
+      }
+      else {
+        this.weibo.forwardWeibo.like--;
+      }
+    }
   },
   components: {
     weiboText,

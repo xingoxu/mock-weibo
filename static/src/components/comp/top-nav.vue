@@ -58,7 +58,7 @@
                 </div>
               </li>
               <li class="gn_set_list">
-                <a href="javascript:void(0);"><em class="W_ficon ficon_send S_ficon" title="新微博">ß</em></a>
+                <a href="javascript:void(0);" @click="$dispatch('showNewWeiboPopup')"><em class="W_ficon ficon_send S_ficon" title="新微博">ß</em></a>
               </li>
             </ul>
             <div class="gn_topmenulist_tips">
@@ -87,11 +87,11 @@
     beforeDestroy(){
       window.removeEventListener('scroll',this.windowScroll);
     },
+    props: ['navNow'],
     data(){
       return {
         searchFocus: false,
         isTop: true,
-        navNow: 'homepage',
       }
     },
     methods: {

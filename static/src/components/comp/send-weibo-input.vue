@@ -1,13 +1,13 @@
 <template>
-  <div class="weibo-send-weibo-wrapper">
-    <header>
-      <p class="W_swficon ficon_swtxt">
+  <div class="weibo-send-weibo-wrapper" :class="{'white': isWhite}">
+    <header class="clrfloat">
+      <p class="W_swficon ficon_swtxt" v-if="!isPopup">
         <em class="spac1">有什么新</em>
         <em class="spac2">鲜</em>
         <em class="spac3">事想告诉大家</em>
         <em class="spac4">?</em>
       </p>
-      <span class="pull-right hot-weibo" v-show="!isEditing && inputWeibo.length == 0">
+      <span class="pull-right hot-weibo" v-show="!isEditing && inputWeibo.length == 0" v-if="!isPopup">
         <a href="">热门话题</a>
         <a href="">热门微博</a>
       </span>
@@ -17,7 +17,7 @@
       <span class="pull-right length-calc"></span>
     </header>
     <div class="input-wrapper" :class="{'editing': isEditing}">
-      <auto-resize-textarea :model.sync="inputWeibo" :init_height="textareaFirstHeight" @focus="isEditing=true" @blur="isEditing=false"></auto-resize-textarea>
+      <auto-resize-textarea :model.sync="inputWeibo" :init_height="textareaFirstHeight" @focus="isEditing=true" @blur="isEditing=false" :disabled="inputDisabled"></auto-resize-textarea>
       <div class="success-sended-tip" v-show="successSended">
         <i class="icon icon-background send-success"></i>
         <span>发布成功</span>
@@ -32,7 +32,7 @@
       </div>
       <div class="func pull-right">
         <!--<div class="limits"></div>-->
-        <button class="submit" disabled="{{inputWeibo.length == 0}}" @click="submit">发布</button>
+        <button class="submit" :disabled="!(inputWeibo.length > 0 && inputWeibo.length < 140) || inputDisabled" @click="submit">发布</button>
       </div>
     </div>
   </div>
@@ -41,20 +41,40 @@
 
 <script>
 import autoResizeTextarea from './auto-resize-textarea';
+import {app} from '../../common.js';
+
 export default {
+  props: ['currentUser','isWhite','isPopup'],
   data () {
     return {
       isEditing: false,
       successSended: false,
       inputWeibo: "",
+      inputDisabled: false,
       textareaFirstHeight: 77,
     }
   },
   methods:{
     submit(){
+      this.inputDisabled = true;
+
+
+
+
+      var weibo = app.weiboFactory();
+      weibo.weiboid = '8938295392';
+      weibo.user = this.currentUser;
+      weibo.text = this.inputWeibo;
+      //weibo.pics =
+      weibo.time = `${Date.now()}`;
+
+      this.inputWeibo = '';
+
       this.successSended = true;
       setTimeout(()=>{
         this.successSended = false;
+        this.$dispatch('newWeiboSended',weibo);
+        this.inputDisabled = false;
       },2000)//animation 2s
     },
   },
@@ -84,6 +104,7 @@ export default {
   }
   >header {
     line-height:18px;
+    height: 21px;
     p {
       margin: 0;
     }
@@ -143,12 +164,43 @@ export default {
         border: 1px solid #f77c3d;
         color: #fff;
         box-shadow: 0px 1px 2px rgba(0,0,0,0.25);
+        cursor: pointer;
+        &:hover {
+          background: #f7671d;
+          border: 1px solid #f06923;
+        }
         &[disabled]{
           background: #ffc09f;
           border: 1px solid #fbbd9e;
           box-shadow: none;
+          cursor: default;
         }
       }
+    }
+  }
+
+  &.white {
+    background: transparent;
+    .words-total {
+      color: #808080;
+    }
+    .input-wrapper {
+      background: transparent;
+      border-color: #cccccc;
+      box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.15) inset;
+      &.editing {
+        border-color: #fa7d3c;
+        box-shadow: none;
+      }
+      textarea {
+        color: #808080;
+        &:focus {
+          color: #333;
+        }
+      }
+    }
+    .success-sended-tip>span {
+      color: #333;
     }
   }
 }

@@ -23,6 +23,9 @@ var forwardWeibo = {
   forwardWeibo: singleWeibo,
   liked: false,
   favourited: true,
+  like: 0,
+  forward: 1,
+  comment: 3,
 }
 var timeline = [singleWeibo,forwardWeibo];
 export {singleWeibo,forwardWeibo,timeline};

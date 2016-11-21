@@ -1,26 +1,26 @@
 <template lang="html">
   <div class="single-list-weibo">
     <!-- 单条单行微博（评论/转发） -->
-    <user-avatar size="30" class="avatar"></user-avatar>
+    <user-avatar size="30" class="avatar" :src="weibo.user.avatar" :userid="weibo.user.username"></user-avatar>
     <div class="content">
       <div class="weibo-text">
         <user-card>
-          <a href="#" class="name-title-link">xingo</a>
-        </user-card>：<weibo-text class="text" weibo-text="今天是个好天气@测试 今天是个好天气@测试 今天是个好天气@测试 今天是个好天气@测试"></weibo-text>
+          <a href="/user/{{weibo.user.userid}}" class="name-title-link">{{weibo.user.username}}</a>
+        </user-card>：<weibo-text class="text" :weibo-text="weibo.text"></weibo-text>
       </div>
       <div class="func clrfloat">
-        <span class="time">7分钟前</span>
+        <span class="time">{{weibo.time | showTime}}</span>
         <div class="operation pull-right">
           <ul class="clrfloat">
             <li class="pull-left">
               <span class="line S_line1">
-                <a href="javascript:void(0);" class="S_txt1">回复</a>
+                <a href="javascript:void(0);" class="S_txt1">{{isForward ? '转发' : '回复'}}</a>
               </span>
             </li>
             <li class="pull-left">
               <span class="line S_line1">
-                <a href="javascript:void(0);" class="S_txt1" :class="{'liked': isLiked}" @click="isLiked=!isLiked">
-                  <em class="W_ficon ficon_praised S_txt2">ñ</em><em>赞</em>
+                <a href="javascript:void(0);" class="S_txt1" :class="{'liked': weibo.liked }" @click="likeComment">
+                  <em class="W_ficon ficon_praised S_txt2">ñ</em><em>{{weibo.like>0 ? weibo.like : '赞'}}</em>
                 </a>
               </span>
             </li>
@@ -35,9 +35,21 @@
 import userAvatar from './normal-user-avatar';
 import weiboText from './weibo-text';
 export default {
+  props: ['weibo','isForward'],
   data(){
     return {
-      isLiked: false,
+    }
+  },
+  methods: {
+    likeComment() {
+      //并不只是comment,还有forward
+      this.weibo.liked = !this.weibo.liked;
+      if(this.weibo.liked){
+        this.weibo.like++;
+      }
+      else {
+        this.weibo.like--;
+      }
     }
   },
   components: {

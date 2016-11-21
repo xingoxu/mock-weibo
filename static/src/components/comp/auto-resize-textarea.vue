@@ -1,7 +1,7 @@
 <template lang="html">
   <textarea class="autoresize" v-model="model" @keydown="resizeTextArea" :style="{
     height: init_height+'px'
-  }" :placeholder="placeholder"></textarea>
+  }" :placeholder="placeholder" :disabled="disabled"></textarea>
 </template>
 
 <script>
@@ -11,7 +11,7 @@ export default {
     return {
     }
   },
-  props: ['model','init_height','placeholder'],
+  props: ['model','init_height','placeholder','disabled'],
   methods:{
     resizeTextArea(event){
       var textarea = event.target;

@@ -24,7 +24,7 @@
       }
     },
     events: {
-      show(weibo){
+      show(){
         this.showFavouriteSuccess = true;
       }
     },

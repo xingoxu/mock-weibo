@@ -204,11 +204,30 @@ i.questionB {
 
 //transition and animation
 .opacity-transition {
-  transition: opacity .2s ease;
+  transition: opacity .2s ease-out;
   opacity: 1;
 }
 .opacity-enter, .opacity-leave {
   opacity: 0;
+}
+
+.show-weibo-transition {
+  transition: all .5s ease;
+  transition-property: transform,opacity,max-height;
+  opacity: 1;
+  max-height: 30vh;
+}
+.show-weibo-enter {
+  transform: translateY(-50px);
+  max-height: 0;
+  opacity: 0.5;
+  overflow: hidden;
+}
+.show-weibo-leave {
+  transform: translateY(50px);
+  max-height: 0;
+  opacity: 0.5;
+  overflow: hidden;
 }
 
 @keyframes likeStep {

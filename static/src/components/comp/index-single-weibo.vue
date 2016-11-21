@@ -3,14 +3,17 @@
     <single-weibo class="single-weibo-component" @click="showForward=true" :weibo="weibo" :is-single-weibo="false"></single-weibo>
     <expand-operation class="comment expand-operation-wrapper" v-show="showCommentWrapper">
       <div class="container" v-show="commentLoaded">
-        <publish-container></publish-container>
+        <publish-container :current-user="currentUser" :weibo="weibo"></publish-container>
         <div class="comment-list">
           <ul>
-            <li>
-              <comment></comment>
+            <li v-for="comment in comments.comments" >
+              <comment :weibo="comment" :is-forward="false"></comment>
             </li>
           </ul>
         </div>
+        <a href="/weibo/{{weibo.weiboid}}" class="WB_cardmore S_txt1 S_line1 more" v-if="comments.total > 10">
+          <span class="more_txt">后面还有{{comments.total - 10}}条评论，点击查看<i class="W_ficon ficon_arrow_right S_ficon">a</i></span>
+        </a>
       </div>
       <div class="loading-container" v-show="!commentLoaded">
         <div class="empty_con clearfix"> <p class="text"><i class="W_loading"></i>正在加载，请稍候...</p> </div>
@@ -24,6 +27,7 @@ import singleWeibo from './single-weibo';
 import expandOperation from './expand-operation-wrapper';
 import comment from './single-list-weibo';
 import publishContainer from './small-publish';
+import {comments} from '../../mockdata/commentsData.js';
 
 export default {
   props: ['weibo','currentUser'],
@@ -31,15 +35,19 @@ export default {
     return {
       showCommentWrapper: false,
       commentLoaded: false,
+      comments: {},
     }
   },
   events: {
     expandComment(){
       this.showCommentWrapper = true;
-      // 请求comment数据
-      setTimeout(()=>{
-        this.commentLoaded = true;
-      },3000);
+      if(!this.commentLoaded) {
+        // 请求comment数据
+        setTimeout(()=>{
+          this.comments = comments;
+          this.commentLoaded = true;
+        },3000);
+      }
     },
     closeComment(){
       this.showCommentWrapper = false;
@@ -60,9 +68,25 @@ export default {
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
     .container {
-      padding: 16px 0 6px;
+      padding: 16px 0 0;
       margin-top: -1px;
       border-top: 1px solid #19191a;
+      >a.more {
+        display: block;
+        text-align: center;
+        line-height: 35px;
+        color: #c8c8cc;
+        i {
+          color: #c8c8cc;
+          font-style: normal;
+        }
+        &:hover {
+          color: #eb7350;
+          i {
+            color: #eb7350;
+          }
+        }
+      }
     }
     .loading-container {
       margin-top: -1px;

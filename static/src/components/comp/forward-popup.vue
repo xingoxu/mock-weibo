@@ -2,7 +2,7 @@
   <popup class="forward popup-wrapper" :show.sync="showForward">
     <span slot="title">转发微博</span>
     <div class="popup-body" slot="body">
-      <publish-container :is-popup="true" :is-forward="true" :is-white="true"></publish-container>
+      <publish-container :is-popup="true" :is-forward="true" :is-white="true" :weibo="weibo"></publish-container>
     </div>
   </popup>
 </template>
@@ -13,11 +13,15 @@
   export default {
     data(){
       return {
-        showForward: false
+        weibo: {
+          user: {}
+        },
+        showForward: false,
       }
     },
     events: {
       show(weibo){
+        this.weibo = weibo;
         this.showForward = true;
       }
     },

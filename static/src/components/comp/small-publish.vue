@@ -1,10 +1,10 @@
 <template lang="html">
   <div class="publish-container" :class="{'transparent': isWhite, 'forward': isForward, 'popup':isPopup }" >
-    <user-avatar size="30" class="avatar" v-if="!isPopup && !isForward"></user-avatar>
+    <user-avatar size="30" class="avatar" v-if="!isPopup && !isForward" :src="currentUser.avatar" :userid="currentUser.userid"></user-avatar>
     <div class="right">
       <div class="input-wrapper" :class="{'focus': commentInputFocus}">
         <autoresize-textarea :init_height="isForward ? 48 : 20" @focus="commentInputFocus=true" @blur="commentInputFocus=false" :placeholder="isForward ? '请输入转发理由' : false" :model.sync="text"></autoresize-textarea>
-        <span class="word-tip" node-type="num" v-if="isForward">
+        <span class="word-tip" :class="{'red': text.length>140}" v-if="isForward">
           <span>{{140 - text.length}}</span>
         </span>
         <div class="success-sended-tip" v-show="successSended" v-if="isForward">
@@ -14,7 +14,7 @@
       </div>
       <div class="publish-options clrfloat">
         <div class="pull-right">
-          <button type="button" @click="submit">{{isForward ? '转发' : '评论'}}</button>
+          <button type="button" @click="submit" :disabled="!(text.length>0&&text.length<=140)">{{isForward ? '转发' : '评论'}}</button>
         </div>
         <div class="options clrfloat">
           <span class="icons pull-left">
@@ -25,7 +25,7 @@
               <li v-if="isForward">
                 <label>
                   <input type="checkbox" />
-                  <span>同时评论给 xxx</span>
+                  <span>同时评论给{{weibo.user.username}}</span>
                 </label>
               </li>
               <li v-if="!isForward">
@@ -34,10 +34,10 @@
                   <span>同时转发到我的微博</span>
                 </label>
               </li>
-              <li v-if="!hasForward">
+              <li v-if="weibo.forwardWeibo">
                 <label>
                   <input type="checkbox" />
-                  <span>同时评论给原文作者 abc</span>
+                  <span>同时评论给原文作者{{weibo.forwardWeibo.user.username}}</span>
                 </label>
               </li>
             </ul>
@@ -56,9 +56,23 @@
      * isWhite 使其变成透明背景
      * isPopup 表示其在Popup下工作
      * isForward 表示其是转发功能
-     * hasForward 表示评论/转发的这条微博 已经是别人的转发，开启同时评论给原文作者
      **/
-    props: ['isWhite','isPopup','isForward','hasForward','currentUser'],
+    props: {
+      isWhite: Boolean,
+      isPopup: Boolean,
+      isForward: Boolean,
+      currentUser: Object,
+      weibo: {
+        type: Object,
+        default(){
+          return {
+            user: {
+
+            },
+          }
+        }
+      }
+    },
     data(){
       return {
         text: '',
@@ -184,6 +198,9 @@
           right: 12px;
           bottom: 7px;
           line-height: 18px;
+          &.red {
+            color: #f00;
+          }
         }
       }
       >.right {

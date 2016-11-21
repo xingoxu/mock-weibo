@@ -18,7 +18,7 @@ function getTime(date) {
 
 function getDate(date) {
   var dateArray = [];
-  dateArray.push(date.getFullYear() + '年');
+  // dateArray.push(date.getFullYear() + '年'); //暂时不用显示
   dateArray.push(date.getMonth() + 1 + '月');
   dateArray.push(date.getDate() + '日');
   dateArray = dateArray.map(NumberToTwo);
@@ -29,7 +29,7 @@ Vue.filter('showTime', function(dateStamp) {
   dateStamp = Number.parseInt(dateStamp);
   var dif = Date.now() - dateStamp;
   //1天前显示日期
-  if (dif / (1000 * 3600 * 24) > 1)
+  if (dif / (1000 * 3600 * 24) > 1 || (new Date()).getDate()-(new Date(dateStamp)).getDate()>0)
     return getDate(new Date(dateStamp)) + ' ' + getTime(new Date(dateStamp));
   //1小时前直接显示时间
   if (dif / (1000 * 3600) > 1)
@@ -37,7 +37,21 @@ Vue.filter('showTime', function(dateStamp) {
   return Math.ceil(dif / (1000 * 60)) + '分钟前';
 });
 
-var app = {};
+var app = {
+  weiboFactory(){
+    return {
+      weiboid: '',
+      user: {},
+      text: '',
+      time: '',
+      forward: 0,
+      comment: 0,
+      like: 0,
+      favourited: false,
+      liked: false,
+    }
+  }
+};
 
 window.app = app;
 

@@ -29,7 +29,7 @@
         </a>
       </li>
       <li>
-        <a href="javascript:;" class="S_txt2" @click="weibo.liked=!weibo.liked" :class="{'liked': weibo.liked}">
+        <a href="javascript:;" class="S_txt2" @click="likeWeibo" :class="{'liked': weibo.liked}">
           <span class="line S_line1">
             <span>
               <em class="W_ficon ficon_praised S_txt2">ñ</em><em>{{weibo.like>0 ? weibo.like : '赞'}}</em>
@@ -63,7 +63,7 @@ export default {
       if(this.isSingleWeibo){
         this.forwardExpanded = true;
       }
-      this.$dispatch('expandForward');
+      this.$dispatch('expandForward',this.weibo);
     },
     favouriteWeibo(){
       if(!this.weibo.favourited){
@@ -75,11 +75,21 @@ export default {
         this.$dispatch('cancelFavourite',this.weibo.weiboid);//发送事件给顶层，让顶层转发给popup
       }
     },
+    likeWeibo(){
+      //提交业务逻辑
+      this.weibo.liked = !this.weibo.liked;
+      if(this.weibo.liked){
+        this.weibo.like++;
+      }
+      else{
+        this.weibo.like--;
+      }
+    }
   },
   events: {
     weiboFavouritCancelled: function(weiboID){
-      if(weiboID /*==自身weiboid*/) /*关闭显示*/;
-      this.weibo.favourited = false;
+      if(weiboID==this.weibo.weiboid)
+        this.weibo.favourited = false;
     },
   }
 }
