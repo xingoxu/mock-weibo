@@ -52,6 +52,9 @@ export default {
     closeComment(){
       this.showCommentWrapper = false;
 
+    },
+    newCommentSended(comment) {
+      this.comments.comments.unshift(comment);
     }
   },
   components: {

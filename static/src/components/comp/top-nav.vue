@@ -3,7 +3,7 @@
     <nav class="top-nav" :class="{'has-alpha': !isTop}">
       <div class="center-zone">
         <div class="logo">
-          <a href="http://weibo.com/pokemonxu/home?topnav=1&amp;wvr=6&amp;mod=logo&amp;is_search=1" >
+          <a href="/" >
             <span class="logo"></span>
           </a>
         </div>
@@ -16,8 +16,8 @@
         <div class="right-operation">
           <div class="site-nav">
             <ul>
-              <li :class="{'now': navNow=='homepage'}"><a href="#"><em class="W_ficon ficon_home S_ficon">E</em><em class="text">首页</em></a></li>
-              <li :class="{'now': navNow=='mypage'}"><a href="#"><em class="W_ficon ficon_home S_ficon">H</em><em class="text">xingo</em></a></li>
+              <li :class="{'now': navNow=='homepage'}"><a href="/"><em class="W_ficon ficon_home S_ficon">E</em><em class="text">首页</em></a></li>
+              <li :class="{'now': navNow=='mypage'}"><a href="/user/{{currentUser.userid}}"><em class="W_ficon ficon_home S_ficon">H</em><em class="text">{{currentUser.username}}</em></a></li>
             </ul>
           </div>
           <div class="nav-func">
@@ -46,19 +46,19 @@
                 <div class="menu">
                   <!--tip start-->
                   <ul>
-                    <li><a href="/at/">个人资料</a>
+                    <li><a href="/profile/">个人资料</a>
                     </li>
-                    <li><a href="/comment/">账号安全</a>
+                    <li><a href="/password/">账号安全</a>
                     </li>
                     <li class="line S_line2"></li>
-                    <li><a href="/comment/">退出</a>
+                    <li><a href="/logout/">退出</a>
                     </li>
                   </ul>
                   <!--tip end-->
                 </div>
               </li>
               <li class="gn_set_list">
-                <a href="javascript:void(0);" @click="$dispatch('showNewWeiboPopup')"><em class="W_ficon ficon_send S_ficon" title="新微博">ß</em></a>
+                <a href="javascript:void(0);" @click="showNewWeiboPopup"><em class="W_ficon ficon_send S_ficon" title="新微博">ß</em></a>
               </li>
             </ul>
             <div class="gn_topmenulist_tips">
@@ -81,13 +81,17 @@
 
 <script>
   export default {
+    props: ['currentUser','navNow'],
     ready() {
       window.addEventListener('scroll',this.windowScroll);
+      window.addEventListener('keyup',(event)=>{
+        if(event.keyCode == 78) //N
+          this.showNewWeiboPopup();
+      })
     },
     beforeDestroy(){
       window.removeEventListener('scroll',this.windowScroll);
     },
-    props: ['navNow'],
     data(){
       return {
         searchFocus: false,
@@ -101,6 +105,9 @@
           return;
         }
         this.isTop = true;
+      },
+      showNewWeiboPopup(){
+        this.$dispatch('showNewWeiboPopup');
       }
     },
   }

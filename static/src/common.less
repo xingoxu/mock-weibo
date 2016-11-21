@@ -212,22 +212,32 @@ i.questionB {
 }
 
 .show-weibo-transition {
-  transition: all .5s ease;
-  transition-property: transform,opacity,max-height;
-  opacity: 1;
-  max-height: 30vh;
 }
 .show-weibo-enter {
-  transform: translateY(-50px);
-  max-height: 0;
-  opacity: 0.5;
-  overflow: hidden;
+  animation: .8s showWeibo ease-out;
 }
 .show-weibo-leave {
-  transform: translateY(50px);
-  max-height: 0;
-  opacity: 0.5;
-  overflow: hidden;
+
+}
+
+@keyframes showWeibo {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+    max-height: 0;
+  }
+  40% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  55% {
+    max-height: 300px;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 300px;
+  }
 }
 
 @keyframes likeStep {

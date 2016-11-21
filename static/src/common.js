@@ -29,7 +29,8 @@ Vue.filter('showTime', function(dateStamp) {
   dateStamp = Number.parseInt(dateStamp);
   var dif = Date.now() - dateStamp;
   //1天前显示日期
-  if (dif / (1000 * 3600 * 24) > 1 || (new Date()).getDate()-(new Date(dateStamp)).getDate()>0)
+  if (dif / (1000 * 3600 * 24) > 1 || (new Date()).getDate() - (new Date(
+      dateStamp)).getDate() > 0)
     return getDate(new Date(dateStamp)) + ' ' + getTime(new Date(dateStamp));
   //1小时前直接显示时间
   if (dif / (1000 * 3600) > 1)
@@ -38,18 +39,28 @@ Vue.filter('showTime', function(dateStamp) {
 });
 
 var app = {
-  weiboFactory(){
+  weiboFactory() {
     return {
       weiboid: '',
       user: {},
       text: '',
-      time: '',
+      time: Date.now() + '',
       forward: 0,
       comment: 0,
       like: 0,
       favourited: false,
       liked: false,
-    }
+    };
+  },
+  commentFactory() {
+    return {
+      user: {},
+      text: '',
+      time: Date.now() + '',
+      commentid: '',
+      like: 0,
+      liked: false,
+    };
   }
 };
 

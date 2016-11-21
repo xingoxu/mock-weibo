@@ -12,12 +12,12 @@
         <a href="">热门微博</a>
       </span>
       <span class="pull-right words-total" v-show="inputWeibo.length > 0">
-        已输入<span>{{inputWeibo.length}}</span>字
+        已输入<span :class="{'red': inputWeibo.length>140}">{{inputWeibo.length}}</span>字
       </span>
       <span class="pull-right length-calc"></span>
     </header>
     <div class="input-wrapper" :class="{'editing': isEditing}">
-      <auto-resize-textarea :model.sync="inputWeibo" :init_height="textareaFirstHeight" @focus="isEditing=true" @blur="isEditing=false" :disabled="inputDisabled"></auto-resize-textarea>
+      <auto-resize-textarea :model.sync="inputWeibo" :init_height="textareaFirstHeight" @focus="isEditing=true" @blur="isEditing=false" :disabled="inputDisabled" @keydown.stop="enterSubmit" @keydown.17="ctrlPressed=true" @keyup.17="ctrlPressed=false"  @keyup.stop="false"></auto-resize-textarea>
       <div class="success-sended-tip" v-show="successSended">
         <i class="icon icon-background send-success"></i>
         <span>发布成功</span>
@@ -32,7 +32,7 @@
       </div>
       <div class="func pull-right">
         <!--<div class="limits"></div>-->
-        <button class="submit" :disabled="!(inputWeibo.length > 0 && inputWeibo.length < 140) || inputDisabled" @click="submit">发布</button>
+        <button class="submit" :disabled="!(inputWeibo.length > 0 && inputWeibo.length <= 140) || inputDisabled" @click="submit">发布</button>
       </div>
     </div>
   </div>
@@ -52,10 +52,12 @@ export default {
       inputWeibo: "",
       inputDisabled: false,
       textareaFirstHeight: 77,
+      ctrlPressed: false,
     }
   },
   methods:{
     submit(){
+      if(this.inputWeibo.length == 0) return;
       this.inputDisabled = true;
 
 
@@ -76,6 +78,12 @@ export default {
         this.$dispatch('newWeiboSended',weibo);
         this.inputDisabled = false;
       },2000)//animation 2s
+    },
+    enterSubmit(event) {
+      if(this.ctrlPressed && event.keyCode==13) {
+        this.submit();
+      }
+      event.stopPropagation();
     },
   },
   components: {
@@ -118,6 +126,9 @@ export default {
         font-size: 22px;
         font-style: italic;
         font-family: Constantia, Georgia;
+        &.red {
+          color: #f90;
+        }
       }
     }
     .hot-weibo a {

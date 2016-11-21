@@ -1,6 +1,6 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav nav-now="homepage"></top-nav>
+    <top-nav nav-now="homepage" :current-user="currentUser"></top-nav>
     <div class="weibo-frame">
       <left-col class="weibo-left-col"></left-col>
       <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser"></middle-col>
@@ -15,7 +15,7 @@
       <p>Copyright © 2009-2016 WEIBO 北京微梦创科网络技术有限公司 京公网安备11000002000019号</p>
     </footer>
     <new-weibo-popup v-ref:new-weibo-popup :current-user="currentUser"></new-weibo-popup>
-    <forward-popup v-ref:forward-popup></forward-popup>
+    <forward-popup v-ref:forward-popup :current-user="currentUser"></forward-popup>
     <cancel-favourite-popup v-ref:cancel-favourite-popup></cancel-favourite-popup>
     <favourite-success-popup v-ref:favourite-success-popup></favourite-popup>
   </div>

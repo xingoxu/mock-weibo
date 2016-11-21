@@ -2,17 +2,17 @@
   <div>
     <div class="personal-card">
       <div class="upper">
-        <a href="/{{user.id}}" class="avatar"></a>
+        <a href="/{{currentUser.userid}}" class="avatar"></a>
       </div>
       <div class="lower">
         <div class="name">
-          <a href="/{{user.id}}">{{user.name}}</a>
+          <a href="/{{currentUser.userid}}">{{currentUser.username}}</a>
         </div>
         <div class="status">
           <ul>
             <li v-for="status in cardLowerStatus">
-              <a href="/{{user.id}}/{{status.link}}">
-                <strong>{{user[status.key]}}</strong>
+              <a href="/{{currentUser.userid}}/{{status.link}}">
+                <strong>{{currentUser[status.key]}}</strong>
                 <span>{{status.showText}}</span>
               </a>
             </li>
@@ -40,10 +40,10 @@
 </template>
 
 <script>
-import {currentUser} from '../mockdata/personalData.js';
 import {hotTopic} from '../mockdata/commonData.js';
 
 export default {
+  props: ['currentUser'],
   data () {
     var cardLowerStatus = [{
       key: 'following',
@@ -73,7 +73,6 @@ export default {
       hotTopicReComp.push(hotTopicPage);
 
     return {
-      user: currentUser,
       cardLowerStatus: cardLowerStatus,
       hotTopicPages: hotTopicReComp,
       topicPageNow: 0,

@@ -3,9 +3,10 @@
     <user-avatar size="30" class="avatar" v-if="!isPopup && !isForward" :src="currentUser.avatar" :userid="currentUser.userid"></user-avatar>
     <div class="right">
       <div class="input-wrapper" :class="{'focus': commentInputFocus}">
-        <autoresize-textarea :init_height="isForward ? 48 : 20" @focus="commentInputFocus=true" @blur="commentInputFocus=false" :placeholder="isForward ? '请输入转发理由' : false" :model.sync="text"></autoresize-textarea>
-        <span class="word-tip" :class="{'red': text.length>140}" v-if="isForward">
-          <span>{{140 - text.length}}</span>
+        <autoresize-textarea :init_height="isForward ? 48 : 20" @focus="commentInputFocus=true" @blur="commentInputFocus=false" :placeholder="isForward ? '请输入转发理由' : false" :model.sync="inputWeibo" :disabled="inputDisabled" @keydown.stop="enterSubmit" @keydown.17="ctrlPressed=true" @keyup.17="ctrlPressed=false"  @keyup.stop="false" ></autoresize-textarea>
+
+        <span class="word-tip" :class="{'red': inputWeibo.length>140}" v-if="isForward">
+          <span>{{140 - inputWeibo.length}}</span>
         </span>
         <div class="success-sended-tip" v-show="successSended" v-if="isForward">
           <i class="icon icon-background send-success"></i>
@@ -14,7 +15,7 @@
       </div>
       <div class="publish-options clrfloat">
         <div class="pull-right">
-          <button type="button" @click="submit" :disabled="!(text.length>0&&text.length<=140)">{{isForward ? '转发' : '评论'}}</button>
+          <button type="button" @click="submit" :disabled="!(inputWeibo.length>0&&inputWeibo.length<=140)">{{isForward ? '转发' : '评论'}}</button>
         </div>
         <div class="options clrfloat">
           <span class="icons pull-left">
@@ -51,6 +52,8 @@
 <script>
   import autoresizeTextarea from './auto-resize-textarea';
   import userAvatar from './normal-user-avatar';
+  import {app} from '../../common.js';
+
   export default {
     /**
      * isWhite 使其变成透明背景
@@ -75,18 +78,76 @@
     },
     data(){
       return {
-        text: '',
+        inputWeibo: '',
         commentInputFocus: false,
         successSended: false,
+        inputDisabled: false,
       }
     },
     methods:{
       submit(){
+        if(this.isForward)
+          this.submitForward();
+        else
+          this.submitComment();
+      },
+      submitForward(){
+        if(this.inputWeibo.length == 0) return;
+        this.inputDisabled = true;
+
+
+
+        var weibo = app.weiboFactory();
+        weibo.weiboid = '8938295392';
+        weibo.user = this.currentUser;
+        weibo.text = this.inputWeibo;
+        weibo.forwardWeibo = this.weibo.forwardWeibo || this.weibo;
+
+        this.weibo.forward++;
+
+        this.inputWeibo = '';
+
         this.successSended = true;
         setTimeout(()=>{
           this.successSended = false;
+          this.$dispatch('newWeiboSended',weibo);
+          this.inputDisabled = false;
         },2000)//animation 2s
       },
+      submitComment(){
+        if(this.inputWeibo.length == 0) return;
+        this.inputDisabled = true;
+
+        var comment = app.commentFactory();
+        comment.commentid = '8938295392';
+        comment.user = this.currentUser;
+        comment.text = this.inputWeibo;
+
+        this.inputWeibo = '';
+
+        this.successSended = true;
+        this.$dispatch('newCommentSended',comment);
+        this.inputDisabled = false;
+      },
+      enterSubmit(event) {
+        if(this.ctrlPressed && event.keyCode==13) {
+          this.submit();
+        }
+        event.stopPropagation();
+      },
+    },
+    // events: {
+    //   forwardShow(){
+    //     console.log(this.weibo);
+    //   }
+    // },
+    watch: {
+      weibo(weibo,old){
+        if(weibo.forwardWeibo)
+          this.inputWeibo = `//@${weibo.user.username} : ${weibo.text}`;
+        else
+          this.inputWeibo = '转发微博';
+      }
     },
     components: {
       autoresizeTextarea,

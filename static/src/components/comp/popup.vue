@@ -34,9 +34,11 @@ export default {
   },
   ready(){
     document.addEventListener('mousemove',this.dragHandler);
+    document.addEventListener('keyup',this.hide);
   },
   beforeDestroy(){
     document.removeEventListener('mousemove',this.dragHandler);
+    document.removeEventListener('keyup',this.hide);
   },
   methods: {
     startDrag(event){
@@ -59,6 +61,11 @@ export default {
         this.drag = false;
         params.top = this.$els.layer.style.top;
         params.left = this.$els.layer.style.left;
+    },
+    hide(event){
+      if(event.keyCode == 27) {
+        this.show = false;
+      }
     }
   },
   watch: {
