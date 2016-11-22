@@ -7,7 +7,7 @@
         <div class="comment-list">
           <ul>
             <li v-for="comment in comments.comments" >
-              <comment :weibo="comment" :is-forward="false"></comment>
+              <comment :weibo="comment" :is-forward="false" :current-user="currentUser"></comment>
             </li>
           </ul>
         </div>

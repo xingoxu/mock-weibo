@@ -50,9 +50,31 @@ export default {
       forwardExpanded: false,
     }
   },
+  ready(){
+    if(!this.isSingleWeibo) return;
+
+    function GetQueryString(name)
+    {
+      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+      var r = window.location.search.substr(1).match(reg);
+      if(r!=null)return  unescape(r[2]); return null;
+    }
+    if(GetQueryString('type')=='repost')
+    {
+      this.expandForward();
+    }
+    else {
+      this.expandComment();
+    }
+  },
   methods:{
     expandComment(){
-      this.$dispatch('comment');
+      if(this.isSingleWeibo){
+        this.commentExpanded = true;
+        this.forwardExpanded = false;
+        this.$dispatch('expandComment');
+        return;
+      }
       this.commentExpanded = !this.commentExpanded;
       if(this.commentExpanded)
         this.$dispatch('expandComment');
@@ -62,6 +84,7 @@ export default {
     expandForward(){
       if(this.isSingleWeibo){
         this.forwardExpanded = true;
+        this.commentExpanded = false;
       }
       this.$dispatch('expandForward',this.weibo);
     },

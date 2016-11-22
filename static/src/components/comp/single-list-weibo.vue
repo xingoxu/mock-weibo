@@ -14,7 +14,7 @@
           <ul class="clrfloat">
             <li class="pull-left">
               <span class="line S_line1">
-                <a href="javascript:void(0);" class="S_txt1">{{isForward ? '转发' : '回复'}}</a>
+                <a href="javascript:void(0);" class="S_txt1" @click="toggleReplyWrapper">{{isForward ? '转发' : '回复'}}</a>
               </span>
             </li>
             <li class="pull-left">
@@ -26,6 +26,9 @@
             </li>
           </ul>
         </div>
+        <div class="replyWrapper" v-show="showReplyWrapper">
+          <publish-container :current-user="currentUser" :weibo="weibo" :is-popup="true" :is-forward="isForward" v-ref:publish-container :is-reply-others="true"></publish-container>
+        </div>
       </div>
     </div>
   </div>
@@ -34,10 +37,13 @@
 <script>
 import userAvatar from './normal-user-avatar';
 import weiboText from './weibo-text';
+import publishContainer from './small-publish';
+
 export default {
-  props: ['weibo','isForward'],
+  props: ['weibo','isForward','currentUser'],
   data(){
     return {
+      showReplyWrapper: false,
     }
   },
   methods: {
@@ -50,11 +56,16 @@ export default {
       else {
         this.weibo.like--;
       }
+    },
+    toggleReplyWrapper() {
+      this.$refs.publishContainer.$emit('show');
+       this.showReplyWrapper=!this.showReplyWrapper;
     }
   },
   components: {
     weiboText,
-    userAvatar
+    userAvatar,
+    publishContainer
   }
 }
 </script>
@@ -124,6 +135,26 @@ export default {
             &:last-child>span{
               border-right: 0;
             }
+          }
+        }
+        .replyWrapper {
+          margin: 8px 0 3px -40px;
+          background-color: #323233;
+          padding: 16px 0 10px;
+          position: relative;
+          .tri(){
+            position: absolute;
+            top: -6px;
+            right: 55px;
+            content: '';
+            width: 0;
+            height: 0;
+          }
+          &:after {
+            .tri();
+            border-left: 9px solid transparent;
+            border-right: 9px solid transparent;
+            border-bottom: 6px solid #323233;
           }
         }
       }

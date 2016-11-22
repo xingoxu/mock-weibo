@@ -7,7 +7,7 @@
         <div class="comment-list">
           <ul>
             <li v-for="comment in comments.comments" >
-              <comment :weibo="comment" :is-forward="false"></comment>
+              <comment :weibo="comment" :is-forward="false" :current-user="currentUser"></comment>
             </li>
             <li class="WB_innerwrap no-comment" v-if="comments.total == 0">
               <div class="empty_con clearfix">
@@ -22,6 +22,27 @@
         <div class="empty_con clearfix"> <p class="text"><i class="W_loading"></i>正在加载，请稍候...</p> </div>
       </div>
     </expand-operation>
+    <expand-operation class="forward expand-operation-wrapper" v-show="showForwardWrapper">
+      <div class="container" v-show="forwardLoaded">
+        <publish-container :current-user="currentUser" :weibo="weibo" :is-popup="true"></publish-container>
+        <div class="comment-list">
+          <ul>
+            <li v-for="comment in forwards.forwards" >
+              <comment :weibo="comment" :is-forward="true" :current-user="currentUser"></comment>
+            </li>
+            <li class="WB_innerwrap no-comment" v-if="forwards.total == 0">
+              <div class="empty_con">
+                <p class="icon_bed"><i class="W_icon icon_warnB icon icon-background"></i></p>
+                <p class="text">还没有人评论，赶快抢个沙发</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="loading-container" v-show="!forwardLoaded">
+        <div class="empty_con"> <p class="text"><i class="W_loading"></i>正在加载，请稍候...</p> </div>
+      </div>
+    </expand-operation>
   </div>
 </template>
 
@@ -31,23 +52,28 @@ import expandOperation from './expand-operation-wrapper';
 import comment from './single-list-weibo';
 import publishContainer from './small-publish';
 import {comments} from '../../mockdata/commentsData.js';
+import {forwards} from '../../mockdata/forwardsData.js';
 
 export default {
   props: ['weibo','currentUser'],
   data() {
     return {
       showCommentWrapper: false,
+      showForwardWrapper: false,
       commentLoaded: false,
+      forwardLoaded: false,
+      forwards: {},
       comments: {},
     }
   },
   events: {
     expandComment(){
       this.showCommentWrapper = true;
+      this.showForwardWrapper = false;
       if(!this.commentLoaded) {
         // 请求comment数据
         setTimeout(()=>{
-          this.comments = {comments};
+          this.comments = comments;
           this.commentLoaded = true;
         },3000);
       }
@@ -55,8 +81,22 @@ export default {
     closeComment(){
       this.showCommentWrapper = false;
     },
+    expandForward(){
+      this.showCommentWrapper = false;
+      this.showForwardWrapper = true;
+      if(!this.forwardLoaded) {
+        // 请求comment数据
+        setTimeout(()=>{
+          this.forwards = forwards;
+          this.forwardLoaded = true;
+        },3000);
+      }
+    },
     newCommentSended(comment) {
       this.comments.comments.unshift(comment);
+    },
+    newWeiboSended() {
+
     }
   },
   components: {

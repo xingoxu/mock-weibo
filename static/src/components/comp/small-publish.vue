@@ -72,6 +72,7 @@
       isWhite: Boolean,
       isPopup: Boolean,
       isForward: Boolean,
+      isReplyOthers: Boolean,
       currentUser: Object,
       weibo: {
         type: Object,
@@ -144,11 +145,18 @@
         event.stopPropagation();
       },
     },
-    // events: {
-    //   forwardShow(){
-    //     console.log(this.weibo);
-    //   }
-    // },
+    events: {
+      show(){
+        setTimeout(()=>{
+          if(this.isForward){
+            this.inputWeibo = `//@${this.weibo.user.username} : ${this.weibo.text}`;
+          }
+          else {
+            this.inputWeibo = `回复@${this.weibo.user.username} :`;
+          }
+        }, 0);
+      }
+    },
     watch: {
       weibo(weibo,old){
         if(weibo.forwardWeibo)
