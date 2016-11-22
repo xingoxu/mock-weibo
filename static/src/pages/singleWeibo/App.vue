@@ -2,7 +2,6 @@
   <div class="weibo-main-app">
     <top-nav nav-now="homepage" :current-user="currentUser"></top-nav>
     <div class="weibo-frame">
-      <left-col class="weibo-left-col"></left-col>
       <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser"></middle-col>
       <div class="weibo-right-col">
         <right-col :current-user="currentUser"></right-col>
@@ -15,15 +14,13 @@
       <p>Copyright © 2009-2016 WEIBO 北京微梦创科网络技术有限公司 京公网安备11000002000019号</p>
     </footer>
     <new-weibo-popup v-ref:new-weibo-popup :current-user="currentUser"></new-weibo-popup>
-    <forward-popup v-ref:forward-popup :current-user="currentUser"></forward-popup>
     <cancel-favourite-popup v-ref:cancel-favourite-popup></cancel-favourite-popup>
     <favourite-success-popup v-ref:favourite-success-popup></favourite-popup>
   </div>
 </template>
 
 <script>
-import leftCol from '../../components/left-col';
-import middleCol from '../../components/middle-col';
+import middleCol from './middle-col';
 import rightCol from '../../components/right-col';
 import topNav from '../../components/comp/top-nav';
 import forwardPopup from '../../components/comp/forward-popup';
@@ -32,6 +29,9 @@ import cancelFavouritePopup from '../../components/comp/cancel-favourite-popup';
 import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
+  created() {
+    document.title="【#你的名字#初次见面发布会】新海诚中国行... 来自你的名字官微 - 微博";
+  },
   props: ['timeline','currentUser'],
   data () {
     return {
@@ -44,9 +44,9 @@ export default {
     }
   },
   events: {
-    expandForward(weibo){
-      this.$refs.forwardPopup.$emit('show',weibo);
-    },
+    // expandForward(weibo){
+    //   this.$refs.forwardPopup.$emit('show',weibo);
+    // },
     weiboFavourited(){
       this.$refs.favouriteSuccessPopup.$emit('show');
     },
@@ -56,15 +56,11 @@ export default {
     weiboFavouritCancelled(weiboID) {
       this.$refs.middleCol.$broadcast('weiboFavouritCancelled',weiboID);
     },
-    newWeiboSended(weibo) {
-      this.$refs.middleCol.$emit('newWeiboSended',weibo);
-    },
     showNewWeiboPopup(){
       this.$refs.newWeiboPopup.$emit('show');
     }
   },
   components: {
-    leftCol,
     middleCol,
     rightCol,
     topNav,
@@ -85,13 +81,12 @@ body {
   padding-top: 50px;
 }
 .weibo-frame {
-  width: 1000px;
+  width: 830px;
   min-height: ~"calc(100vh - 16px - 50px)";
   margin: 0 auto;
   padding: 16px 0 0;
   position: relative;
 
-  background: rgba(0,0,0,0.25);
   padding-bottom: 10px;
   .weibo-left-col {
     position: fixed;
@@ -109,7 +104,7 @@ body {
     }
   }
   .weibo-mid-col {
-    padding: 0 240px 0 150px;
+    padding: 0 250px 0 0px;
     margin-right: 10px;
   }
 }

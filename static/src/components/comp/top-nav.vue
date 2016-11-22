@@ -258,6 +258,7 @@
         float: right;
         margin: 12px 10px 12px 0;
         border-left: 1px solid #d9d9d9;
+        position: relative;
         >ul {
           &:after {
             content: '';
@@ -362,7 +363,32 @@
           }
         }
         div.gn_topmenulist_tips {
-          display: none;
+          position: absolute;
+          min-width: 234px;
+          top: 36px;
+          right: 45px;
+
+          z-index: 99;
+          color: #333;
+          border: 1px solid #ffeebb;
+          border-radius: 0 0 3px 3px;
+          padding: 6px 2px;
+          box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.1);
+          background: rgba(255,249,224,0.94);
+          > a {//close button
+            float: right;
+            font-size: 12px;
+            line-height: 30px;
+          }
+          >ul{
+            >li {
+              padding: 9px 30px 9px 13px;
+              line-height: 1em;
+              >a {
+                color: #eb7350;
+              }
+            }
+          }
         }
       }
     }

@@ -15,7 +15,15 @@
       </div>
       <div class="publish-options clrfloat">
         <div class="pull-right">
-          <button type="button" @click="submit" :disabled="!(inputWeibo.length>0&&inputWeibo.length<=140)">{{isForward ? '转发' : '评论'}}</button>
+          <button type="button" @click="submit" :disabled="!(inputWeibo.length>0&&inputWeibo.length<=140) || inputDisabled">
+            <i class="W_loading" v-show="inputDisabled"></i>
+            <span v-show="inputDisabled">
+              {{isForward ? '转发中...' : '评论中...'}}
+            </span>
+            <span v-show="!inputDisabled">
+              {{isForward ? '转发' : '评论'}}
+            </span>
+          </button>
         </div>
         <div class="options clrfloat">
           <span class="icons pull-left">
@@ -228,6 +236,11 @@
           box-shadow: none;
           cursor: default;
         }
+        >.W_loading {
+          position: relative;
+          top: -1px;
+          margin: 0 5px 0 0;
+        }
       }
     }
 
@@ -270,6 +283,9 @@
     }
     &.popup {
       padding: 0 16px;
+      >.right {
+        padding-left: 0;
+      }
     }
   }
 </style>

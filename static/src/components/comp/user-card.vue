@@ -34,7 +34,7 @@
           </div>
         </div>
       </div>
-      <div class="wrapper" v-if="!user">
+      <div class="wrapper not-exist" v-if="!user">
         <span>抱歉，这个昵称不存在哦！^_^</span>
       </div>
     </div>
@@ -80,6 +80,13 @@ export default {
         border: 1px solid #ccc;
         box-shadow: 0 4px 20px 1px rgba(0,0,0,0.2);
         width: 374px;
+        &.not-exist {
+          padding: 15px 0;
+          text-align: center;
+          span {
+            color: #000;
+          }
+        }
       }
       .upper {
         // position: relative;
