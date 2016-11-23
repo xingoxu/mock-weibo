@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  props: ['weiboText'],
+  props: ['weiboText','keywords'],
   partials: {
     weiboTextPart: '<span></span>'
   },
@@ -19,13 +19,27 @@ export default {
     compileText(text){
       //微博字符转换
       var atRegex = /(@[0-9a-zA-Z_\u0391-\uFFE5-]+$)|(@[0-9a-zA-Z_\u0391-\uFFE5-]+\s)/g;
-      return text.replace(atRegex,(match)=>{
+      text = text.replace(atRegex,(match)=>{
         console.log(match);
         return `
           <user-card name="${match.substr(1).trim()}">
             <a href="#"><span>@${match.substr(1).trim()}</span></a>
           </user-card>`.trim();
       });
+      if(this.keywords&&this.keywords!=''){
+        var htmlCode = /"|&|'|<|>|[\x00-\x20]|[\x7F-\xFF]|[\u0100-\u2700]/g;
+        this.keywords = this.keywords.replace(htmlCode,(match)=>{
+          var c = match.charCodeAt(0), r = ["&#"];
+          c = (c == 0x20) ? 0xA0 : c;
+          r.push(c); r.push(";");
+          return r.join("");
+        });
+        console.log(this.keywords);
+        text = text.replace(eval(`/${this.keywords}/g`),(match)=>{
+          return `<span class="red">${match}</span>`
+        });
+      }
+      return text;
     }
   },
 }

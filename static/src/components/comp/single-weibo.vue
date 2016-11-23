@@ -6,12 +6,12 @@
       </div>
       <div class="right">
         <div class="nickname-title">
-          <user-card>
+          <user-card :userid="weibo.user.userid">
             <a href="/user/{{weibo.user.userid}}" class="name-title-link">{{weibo.user.username}}</a>
           </user-card>
         </div>
         <div class="weibo-text-content">
-          <weibo-text :weibo-text="weibo.text"></weibo-text>
+          <weibo-text :weibo-text="weibo.text" :keywords="keywords"></weibo-text>
         </div>
         <!-- 扩展here （图片/转发） -->
         <div class="forward-weibo" v-if="weibo.forwardWeibo">
@@ -22,7 +22,7 @@
               </user-card>
             </div>
             <div class="weibo-text-content">
-              <weibo-text :weibo-text="weibo.forwardWeibo.text"></weibo-text>
+              <weibo-text :weibo-text="weibo.forwardWeibo.text" :keywords="keywords"></weibo-text>
             </div>
             <div class="time-func clrfloat">
               <div class="time pull-left">
@@ -75,7 +75,7 @@ import weiboText from './weibo-text';
 import userAvatar from './normal-user-avatar';
 import operation from './single-weibo-bottom-operation';
 export default {
-  props: ['weibo','isSingleWeibo'],
+  props: ['weibo','isSingleWeibo','keywords'],
   ready(){
   },
   methods: {

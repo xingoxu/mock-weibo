@@ -4,7 +4,7 @@
       <slot></slot>
     </span>
     <div class="card" v-show="isHover" @mouseenter="isHover=true" @mouseleave="isHover=false" transition="user-card">
-      <div class="wrapper" v-if="user">
+      <div class="wrapper" v-show="user">
         <div class="upper">
           <a class="pic">
             <img :src="user.avatar" width="50" height="50"/>
@@ -25,17 +25,55 @@
             </ul>
           </div>
           <div class="operation">
-            <a href="javascript:void(0);" class="W_btn_b" >
-              <em class="W_ficon ficon_addtwo">Z</em>互相关注
-            </a>
-            <a href="javascript:void(0);" class="W_btn_b W_btn_pf_menu">
-              <em class="W_ficon ficon_menu S_ficon">=</em>
-            </a>
+            <div class="button-wrapper">
+              <button href="javascript:void(0);" class="W_btn_b" @click="handleFollow">
+                <span v-if="following&&beFollowed&&!loading">
+                  <em class="W_ficon ficon_addtwo S_ficon">Z</em>互相关注
+                  <!-- <em class="W_ficon ficon_arrow_down_lite S_ficon">g</em> -->
+                </span>
+                <span v-if="loading&&following">
+                  <i class="W_loading"></i>关注中
+                </span>
+                <span v-if="following&&!beFollowed&&!loading">
+                  <em class="W_ficon ficon_right S_ficon">Y</em>已关注
+                  <!-- <em class="W_ficon ficon_arrow_down_lite S_ficon">g</em> -->
+                </span>
+                <span v-if="loading&&!following">
+                  <i class="W_loading"></i>取消关注中
+                </span>
+                <span v-if="!following&&beFollowed&&!loading">
+                  <em class="W_ficon ficon_right S_ficon">Y</em><em class="W_vline S_line1"></em><em class="W_ficon ficon_add">+</em>关注
+                </span>
+                <span v-if="!following&&!beFollowed&&!loading">
+                  <em class="W_ficon ficon_add S_ficon">+</em>关注
+                </span>
+              </button>
+            </div>
+            <div class="button-wrapper">
+              <a href="javascript:void(0);" class="W_btn_b W_btn_pf_menu">
+                <em class="W_ficon ficon_menu S_ficon">=</em>
+              </a>
+              <div class="menu">
+                <div class="list_wrap">
+                  <div class="list_content W_f14">
+                    <ul class="list_ul">
+                      <li class="item" v-if="beFollowed"><a class="tlink">移除粉丝</a></li>
+                      <!-- <li class="item"><a class="tlink">加入黑名单</a></li> -->
+                      <li class="item"><a class="tlink">举报他</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="wrapper not-exist" v-if="!user">
+      <div class="wrapper not-exist" v-show="!user">
         <span>抱歉，这个昵称不存在哦！^_^</span>
+      </div>
+      <div class="wrapper loading" v-show="userLoading">
+        <i class="W_loading"></i>
+        <span>正在加载，请稍后...</span>
       </div>
     </div>
   </span>
@@ -45,7 +83,7 @@
 import {app} from '../../common.js';
 
 export default {
-  props: ['name'],
+  props: ['name','userid'],
   data(){
     return {
       isHover: false,
@@ -53,11 +91,22 @@ export default {
         avatar: 'http://tva2.sinaimg.cn/crop.802.675.420.420.180/6b8bbe7ejw8f8ixud41otj21kw17uqmz.jpg',
       },
       timeout: 0,
+      following: false,
+      beFollowed: false,
+      loading: false,
+      userLoading: false,
     }
   },
   methods: {
     getUserInfo(){
 
+    },
+    handleFollow(){
+      this.loading = true;
+      this.following = !this.following;
+      setTimeout(()=>{
+        this.loading = false;
+      },1000);
     }
   }
 }
@@ -80,7 +129,7 @@ export default {
         border: 1px solid #ccc;
         box-shadow: 0 4px 20px 1px rgba(0,0,0,0.2);
         width: 374px;
-        &.not-exist {
+        &.not-exist,&.loading {
           padding: 15px 0;
           text-align: center;
           span {
@@ -160,34 +209,95 @@ export default {
         }
         .operation {
           margin-top: 10px;
-          a {
-            white-space: nowrap;
+          >.button-wrapper{
             display: inline-block;
-            border-radius: 2px;
-            height: 24px;
-            line-height: 25px;
-            font-size: 12px;
-            text-align: center;
-            border: 1px solid #d9d9d9;
-            margin-left: 5px;
-            padding: 0 8px;
-            vertical-align: top;
-            cursor: pointer;
-            font-size: 12px;
-            color: #333;
-            box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
-            transition: box-shadow .3s ease;
-            &:hover {
-              box-shadow: 0px 1px 1px rgba(0,0,0,0.15);
+            position: relative;
+            >a,>button {
+              display: block;
+              white-space: nowrap;
+              border-radius: 2px;
+              // height: 24px;
+              line-height: 25px;
+              font-size: 12px;
+              text-align: center;
+              border: 1px solid #d9d9d9;
+              margin-left: 5px;
+              padding: 0 8px;
+              vertical-align: top;
+              cursor: pointer;
+              font-size: 12px;
+              color: #333;
+              background: transparent;
+              box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+              transition: box-shadow .3s ease;
+              &:hover {
+                box-shadow: 0px 1px 1px rgba(0,0,0,0.15);
+                border-color: #cccccc;
+              }
+              em {
+                color: #696e78;
+                line-height: 11px;
+                overflow: hidden;
+                margin-right: 4px;
+                vertical-align: middle;
+                &.ficon_menu {
+                  margin-right: 0;
+                }
+                &.ficon_add {
+                  color: #fa7d3c
+                }
+              }
             }
-            em {
-              color: #696e78;
-              line-height: 11px;
-              overflow: hidden;
-              margin-right: 4px;
-              vertical-align: middle;
+            >a:hover,>button:hover {
+              +.menu {
+                visibility: visible;
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            >.menu {
+              transition: all .2s ease;
+              transition-property: visibility,transform,opacity;
+              transition-delay: .2s;
+              visibility: hidden;
+              opacity: 0;
+              transform: translateY(-20px);
+
+              position: absolute;
+              left: 5px;
+              top: 100%;
+              margin-top: 4px;
+              font-size: 12px;
+              background: #fff;
+              color: #333;
+              border: 1px solid #ccc;
+              border-radius: 2px;
+              padding: 2px;
+              width: 100px;
+              box-shadow: 0px 2px 8px 1px rgba(0,0,0,0.2);
+              text-align: left;
+              &:hover {
+                visibility: visible;
+                opacity: 1;
+                transform: translateY(0);
+              }
+              .tlink {
+                display: block;
+                // min-width: 98px;
+                padding: 9px 13px;
+                white-space: nowrap;
+                cursor: pointer;
+
+                padding: 7px 13px;
+                color: #333;
+                &:hover {
+                  color: #eb7350;
+                  background: #f2f2f5;
+                }
+              }
             }
           }
+
           .W_btn_pf_menu {
             em {
               position: relative;
@@ -235,6 +345,9 @@ export default {
       opacity: 0;
       visibility: hidden;
       transform: translateY(10px);
+    }
+    .W_loading {
+      margin-right: 5px;
     }
   }
 

@@ -1,10 +1,10 @@
 <template lang="html">
   <div class="single-list-weibo">
     <!-- 单条单行微博（评论/转发） -->
-    <user-avatar size="30" class="avatar" :src="weibo.user.avatar" :userid="weibo.user.username"></user-avatar>
+    <user-avatar size="30" class="avatar" :src="weibo.user.avatar" :userid="weibo.user.userid"></user-avatar>
     <div class="content">
       <div class="weibo-text">
-        <user-card>
+        <user-card :userid="weibo.user.userid">
           <a href="/user/{{weibo.user.userid}}" class="name-title-link">{{weibo.user.username}}</a>
         </user-card>：<weibo-text class="text" :weibo-text="weibo.text"></weibo-text>
       </div>

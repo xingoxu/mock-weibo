@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="index-weibo-single-weibo">
-    <single-weibo class="single-weibo-component" @click="showForward=true" :weibo="weibo" :is-single-weibo="false"></single-weibo>
+    <single-weibo class="single-weibo-component" @click="showForward=true" :weibo="weibo" :is-single-weibo="false" :keywords="keywords"></single-weibo>
     <expand-operation class="comment expand-operation-wrapper" v-show="showCommentWrapper">
       <div class="container" v-show="commentLoaded">
         <publish-container :current-user="currentUser" :weibo="weibo"></publish-container>
@@ -30,7 +30,7 @@ import publishContainer from './small-publish';
 import {comments} from '../../mockdata/commentsData.js';
 
 export default {
-  props: ['weibo','currentUser'],
+  props: ['weibo','currentUser','keywords'],
   data() {
     return {
       showCommentWrapper: false,
