@@ -124,7 +124,7 @@ export default {
     }
     >.lower {
       padding:30px 16px 9px 16px;
-      .link {
+      .link() {
         font-size: 14px;
         font-weight: bold;
         color: #c8c8cc;

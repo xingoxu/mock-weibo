@@ -1,11 +1,10 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav nav-now="homepage" :current-user="currentUser"></top-nav>
+    <top-nav :nav-now="currentUser.userid==currentUser.userid ? 'mypage' : ''" :current-user="currentUser" ></top-nav>
     <div class="weibo-frame">
-      <personal-header></personal-header>
-      <left-col class="weibo-left-col"></left-col>
+      <personal-header class="weibo-personal-header" :current-user="currentUser" :user="currentUser"></personal-header>
+      <left-col class="weibo-left-col" :user="currentUser"></left-col>
       <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser"></middle-col>
-
     </div>
     <footer>
       <p>服务热线：4000 960 960（个人/企业）服务时间9:00-21:00 4000 980 980（广告主）服务时间9:00-18:00 （按当地市话标准计算）</p>
@@ -31,6 +30,9 @@ import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
   props: ['timeline','currentUser'],
+  created(){
+    document.title= "某人的微博_微博";
+  },
   data () {
     return {
 
@@ -83,32 +85,22 @@ body {
   padding-top: 50px;
 }
 .weibo-frame {
-  width: 1000px;
+  width: 920px;
   min-height: ~"calc(100vh - 16px - 50px)";
   margin: 0 auto;
   padding: 16px 0 0;
   position: relative;
 
-  background: rgba(0,0,0,0.25);
   padding-bottom: 10px;
-  .weibo-left-col {
-    position: fixed;
-    width: 150px;
+  .weibo-personal-header {
+    margin-bottom: 16px;
   }
-  .weibo-right-col {
-    position: absolute;
-    top: 16px;//same with weibo-frame's padding top;
-    right: 0;
-    width: 230px;
-    margin-right: 10px;
-    >div{
-      position: fixed;
-      width: 230px;
-    }
+  .weibo-left-col {
+    float: left;
+    width: 300px;
   }
   .weibo-mid-col {
-    padding: 0 240px 0 150px;
-    margin-right: 10px;
+    padding: 0 0 0 320px;
   }
 }
 .weibo-main-app {
