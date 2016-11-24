@@ -28,7 +28,7 @@
           <!-- /search_input -->
         </div>
       </div>
-      <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser" :keywords="keywords"></middle-col>
+      <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser" :keywords.once="keywords"></middle-col>
       <div class="weibo-right-col">
         <right-col :current-user="currentUser"></right-col>
       </div>
@@ -58,7 +58,7 @@ export default {
   props: ['timeline','currentUser'],
   data () {
     return {
-
+      keywords: 'abcdefg',
     }
   },
   methods: {
@@ -67,9 +67,7 @@ export default {
     }
   },
   computed: {
-    keywords(){
-      return 'abcdefg';
-    }
+
   },
   events: {
     expandForward(weibo){
