@@ -6,12 +6,56 @@
           <backend-nav :backend-nav="backendNav"></backend-nav>
         </n3-column>
         <n3-column :col="10" class="main">
-          <div v-show="results!=null">
-            <div class="">
+          <div>
+            <div>
               <p>weiboID：{{weibo.weiboid}}</p>
               <p>微博内容：{{weibo.text}}</p>
               <p>微博时间：{{new Date(parseInt(weibo.time)) | dateTime}}</p>
             </div>
+            <div>
+              <label>操作：</label>
+              <n3-button type="danger">删除</n3-button>
+            </div>
+            <n3-tabs>
+              <n3-tab header="转发">
+                <table v-show="forwards && forwards.length>0">
+                  <tr>
+                    <th>weiboID</th>
+                    <th>用户</th>
+                    <th>转发内容</th>
+                    <th>时间</th>
+                  </tr>
+                  <tr v-for="forwardWeibo in forwards">
+                    <td><a href="/backend/weibo/{{forwardWeibo.weiboid}}">{{forwardWeibo.weiboid}}</a></td>
+                    <td><a href="/backend/user/{{forwardWeibo.user.userid}}">{{forwardWeibo.user.username}}</a></td>
+                    <td>{{forwardWeibo.text}}</td>
+                    <td>{{new Date(parseInt(weibo.time)) | dateTime}}</td>
+                  </tr>
+                </table>
+                <div v-show="forwards.length==0">
+                  该微博没有转发
+                </div>
+              </n3-tab>
+              <n3-tab header="回复">
+                <table v-show="comments && comments.length>0">
+                  <tr>
+                    <th>用户</th>
+                    <th>评论内容</th>
+                    <th>时间</th>
+                    <th>操作</th>
+                  </tr>
+                  <tr v-for="comment in comments">
+                    <td><a href="/backend/user/{{comment.user.userid}}">{{comment.user.username}}</a></td>
+                    <td>{{comment.text}}</td>
+                    <td>{{new Date(parseInt(comment.time)) | dateTime}}</td>
+                    <td><n3-button type="danger">删除</n3-button></td>
+                  </tr>
+                </table>
+                <div v-show="comments.length==0">
+                  该微博没有回复
+                </div>
+              </n3-tab>
+            </n3-tabs>
           </div>
         </n3-column>
       </n3-row>
@@ -23,44 +67,21 @@
 import { backendNav as backendNavData } from '../../mockdata/backendData.js';
 import backendNav from '../../components/backend-comp/backend-nav';
 import {tools} from '../../backend-common.js';
-import {timeline} from '../../mockdata/weiboData.js';
+import {singleWeibo} from '../../mockdata/weiboData.js';
 
 export default {
   props: [],
   data () {
     return {
       backendNav: backendNavData,
-      model: {
-        keywords: '',
-        seq: '',
-        condition: 'keywords',
-        start: tools.dateToString(new Date()),
-        end: tools.dateToString(new Date()),
-      },
-      results: null,
+      weibo: singleWeibo,
+      forwardUser: [],
+
     }
   },
   methods: {
     submit(){
-      this.$refs.form.validateFields(result =>{
-        if(result.isvalid){
-          if(this.conditionValidate()){
-            //ajax逻辑
-            this.results = [];
-          }
-          else {
-            alert('weiboID需要纯数字！');
-          }
-        }
-      })
-    },
-    conditionValidate () {
-      if(this.model.condition == 'weiboID'){
-        if(!((/^\d+$/g).test(this.model.keywords))){
-          return false;
-        }
-      }
-      return true;
+
     },
   },
   events: {
