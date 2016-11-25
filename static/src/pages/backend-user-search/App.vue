@@ -10,21 +10,10 @@
             <n3-form v-ref:form>
                 <n3-form-item need label="条件" :label-col="3">
                   <n3-select :value.sync="model.condition" :cancelled="false" class="vertical-top">
-                    <n3-option value="weiboID">weiboID</n3-option>
-                    <n3-option value="keywords">关键词</n3-option>
+                    <n3-option value="userID">userID</n3-option>
+                    <n3-option value="keywords">用户名</n3-option>
                   </n3-select>
                   <n3-input :value.sync="model.keywords" :rules="[{type:'required'}]" class="vertical-top"></n3-input>
-                </n3-form-item>
-                <n3-form-item need label="时间" :label-col="3">
-                    <n3-datepicker :value.sync="model.start"></n3-datepicker>
-                    <span>~</span>
-                    <n3-datepicker :value.sync="model.end"></n3-datepicker>
-                </n3-form-item>
-                <n3-form-item need label="排序" :label-col="3">
-                  <n3-radio-group :value.sync="model.seq">
-                      <n3-radio value="asc" checked>正序</n3-radio>
-                      <n3-radio value="desc">倒序</n3-radio>
-                    </n3-radio-group>
                 </n3-form-item>
 
                  <n3-form-item :label-col="3">
@@ -35,14 +24,12 @@
           <div class="results" v-show="results!=null">
             <table v-show="results && results.length>0">
               <tr>
-                <th>weiboID</th>
-                <th>微博内容</th>
-                <th>时间</th>
+                <th>userID</th>
+                <th>用户名</th>
               </tr>
-              <tr v-for="weibo in results">
-                <td><a href="/backend/weibo/{{weibo.weiboid}}">{{weibo.weiboid}}</a></td>
-                <td>{{weibo.text}}</td>
-                <td>{{new Date(parseInt(weibo.time)) | dateTime}}</td>
+              <tr v-for="user in results">
+                <td><a href="/backend/user/{{user.userid}}">{{user.userid}}</a></td>
+                <td>{{user.username}}</td>
               </tr>
             </table>
             <span v-show="results && results.length==0">没有搜索出结果</span>
@@ -66,10 +53,7 @@ export default {
       backendNav: backendNavData,
       model: {
         keywords: '',
-        seq: '',
         condition: 'keywords',
-        start: tools.dateToString(new Date()),
-        end: tools.dateToString(new Date()),
       },
       results: null,
     }
@@ -83,13 +67,13 @@ export default {
             this.results = [];
           }
           else {
-            alert('weiboID需要纯数字！');
+            alert('userID需要纯数字！');
           }
         }
       })
     },
     conditionValidate () {
-      if(this.model.condition == 'weiboID'){
+      if(this.model.condition == 'userID'){
         if(!((/^\d+$/g).test(this.model.keywords))){
           return false;
         }

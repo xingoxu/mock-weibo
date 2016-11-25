@@ -28,17 +28,17 @@ var backendNav = [
       link: '/backend-weibo-search.html'
     },{
       text: '用户查询',
-      link: '/backend/userSearch'
+      link: '/backend-user-search.html'
     }]
   },
   {
     text: '业务',
     features: [{
       text: '举报处理',
-      link: '/backend/spamReport'
+      link: '/backend-spam-report.html'
     },{
       text: '热门话题',
-      link: '/backend/hotTopic'
+      link: '/backend-hot-topic.html'
     }]
   }
 ];

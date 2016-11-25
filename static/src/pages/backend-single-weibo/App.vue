@@ -14,45 +14,50 @@
             </div>
             <div>
               <label>操作：</label>
+              <a href="/weibo/{{weibo.weiboid}}"><n3-button type="primary">前台界面</n3-button></a>
               <n3-button type="danger">删除</n3-button>
             </div>
-            <n3-tabs>
+            <n3-tabs class="n3-tabs-component">
               <n3-tab header="转发">
-                <table v-show="forwards && forwards.length>0">
-                  <tr>
-                    <th>weiboID</th>
-                    <th>用户</th>
-                    <th>转发内容</th>
-                    <th>时间</th>
-                  </tr>
-                  <tr v-for="forwardWeibo in forwards">
-                    <td><a href="/backend/weibo/{{forwardWeibo.weiboid}}">{{forwardWeibo.weiboid}}</a></td>
-                    <td><a href="/backend/user/{{forwardWeibo.user.userid}}">{{forwardWeibo.user.username}}</a></td>
-                    <td>{{forwardWeibo.text}}</td>
-                    <td>{{new Date(parseInt(weibo.time)) | dateTime}}</td>
-                  </tr>
-                </table>
-                <div v-show="forwards.length==0">
-                  该微博没有转发
+                <div class="panel-wrapper">
+                  <table v-show="forwards && forwards.length>0">
+                    <tr>
+                      <th>weiboID</th>
+                      <th>用户</th>
+                      <th>转发内容</th>
+                      <th>时间</th>
+                    </tr>
+                    <tr v-for="forwardWeibo in forwards">
+                      <td><a href="/backend/weibo/{{forwardWeibo.weiboid}}">{{forwardWeibo.weiboid}}</a></td>
+                      <td><a href="/backend/user/{{forwardWeibo.user.userid}}">{{forwardWeibo.user.username}}</a></td>
+                      <td>{{forwardWeibo.text}}</td>
+                      <td>{{new Date(parseInt(weibo.time)) | dateTime}}</td>
+                    </tr>
+                  </table>
+                  <div v-show="forwards.length==0">
+                    该微博没有转发
+                  </div>
                 </div>
               </n3-tab>
               <n3-tab header="回复">
-                <table v-show="comments && comments.length>0">
-                  <tr>
-                    <th>用户</th>
-                    <th>评论内容</th>
-                    <th>时间</th>
-                    <th>操作</th>
-                  </tr>
-                  <tr v-for="comment in comments">
-                    <td><a href="/backend/user/{{comment.user.userid}}">{{comment.user.username}}</a></td>
-                    <td>{{comment.text}}</td>
-                    <td>{{new Date(parseInt(comment.time)) | dateTime}}</td>
-                    <td><n3-button type="danger">删除</n3-button></td>
-                  </tr>
-                </table>
-                <div v-show="comments.length==0">
-                  该微博没有回复
+                <div class="panel-wrapper">
+                  <table v-show="comments && comments.length>0">
+                    <tr>
+                      <th>用户</th>
+                      <th>评论内容</th>
+                      <th>时间</th>
+                      <th>操作</th>
+                    </tr>
+                    <tr v-for="comment in comments">
+                      <td><a href="/backend/user/{{comment.user.userid}}">{{comment.user.username}}</a></td>
+                      <td>{{comment.text}}</td>
+                      <td>{{new Date(parseInt(comment.time)) | dateTime}}</td>
+                      <td><n3-button type="danger">删除</n3-button></td>
+                    </tr>
+                  </table>
+                  <div v-show="comments.length==0">
+                    该微博没有回复
+                  </div>
                 </div>
               </n3-tab>
             </n3-tabs>
@@ -75,8 +80,8 @@ export default {
     return {
       backendNav: backendNavData,
       weibo: singleWeibo,
-      forwardUser: [],
-
+      forwards: [],
+      comments: [],
     }
   },
   methods: {
@@ -109,12 +114,10 @@ export default {
   .vertical-top {
     vertical-align: top;
   }
-  .results {
-    >table {
-      width: 100%;
-      td {
-        padding: 5px;
-      }
-    }
+  .n3-tabs-component {
+    margin-top: 15px;
+  }
+  .panel-wrapper {
+    padding: 16px;
   }
 </style>
