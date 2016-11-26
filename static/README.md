@@ -25,3 +25,10 @@ npm test
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## Todo
+
+like
+
+表情，图片上传，话题
+头像上传，剪裁

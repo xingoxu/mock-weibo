@@ -21,11 +21,16 @@ export default {
       var atRegex = /(@[0-9a-zA-Z_\u0391-\uFFE5-]+$)|(@[0-9a-zA-Z_\u0391-\uFFE5-]+\s)/g;
       text = text.replace(atRegex,(match)=>{
         console.log(match);
+        var username = match.substr(1).trim();
         return `
-          <user-card name="${match.substr(1).trim()}">
-            <a href="#"><span>@${match.substr(1).trim()}</span></a>
+          <user-card name="${username}">
+            <a href="/user/${username}"><span>@${username}</span></a>
           </user-card>`.trim();
       });
+      var topicRegex = /#[0-9a-zA-Z\u0391-\uFFE5]+#/g;
+
+
+
       if(this.keywords&&this.keywords!=''){
         var htmlCode = /"|&|'|<|>|[\x00-\x20]|[\x7F-\xFF]|[\u0100-\u2700]/g;
         this.keywords = this.keywords.replace(htmlCode,(match)=>{
