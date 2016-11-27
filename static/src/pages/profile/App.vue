@@ -1,13 +1,10 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav nav-now="homepage" :current-user="currentUser"></top-nav>
+    <top-nav :current-user="currentUser" ></top-nav>
     <div class="weibo-frame">
-      <left-col class="weibo-left-col" current="index"></left-col>
-      <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser"></middle-col>
-      <div class="weibo-right-col">
-        <right-col :current-user="currentUser"></right-col>
-      </div>
-
+      <personal-header class="weibo-personal-header" :current-user="currentUser" :user="currentUser"></personal-header>
+      <left-col class="weibo-left-col" :user="currentUser"></left-col>
+      <middle-col class="weibo-mid-col" :full-user-data="fullUserData" :current-user="currentUser"></middle-col>
     </div>
     <footer>
       <p>服务热线：4000 960 960（个人/企业）服务时间9:00-21:00 4000 980 980（广告主）服务时间9:00-18:00 （按当地市话标准计算）</p>
@@ -15,63 +12,44 @@
       <p>Copyright © 2009-2016 WEIBO 北京微梦创科网络技术有限公司 京公网安备11000002000019号</p>
     </footer>
     <new-weibo-popup v-ref:new-weibo-popup :current-user="currentUser"></new-weibo-popup>
-    <forward-popup v-ref:forward-popup :current-user="currentUser"></forward-popup>
-    <cancel-favourite-popup v-ref:cancel-favourite-popup></cancel-favourite-popup>
-    <favourite-success-popup v-ref:favourite-success-popup></favourite-popup>
   </div>
 </template>
 
 <script>
-import leftCol from '../../components/left-col';
-import middleCol from '../../components/middle-col';
-import rightCol from '../../components/right-col';
+import leftCol from '../personalPage/left-col';
+import middleCol from './middle-col';
 import topNav from '../../components/comp/top-nav';
+import personalHeader from '../../components/personal-header';
 import forwardPopup from '../../components/comp/forward-popup';
 import favouriteSuccessPopup from '../../components/comp/favourite-success-popup';
 import cancelFavouritePopup from '../../components/comp/cancel-favourite-popup';
 import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
-  props: ['timeline','currentUser'],
+  props: ['fullUserData','currentUser'],
+  created(){
+    document.title= `${this.currentUser.username} 的微博_微博`;
+  },
   data () {
     return {
 
     }
   },
   methods: {
-    test() {
-      console.log(this.$refs);
-    }
+
   },
   events: {
-    expandForward(weibo){
-      this.$refs.forwardPopup.$emit('show',weibo);
-    },
-    weiboFavourited(){
-      this.$refs.favouriteSuccessPopup.$emit('show');
-    },
-    cancelFavourite(weiboID){
-      this.$refs.cancelFavouritePopup.$emit('show',weiboID);
-    },
-    weiboFavouritCancelled(weiboID) {
-      this.$refs.middleCol.$broadcast('weiboFavouritCancelled',weiboID);
-    },
-    newWeiboSended(weibo) {
-      this.$refs.middleCol.$emit('newWeiboSended',weibo);
-    },
-    showNewWeiboPopup(){
-      this.$refs.newWeiboPopup.$emit('show');
-    }
+
   },
   components: {
     leftCol,
     middleCol,
-    rightCol,
     topNav,
     forwardPopup,
     favouriteSuccessPopup,
     cancelFavouritePopup,
     newWeiboPopup,
+    personalHeader
   }
 }
 </script>
@@ -85,32 +63,22 @@ body {
   padding-top: 50px;
 }
 .weibo-frame {
-  width: 1000px;
-  min-height: ~"calc(100vh - 16px - 50px)";
+  width: 920px;
+  min-height: ~"calc(100vh - 16px - 50px - 108px - 10px)"; //108 - 10底部高度
   margin: 0 auto;
   padding: 16px 0 0;
   position: relative;
 
-  background: rgba(0,0,0,0.25);
   padding-bottom: 10px;
-  .weibo-left-col {
-    position: fixed;
-    width: 150px;
+  .weibo-personal-header {
+    margin-bottom: 16px;
   }
-  .weibo-right-col {
-    position: absolute;
-    top: 16px;//same with weibo-frame's padding top;
-    right: 0;
-    width: 230px;
-    margin-right: 10px;
-    >div{
-      position: fixed;
-      width: 230px;
-    }
+  .weibo-left-col {
+    float: left;
+    width: 300px;
   }
   .weibo-mid-col {
-    padding: 0 240px 0 150px;
-    margin-right: 10px;
+    padding: 0 0 0 320px;
   }
 }
 .weibo-main-app {

@@ -28,7 +28,5 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 ## Todo
 
-like
-
 表情，图片上传，话题
 头像上传，剪裁

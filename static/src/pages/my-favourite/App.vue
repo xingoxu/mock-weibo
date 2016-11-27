@@ -2,7 +2,7 @@
   <div class="weibo-main-app">
     <top-nav nav-now="homepage" :current-user="currentUser"></top-nav>
     <div class="weibo-frame">
-      <left-col class="weibo-left-col" current="index"></left-col>
+      <left-col class="weibo-left-col" current="favourite"></left-col>
       <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser"></middle-col>
       <div class="weibo-right-col">
         <right-col :current-user="currentUser"></right-col>
@@ -23,7 +23,7 @@
 
 <script>
 import leftCol from '../../components/left-col';
-import middleCol from '../../components/middle-col';
+import middleCol from './middle-col';
 import rightCol from '../../components/right-col';
 import topNav from '../../components/comp/top-nav';
 import forwardPopup from '../../components/comp/forward-popup';

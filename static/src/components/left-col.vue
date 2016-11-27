@@ -1,19 +1,9 @@
 <template>
   <div class="left-col">
     <ul>
-      <li>
+      <li v-for="nav in navs">
         <h3>
-          <a>首页</a>
-        </h3>
-      </li>
-      <li>
-        <h3>
-          <a>我的收藏</a>
-        </h3>
-      </li>
-      <li>
-        <h3>
-          <a>我的赞</a>
+          <a :class="{'active': current== nav.key}" :href="nav.link">{{nav.text}}</a>
         </h3>
       </li>
     </ul>
@@ -25,9 +15,23 @@
 
 <script>
   export default {
+    props: ['current'],
     data() {
+      var navs = [{
+        text: '首页',
+        key: 'index',
+        link: '/'
+      },{
+        text: '我的收藏',
+        key: 'favourite',
+        link: '/favourite'
+      },{
+        text: '我的赞',
+        key: 'like',
+        link: '/my-like',
+      }]
       return {
-
+        navs: navs
       }
     }
   }
@@ -44,6 +48,9 @@
         padding-left: 15px;
         color: #FFF;
         &:hover {
+          background-color: rgba(255,255,255,0.2);
+        }
+        &.active {
           background-color: rgba(255,255,255,0.2);
         }
       }

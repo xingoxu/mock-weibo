@@ -52,7 +52,7 @@
                       <ul class="list_ul">
                         <li class="item" v-if="beFollowed"><a class="tlink">移除粉丝</a></li>
                         <!-- <li class="item"><a class="tlink">加入黑名单</a></li> -->
-                        <li class="item"><a class="tlink">举报他</a></li>
+                        <!-- <li class="item"><a class="tlink">举报他</a></li> -->
                       </ul>
                     </div>
                   </div>
@@ -178,14 +178,14 @@ export default {
           >li {
             position: relative;
             display: inline-block;
-            margin: 0 5px;
+            margin: 0 3px;
             font-size: 0;
             // vertical-align: middle;
             >a,>button {
               display: block;
               padding: 0;
               height: 34px;
-              line-height: 35px;
+              line-height: 34px;
               font-size: 14px;
               width: 104px;
               cursor: pointer;
