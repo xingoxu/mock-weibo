@@ -26,9 +26,35 @@ public class DAO {
         return result;
     }
 
-    public static boolean insert(String sql) {
+    public static int insert(String sql) {
         try {
-            getConnection().prepareStatement(sql).executeUpdate();
+            Statement statement = getConnection().createStatement();
+            statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+            ResultSet rs = statement.getGeneratedKeys();  //得到新插入记录的自增主键
+            rs.next();
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("插入数据库时出错：");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("插入时出错：");
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static void main(String[] args) {
+
+    }
+
+    public static int update(String sql) {
+        return insert(sql);
+    }
+
+    public static boolean delete(String sql) {
+        try {
+            Statement statement = getConnection().createStatement();
+            statement.executeUpdate(sql);
             return true;
         } catch (SQLException e) {
             System.out.println("插入数据库时出错：");
@@ -40,21 +66,13 @@ public class DAO {
         return false;
     }
 
-    public static boolean update(String sql) {
-        return insert(sql);
-    }
-
-    public static boolean delete(String sql) {
-        return insert(sql);
-    }
-
     public static User getUser(ResultSet dbResult) {
         if (dbResult == null)
             return null;
         User user = new User();
         try {
             dbResult.next();
-            user.userid = dbResult.getInt("userid") + "";
+            user.userid = dbResult.getInt("userid");
             user.username = dbResult.getString("username") + "";
             user.intro = dbResult.getString("intro") + "";
             user.avatar = dbResult.getString("avatar") + "";
@@ -116,37 +134,181 @@ public class DAO {
         return getUserCard(getUser(name));
     }
 
-    public static boolean register(String json) {
-        registerObject registerObject = (new Gson()).fromJson(json, dataObject.registerObject.class);
-        try
-        {
+    //返回userid
+    public static int register(String json) {
+        registerObject registerObject = (new Gson()).fromJson(json, registerObject.class);
+        try {
             PreparedStatement statement = getConnection().prepareStatement("INSERT INTO user (username,password,email) VALUES (?,?,?)");
-            statement.setString(1,registerObject.name);
-            statement.setString(2,registerObject.password);
-            statement.setString(3,registerObject.email);
+            statement.setString(1, registerObject.name);
+            statement.setString(2, registerObject.password);
+            statement.setString(3, registerObject.email);
             statement.executeUpdate();
+            ResultSet resultSet = query("select last_insert_id() as userid");
+            resultSet.next();
+            return resultSet.getInt(1);
+        } catch (Exception e) {
+            return 0;
         }
-        catch (Exception e){
-            return false;
-        }
-        return true;
+//        return true;
     }
-    //null 为登陆成功 其他为错误原因
-    public static String login(String name,String password){
+
+    //operationResponse
+    public static operationResponse login(String name, String password) {
         User user = getUser(name);
-        if(user == null)
-            return "没有此用户";
+        if (user == null)
+            return new operationResponse(false, "没有此用户");
         String sql = "SELECT * FROM user WHERE userid=" + user.userid;
         ResultSet resultSet = query(sql);
-        try{
+        try {
             resultSet.next();
             String resultPassword = resultSet.getString("password");
-            if(resultPassword != password)
-                return "密码错误";
-        }catch (Exception e){
+            if (!resultPassword.equals(password))
+                return new operationResponse(false, "密码错误");
+        } catch (Exception e) {
 
         }
-        return null;
+        return new operationResponse(true, user.userid);
+    }
+
+    //返回weiboid
+    public static int newWeibo(String json) {
+        singleWeibo weibo = (new Gson()).fromJson(json, singleWeibo.class);
+        String sql;
+        if (weibo.forward_weiboid == 0)
+            sql = "INSERT INTO weibo (userid,text,time) VALUES (" + weibo.user.userid + ",'" + weibo.text + "','" + weibo.time + "')";
+        else
+            sql = "INSERT INTO weibo (userid,text,time,forward_weiboid) VALUES (" + weibo.user.userid + ",'" + weibo.text + "','" + weibo.time + "'," + weibo.forward_weiboid + ")";
+
+        return insert(sql);
+    }
+
+    //返回commentid
+    public static int newComment(String json) {
+        singleComment comment = (new Gson()).fromJson(json, singleComment.class);
+        String sql;
+        if (comment.comment_commentid == 0)
+            sql = "INSERT INTO comments (userid,text,time,weiboid) VALUES (" + comment.user.userid + ",'" + comment.text + "','" + comment.time + "'," + comment.weiboid + ")";
+        else
+            sql = "INSERT INTO comments (userid,text,time,weiboid,comment_commentid) VALUES (" + comment.user.userid + ",'" + comment.text + "','" + comment.time + "'," + comment.weiboid + "," + comment.comment_commentid + ")";
+
+        return insert(sql);
+    }
+
+    public static void at(int userid, int weiboid, int target_userid, String time) {
+        String sql = "INSERT INTO at (userid,weiboid,target_userid,time) VALUES(" + userid + "," + weiboid + "," + target_userid + ",'" + time + "')";
+        insert(sql);
+    }
+    public static void at(String json){
+        atRequest request = (new Gson()).fromJson(json, atRequest.class);
+        for (int i = 0;i<request.request.length;i++){
+            operationRequest atRequest = request.request[i];
+            at(atRequest.userid,atRequest.weiboid,atRequest.target_userid,atRequest.time);
+        }
+    }
+
+    //返回likeid
+    public static int newLike(String json) {
+        operationRequest like = (new Gson()).fromJson(json, operationRequest.class);
+        String sql;
+        if (like.weiboid != 0)
+            sql = "INSERT INTO like (userid,weiboid,time) VALUES (" + like.userid + "," + like.weiboid + ",'" + like.time + "')";
+        else
+            sql = "INSERT INTO like (userid,commentid,time) VALUES (" + like.userid + "," + like.commentid + ",'" + like.time + "')";
+
+        return insert(sql);
+    }
+
+    public static void cancelLike(String json) {
+        operationRequest like = (new Gson()).fromJson(json, operationRequest.class);
+        String sql;
+        if (like.weiboid != 0)
+            sql = "DELETE FROM like WHERE userid=" + like.userid + " AND weiboid=" + like.weiboid;
+        else
+            sql = "DELETE FROM like WHERE userid=" + like.userid + " AND commentid=" + like.commentid;
+
+        delete(sql);
+    }
+
+    public static singleWeibo getSingleWeibo(ResultSet weiboResult) {
+        if (weiboResult == null)
+            return null;
+        singleWeibo singleWeibo = new singleWeibo();
+        int weiboUserid = 0;
+        try {
+            weiboResult.next();
+            singleWeibo.weiboid = weiboResult.getInt("weiboid");
+            singleWeibo.text = weiboResult.getString("text");
+            singleWeibo.forward_weiboid = weiboResult.getInt("forward_weiboid");
+            singleWeibo.time = weiboResult.getString("time");
+            weiboUserid = weiboResult.getInt("userid");
+        } catch (Exception e) {
+            return null;
+        }
+        singleWeibo.user = getUserCard(weiboUserid);
+        if (singleWeibo.forward_weiboid != 0)
+            singleWeibo.forwardWeibo = getSingleWeibo(singleWeibo.forward_weiboid);
+        return singleWeibo;
+    }
+
+    public static singleWeibo getSingleWeibo(int weiboid) {
+        String sql = "SELECT * FROM weibo WHERE weiboid=" + weiboid;
+        return getSingleWeibo(query(sql));
+    }
+
+    public static boolean getFavourited(int userid, int weiboid) {
+        String sql = "SELECT count(*) FROM favourite WHERE weiboid=" + weiboid + " AND userid" + userid;
+        ResultSet resultSet = query(sql);
+        if (resultSet == null)
+            return false;
+        try {
+            int count = resultSet.getInt(1);
+            return count > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    public static boolean getLiked(int userid, int id, boolean isComment) {
+        String sql = "SELECT count(*) FROM like WHERE weiboid=" + id + " AND userid" + userid;
+        if (isComment)
+            sql = "SELECT count(*) FROM like WHERE commentid=" + id + " AND userid" + userid;
+        ResultSet resultSet = query(sql);
+        if (resultSet == null)
+            return false;
+        try {
+            int count = resultSet.getInt(1);
+            return count > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    public static int getCount(ResultSet resultSet) {
+        if (resultSet == null)
+            return 0;
+        try {
+            int count = resultSet.getInt(1);
+            return count;
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+
+    public static int getForwardCount(int weiboid) {
+        String sql = "SELECT count(*) FROM weibo WHERE forward_weiboid=" + weiboid;
+        return getCount(query(sql));
+    }
+
+    public static int getLikeCount(int weiboid, boolean isComment) {
+        String sql = "SELECT count(*) FROM like WHERE weiboid=" + weiboid;
+        if (isComment)
+            sql = "SELECT count(*) FROM like WHERE commentid=" + weiboid;
+        return getCount(query(sql));
+    }
+
+    public static int getCommentCount(int weiboid) {
+        String sql = "SELECT count(*) FROM comments WHERE weiboid=" + weiboid;
+        return getCount(query(sql));
     }
 
 
