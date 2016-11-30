@@ -19,7 +19,7 @@ import static spark.Spark.*;
 import DAO.DAO;
 import dataObject.operationResponse;
 
-public class HelloWorld {
+public class Router {
     public static void checkIfLogin(Request request, Response response) {
         if (request.requestMethod().equalsIgnoreCase("POST"))
             return;
