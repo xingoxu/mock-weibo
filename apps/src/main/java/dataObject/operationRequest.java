@@ -6,7 +6,8 @@ package dataObject;
 public class operationRequest {
     public int userid;
     public int weiboid;
+    public String name;
     public int target_userid;
     public int commentid;
-    public String time;
+    public int time;
 }

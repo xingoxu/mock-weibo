@@ -7,9 +7,10 @@ public class singleComment {
     public int commentid;
     public UserCard user;
     public String text;
-    public String time;
+    public int time;
     public int like;
     public boolean liked;
     public int weiboid;
     public int comment_commentid;
+    public String[] ats;
 }
