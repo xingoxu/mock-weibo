@@ -14,19 +14,21 @@
             <div class="W_login_form" >
               <div class="info_list username"  >
                 <div class="input_wrap" :class="{'focus': blur=='username'}">
-                  <input class="W_input" placeholder="邮箱" maxlength="128" name="username" type="text" @focus="blur='username'" @blur="blur=''">
+                  <input class="W_input" placeholder="用户名" maxlength="128" name="username" type="text" @focus="blur='username'" @blur="blur=''" :disabled="inputDisabled" v-model="model.username">
                 </div>
               </div>
               <div class="info_list password">
                 <div class="input_wrap" :class="{'focus': blur=='password'}">
-                  <input class="W_input" maxlength="24" placeholder="请输入密码" name="password" type="password" @focus="blur='password'" @blur="blur=''">
+                  <input class="W_input" maxlength="24" placeholder="请输入密码" name="password" type="password" @focus="blur='password'" @blur="blur=''" :disabled="inputDisabled" v-model="model.password">
                 </div>
               </div>
               <div class="info_list login_btn">
-                <a href="javascript:void(0)" class="W_btn_a btn_32px"><span>登录</span></a>
+                <button class="W_btn_a btn_32px" @click="submit" :disabled="inputDisabled">
+                  <span>登录</span>
+                </button>
               </div>
               <div class="info_list register">
-                <span class="S_txt2">还没有微博？</span><a target="_blank" href="http://weibo.com/signup/signup.php ">立即注册!</a>
+                <span class="S_txt2">还没有微博？</span><a target="_blank" href="/register">立即注册!</a>
               </div>
             </div>
           </div>
@@ -41,6 +43,31 @@
     data(){
       return {
         blur: '',
+        inputDisabled: false,
+        model: {
+          username: '',
+          password: ''
+        }
+      }
+    },
+    methods:{
+      submit(){
+        this.inputDisabled = true;
+        this.$http.post('/login',this.model)
+        .then((response)=>{
+          var data = JSON.parse(response.data);
+          if(data.success){
+            document.cookie = response.headers.get('Set-Cookie');
+            location.href = "/";
+          }
+          else{
+            alert(data.reason);
+          }
+          return data;
+        })
+        .then(()=>{
+          this.inputDisabled = false;
+        })
       }
     }
   }
@@ -161,6 +188,7 @@
     border: 1px solid #f77c3d;
     color: #fff;
     box-shadow: 0px 1px 2px rgba(0,0,0,0.25);
+    width: 100%;
     &:hover {
       background: #f7671d;
       border: 1px solid #f06923;

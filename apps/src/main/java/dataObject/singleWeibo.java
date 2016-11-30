@@ -7,7 +7,7 @@ public class singleWeibo {
     public int weiboid;
     public UserCard user;
     public String text;
-    public int time;
+    public String time;
     public int forward_weiboid;
     public int forward;
     public int comment;

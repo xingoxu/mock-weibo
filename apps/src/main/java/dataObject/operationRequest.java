@@ -9,5 +9,5 @@ public class operationRequest {
     public String name;
     public int target_userid;
     public int commentid;
-    public int time;
+    public String time;
 }

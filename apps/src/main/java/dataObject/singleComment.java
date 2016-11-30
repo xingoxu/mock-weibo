@@ -7,7 +7,7 @@ public class singleComment {
     public int commentid;
     public UserCard user;
     public String text;
-    public int time;
+    public String time;
     public int like;
     public boolean liked;
     public int weiboid;
