@@ -7,11 +7,13 @@ import { likes } from '../../mockdata/likesData.js';
 import { currentUser } from '../../mockdata/personalData.js';
 /* eslint-disable no-new */
 Vue.component('App', App);
+window.Vue = Vue;
 
-new Vue({
-  el: 'body',
-  data: {
-    likes: likes,
-    currentUser: currentUser,
-  }
-});
+
+// new Vue({
+//   el: 'body',
+//   data: {
+//     likes: likes,
+//     currentUser: currentUser,
+//   }
+// });

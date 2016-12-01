@@ -88,6 +88,8 @@ export default {
         this.forwardExpanded = true;
         this.commentExpanded = false;
       }
+      if(!this.isSingleWeibo && (this.weibo.forward_weiboid && !this.weibo.forwardWeibo))
+        return;
       this.$dispatch('expandForward',this.weibo);
     },
     favouriteWeibo(){

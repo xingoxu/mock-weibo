@@ -15,10 +15,11 @@ public class DAO {
     public static void main(String[] args) {
 
     }
+
     public static Connection connection = null;
 
     public static Connection getConnection() throws ClassNotFoundException, SQLException {
-        if(connection==null){
+        if (connection == null) {
             Class.forName(mysql.DRIVER_MYSQL);     //加载JDBC驱动
             connection = DriverManager.getConnection(mysql.URL);    //创建数据库连接对象
         }
@@ -201,7 +202,7 @@ public class DAO {
 
     //返回commentid
     public static int newComment(String json) {
-        try{
+        try {
             singleComment comment = (new Gson()).fromJson(json, singleComment.class);
             int target_userid = 0;
             String sql = null;
@@ -217,8 +218,7 @@ public class DAO {
                 at(comment.ats, comment.user.userid, commentid, comment.time);
             }
             return commentid;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;
@@ -260,12 +260,13 @@ public class DAO {
 
     public static void cancelFollow(String json) {
         operationRequest request = (new Gson()).fromJson(json, operationRequest.class);
-        String sql = "DELETE FROM follow WHERE userid=" + request.userid + " AND followingid=" + request.target_userid + ")";
+        String sql = "DELETE FROM follow WHERE userid=" + request.userid + " AND followingid=" + request.target_userid;
         delete(sql);
     }
-    public static void removeFollower(String json){
+
+    public static void removeFollower(String json) {
         operationRequest request = (new Gson()).fromJson(json, operationRequest.class);
-        String sql = "DELETE FROM follow WHERE userid=" + request.target_userid + " AND followingid=" + request.userid + ")";
+        String sql = "DELETE FROM follow WHERE userid=" + request.target_userid + " AND followingid=" + request.userid;
         delete(sql);
     }
 
@@ -424,6 +425,7 @@ public class DAO {
             singleComment.comment_commentid = commentResult.getInt("comment_commentid");
             singleComment.like = getLikeCount(singleComment.commentid, true);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
         singleComment.user = getUserCard(weiboUserid);
@@ -438,7 +440,7 @@ public class DAO {
     //得到某条微博是否被favourited
     public static boolean getFavourited(int userid, int weiboid) {
         String sql = "SELECT count(*) FROM favourite WHERE weiboid=" + weiboid + " AND userid=" + userid;
-        return getCount(query(sql))>0;
+        return getCount(query(sql)) > 0;
     }
 
     //得到某条微博或评论是否被liked了
@@ -446,7 +448,7 @@ public class DAO {
         String sql = "SELECT count(*) FROM `like` WHERE weiboid=" + id + " AND userid=" + userid;
         if (isComment)
             sql = "SELECT count(*) FROM `like` WHERE commentid=" + id + " AND userid=" + userid;
-        return getCount(query(sql))>0;
+        return getCount(query(sql)) > 0;
     }
 
     public static int getCount(ResultSet resultSet) {
@@ -519,7 +521,7 @@ public class DAO {
         notificationNumber notification = new notificationNumber();
         String atSql = "SELECT count(*) from at WHERE hasRead=0 AND userid=" + userid;
         String commentSql = "SELECT count(*) from comments WHERE hasRead=0 AND target_userid=" + userid;
-        String likeSql = "SELECT count(*) from at WHERE hasRead=0 AND target_userid=" + userid;
+        String likeSql = "SELECT count(*) from `like` WHERE hasRead=0 AND target_userid=" + userid;
         notification.at = getCount(query(atSql));
         notification.comments = getCount(query(commentSql));
         notification.like = getCount(query(likeSql));
@@ -537,7 +539,8 @@ public class DAO {
         }
         return weibos;
     }
-    public static singleWeibo[] favouriteTimeline(int userid){
+
+    public static singleWeibo[] favouriteTimeline(int userid) {
         String sql = "SELECT * from favourite WHERE userid=" + userid;
         ResultSet resultSet = query(sql);
         ArrayList<Integer> list = new ArrayList<>(0);
@@ -549,13 +552,13 @@ public class DAO {
 
         }
         int length = list.size();
-        if(length==0)
+        if (length == 0)
             return null;
         String weiboIDs = "";
         for (int i = 0; i < length; i++) {
-            weiboIDs += ((int)list.get(i));
-            if(i!=length-1)
-                weiboIDs+=",";
+            weiboIDs += ((int) list.get(i));
+            if (i != length - 1)
+                weiboIDs += ",";
         }
 
         String weiboSql = "SELECT * from weibo WHERE weiboid IN (" + weiboIDs + ")";
@@ -567,14 +570,15 @@ public class DAO {
         }
         return weibos;
     }
-    public static singleWeibo[] likeTimeline(int userid){
+
+    public static singleWeibo[] likeTimeline(int userid) {
         String sql = "SELECT * from `like` WHERE userid=" + userid;
         ResultSet resultSet = query(sql);
         ArrayList<Integer> list = new ArrayList<>(0);
         try {
             while (resultSet.next()) {
                 int weiboid = resultSet.getInt("weiboid");
-                if(weiboid==0)
+                if (weiboid == 0)
                     continue;
                 list.add(weiboid);
             }
@@ -582,13 +586,13 @@ public class DAO {
             e.printStackTrace();
         }
         int length = list.size();
-        if(length==0)
+        if (length == 0)
             return null;
         String weiboIDs = "";
         for (int i = 0; i < length; i++) {
-            weiboIDs += ((int)list.get(i));
-            if(i!=length-1)
-                weiboIDs+=",";
+            weiboIDs += ((int) list.get(i));
+            if (i != length - 1)
+                weiboIDs += ",";
         }
 
         String weiboSql = "SELECT * from weibo WHERE weiboid IN (" + weiboIDs + ")";
@@ -596,11 +600,12 @@ public class DAO {
         singleWeibo[] weibos = getSingleWeibos(query(weiboSql));
         for (int i = 0; i < weibos.length; i++) {
             int weiboid = weibos[i].weiboid;
-            weibos[i].favourited = getFavourited(userid,weiboid);
+            weibos[i].favourited = getFavourited(userid, weiboid);
             weibos[i].liked = true;
         }
         return weibos;
     }
+
     public static void setAtHasRead(int userid) {
         String sql = "UPDATE at SET hasRead=1 WHERE target_userid=" + userid;
         update(sql);
@@ -624,5 +629,112 @@ public class DAO {
         userCard.beFollowed = getCount(query(beFollowedSql)) > 0;
     }
 
+    public static singleWeibo[] atTimeline(int userid) {
+        String sql = "SELECT * from at WHERE target_userid=" + userid;
+        ResultSet resultSet = query(sql);
+        ArrayList<Integer> list = new ArrayList<>(0);
+        try {
+            while (resultSet.next()) {
+                list.add(resultSet.getInt("weiboid"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        int length = list.size();
+        if (length == 0)
+            return null;
+        String weiboIDs = "";
+        for (int i = 0; i < length; i++) {
+            weiboIDs += ((int) list.get(i));
+            if (i != length - 1)
+                weiboIDs += ",";
+        }
 
+        String weiboSql = "SELECT * from weibo WHERE weiboid IN (" + weiboIDs + ")";
+        singleWeibo[] weibos = getSingleWeibos(query(weiboSql));
+        for (int i = 0; i < weibos.length; i++) {
+            int weiboid = weibos[i].weiboid;
+            weibos[i].favourited = getFavourited(userid, weiboid);
+            weibos[i].liked = getLiked(userid, weiboid, false);
+        }
+        return weibos;
+    }
+
+    public static singleWeibo[] forwardWeibos(int weiboid) {
+        String sql = "SELECT * from weibo WHERE forward_weiboid=" + weiboid;
+        return getSingleWeibos(query(sql));
+    }
+
+    public static commentPageComment[] commentPageComments(ResultSet resultSet) {
+        ArrayList<commentPageComment> commentPageComments = new ArrayList<>(0);
+        if (resultSet == null)
+            return null;
+        int weiboUserid = 0;
+        try {
+            while (resultSet.next()) {
+                commentPageComment commentPageComment = new commentPageComment();
+                commentPageComment.user = getUserCard(resultSet.getInt("userid"));
+                commentPageComment.text = resultSet.getString("text");
+                commentPageComment.time = resultSet.getString("time");
+                commentPageComment.commentid = resultSet.getInt("commentid");
+
+                if (resultSet.getInt("comment_commentid") != 0)
+                    commentPageComment.comment = getSingleComment(resultSet.getInt("comment_commentid"));
+                else
+                    commentPageComment.weibo = getSingleWeibo(resultSet.getInt("weiboid"));
+                commentPageComments.add(commentPageComment);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        int length = commentPageComments.size();
+        commentPageComment[] commentPageCommentReturn = new commentPageComment[length];
+        for (int i = 0; i < length; i++) {
+            commentPageCommentReturn[i] = commentPageComments.get(i);
+        }
+        return commentPageCommentReturn;
+    }
+
+    public static commentPageComment[] commentPageComments(int userid) {
+        String sql = "SELECT * FROM comments WHERE target_userid=" + userid;
+        return commentPageComments(query(sql));
+    }
+
+    public static likePageLike[] likePageLikes(ResultSet resultSet) {
+        ArrayList<likePageLike> likePageLikes = new ArrayList<>(0);
+        if (resultSet == null)
+            return null;
+        int weiboUserid = 0;
+        try {
+            while (resultSet.next()) {
+                likePageLike likePageLike = new likePageLike();
+                likePageLike.likeid = resultSet.getInt("likeid");
+                likePageLike.user = getUserCard(resultSet.getInt("userid"));
+                likePageLike.time = resultSet.getString("time");
+
+                if (resultSet.getInt("commentid") != 0)
+                    likePageLike.comment = getSingleComment(resultSet.getInt("commentid"));
+                else
+                    likePageLike.weibo = getSingleWeibo(resultSet.getInt("weiboid"));
+                likePageLikes.add(likePageLike);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        int length = likePageLikes.size();
+        likePageLike[] likePageLikeReturn = new likePageLike[length];
+        for (int i = 0; i < length; i++) {
+            likePageLikeReturn[i] = likePageLikes.get(i);
+        }
+        return likePageLikeReturn;
+    }
+
+    public static likePageLike[] likePageLikes(int userid) {
+        String sql = "SELECT * FROM `like` WHERE target_userid=" + userid;
+        return likePageLikes(query(sql));
+    }
 }

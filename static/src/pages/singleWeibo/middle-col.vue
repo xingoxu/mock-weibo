@@ -19,9 +19,7 @@ export default {
     }
   },
   events: {
-    newWeiboSended(weibo){
-      this.timeline.unshift(weibo);
-    }
+
   },
   components: {
     sendWeiboInput,

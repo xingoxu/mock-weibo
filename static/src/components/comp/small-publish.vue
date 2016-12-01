@@ -153,7 +153,7 @@
         if(this.isReplyOthers)
           comment.comment_commentid = this.commentid;
         comment.text = this.inputWeibo;
-        comment.ats = app.getAts(comment.text);
+        // comment.ats = app.getAts(comment.text);
         this.$http.post('/comment',comment)
           .then((response)=>{
             comment.commentid = JSON.parse(response.data).id;

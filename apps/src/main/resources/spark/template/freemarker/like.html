@@ -1,1 +1,8 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>收到的赞 微博-随时随地发现新鲜事</title><link href=/static/css/like.9b9127f0c73d1b459b5c2c46e4c277f3.css rel=stylesheet></head><body><app :current-user=currentUser :likes=likes></app><script type=text/javascript src=/static/js/manifest.cbaa2941665693f13a24.js></script><script type=text/javascript src=/static/js/vendor.5ee8862f4886d56fcacf.js></script><script type=text/javascript src=/static/js/like.d75f683fed46d46efa38.js></script></body></html>
+<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>收到的赞 微博-随时随地发现新鲜事</title><link href=/static/css/like.3a776f86db9926b9fa86ba2b52b345f4.css rel=stylesheet></head><body><app :current-user=currentUser :likes=likes :notification=notification></app><script type=text/javascript src=/static/js/manifest.c21daded6069bc8d81c6.js></script><script type=text/javascript src=/static/js/vendor.64fd172821f775fcebbc.js></script><script type=text/javascript src=/static/js/like.b36fc19a4c9ebd6a3553.js></script></body><script>window.vm = new Vue({
+      el: 'body',
+      data: {
+        likes: ${likes},
+        currentUser: ${currentUser},
+        notification: ${notification},
+      }
+    });</script></html>

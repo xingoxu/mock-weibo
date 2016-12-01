@@ -84,8 +84,27 @@
       },
       submit(){
         this.$refs.form.validateFields(result=>{
-          if(result.isvalid)
-            this.registerSuccess = true;
+          if(result.isvalid){
+            var registerForm = {
+              email: this.email,
+              password: this.password,
+              name: this.name
+            }
+            this.$http.post('/register',registerForm)
+              .then((response)=>{
+                var data = JSON.parse(response.data);
+                if(data.success){
+                  this.registerSuccess = true;
+                  document.cookie = response.headers.get('Set-Cookie');
+                  setTimeout(()=>{
+                    location.href = "/";
+                  },5000)
+                }
+                else {
+                  alert(data.reason);
+                }
+              });
+          }
         })
       }
     },

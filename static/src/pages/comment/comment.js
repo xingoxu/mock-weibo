@@ -7,10 +7,12 @@ import { comments } from '../../mockdata/commentPageCommentsData.js';
 import { currentUser } from '../../mockdata/personalData.js';
 /* eslint-disable no-new */
 Vue.component('App', App);
-new Vue({
-  el: 'body',
-  data: {
-    comments: comments,
-    currentUser: currentUser,
-  }
-});
+window.Vue = Vue;
+
+// new Vue({
+//   el: 'body',
+//   data: {
+//     comments: comments,
+//     currentUser: currentUser,
+//   }
+// });

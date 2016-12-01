@@ -99,11 +99,22 @@ export default {
       this.showCommentWrapper = false;
       this.showForwardWrapper = true;
       if(!this.forwardLoaded) {
-        // 请求comment数据
-        setTimeout(()=>{
-          this.forwards = forwards;
-          this.forwardLoaded = true;
-        },3000);
+        // // 请求comment数据
+        // setTimeout(()=>{
+        //   this.forwards = forwards;
+        //   this.forwardLoaded = true;
+        // },3000);
+        this.$http.get(`/forwards/${this.weibo.weiboid}`)
+          .then((response)=>{
+            var data = JSON.parse(response.data);
+            if(data==null)
+              data={
+                forwards: [],
+                total: 0,
+              };
+            this.forwards = data;
+            this.forwardLoaded = true;
+          });
       }
     },
     newCommentSended(comment) {

@@ -1,1 +1,8 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>收到的评论 微博-随时随地发现新鲜事</title><link href=/static/css/comment.50ffad1ed979101f49b74dbe7dc8ac47.css rel=stylesheet></head><body><app :current-user=currentUser :comments=comments></app><script type=text/javascript src=/static/js/manifest.cbaa2941665693f13a24.js></script><script type=text/javascript src=/static/js/vendor.5ee8862f4886d56fcacf.js></script><script type=text/javascript src=/static/js/comment.b6b59b73a80f9d0029f3.js></script></body></html>
+<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>收到的评论 微博-随时随地发现新鲜事</title><link href=/static/css/comment.6911493edb3ec743605bdf6e765ba3a1.css rel=stylesheet></head><body><app :current-user=currentUser :comments=comments :notification=notification></app><script type=text/javascript src=/static/js/manifest.c21daded6069bc8d81c6.js></script><script type=text/javascript src=/static/js/vendor.64fd172821f775fcebbc.js></script><script type=text/javascript src=/static/js/comment.fcce55863ad2d1be1e7a.js></script></body><script>window.vm = new Vue({
+      el: 'body',
+      data: {
+        comments: ${comments},
+        currentUser: ${currentUser},
+        notification: ${notification},
+      }
+    });</script></html>

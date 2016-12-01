@@ -170,6 +170,9 @@
     }
     .register {
       text-align: center;
+      a {
+        color: #f7671d;
+      }
     }
   }
   .btn_32px {

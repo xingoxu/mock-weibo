@@ -1,1 +1,8 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>我的赞 微博-随时随地发现新鲜事</title><link href=/static/css/my-like.fecc8bbf27c6609aa92781d8c2004eb5.css rel=stylesheet></head><body><app :timeline=timeline :current-user=currentUser></app><script type=text/javascript src=/static/js/manifest.cbaa2941665693f13a24.js></script><script type=text/javascript src=/static/js/vendor.5ee8862f4886d56fcacf.js></script><script type=text/javascript src=/static/js/my-like.bdc0cd23d82ba714aca8.js></script></body></html>
+<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>我的赞 微博-随时随地发现新鲜事</title><link href=/static/css/my-like.84d488c718e870729ff6ec3f2c58ffbf.css rel=stylesheet></head><body><app :timeline=timeline :current-user=currentUser :notification=notification></app><script type=text/javascript src=/static/js/manifest.c21daded6069bc8d81c6.js></script><script type=text/javascript src=/static/js/vendor.64fd172821f775fcebbc.js></script><script type=text/javascript src=/static/js/my-like.d11dde290b53e2993705.js></script></body><script>window.vm = new Vue({
+      el: 'body',
+      data: {
+        timeline: ${timeline},
+        currentUser: ${currentUser},
+        notification: ${notification},
+      }
+    });</script></html>

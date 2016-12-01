@@ -6,7 +6,17 @@
     <title>收到的赞 微博-随时随地发现新鲜事</title>
   </head>
   <body>
-    <app :current-user="currentUser" :likes="likes"></app>
+    <app :current-user="currentUser" :likes="likes" :notification="notification"></app>
     <!-- built files will be auto injected -->
   </body>
+  <script type="text/javascript">
+    window.vm = new Vue({
+      el: 'body',
+      data: {
+        likes: ${likes},
+        currentUser: ${currentUser},
+        notification: ${notification},
+      }
+    });
+  </script>
 </html>

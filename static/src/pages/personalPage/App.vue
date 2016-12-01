@@ -1,6 +1,6 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav :nav-now="currentUser.userid==currentUser.userid ? 'mypage' : ''" :current-user="currentUser" ></top-nav>
+    <top-nav :nav-now="currentUser.userid==currentUser.userid ? 'mypage' : ''" :current-user="currentUser" :notification="notification" ></top-nav>
     <div class="weibo-frame">
       <personal-header class="weibo-personal-header" :current-user="currentUser" :user="currentUser"></personal-header>
       <left-col class="weibo-left-col" :user="currentUser"></left-col>
@@ -29,7 +29,7 @@ import cancelFavouritePopup from '../../components/comp/cancel-favourite-popup';
 import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
-  props: ['timeline','currentUser'],
+  props: ['timeline','currentUser','notification'],
   created(){
     document.title= "某人的微博_微博";
   },

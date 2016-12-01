@@ -1,6 +1,6 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav nav-now="homepage" :current-user="currentUser"></top-nav>
+    <top-nav nav-now="homepage" :current-user="currentUser" :notification="notification"></top-nav>
     <div class="weibo-frame">
       <middle-col class="weibo-mid-col" v-ref:middle-col :weibo="weibo" :current-user="currentUser"></middle-col>
       <div class="weibo-right-col">
@@ -30,23 +30,17 @@ import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
   created() {
-    document.title= `${weibo.text.substring(0,10)}... - 微博`;
+    document.title= `${this.weibo.text.substring(0,10)}... - 微博`;
   },
-  props: ['weibo','currentUser'],
+  props: ['weibo','currentUser','notification'],
   data () {
     return {
 
     }
   },
   methods: {
-    test() {
-      console.log(this.$refs);
-    }
   },
   events: {
-    // expandForward(weibo){
-    //   this.$refs.forwardPopup.$emit('show',weibo);
-    // },
     weiboFavourited(){
       this.$refs.favouriteSuccessPopup.$emit('show');
     },

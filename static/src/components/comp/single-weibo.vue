@@ -59,6 +59,13 @@
             </div>
           </div>
         </div>
+        <div class="forward-weibo" v-if="!weibo.forwardWeibo && weibo.forward_weiboid">
+          <div class="content-wrapper">
+            <div class="deleted">
+              该微博已被删除
+            </div>
+          </div>
+        </div>
         <div class="time">
           <a href="/weibo/{{weibo.weiboid}}">{{weibo.time | showTime}}</a>
         </div>
@@ -107,6 +114,11 @@ export default {
 </script>
 
 <style lang="less">
+  .deleted {
+    text-align: center;
+    line-height: 35px;
+    font-size: 14px;
+  }
   .weibo-single-weibo {
     background-color: #323233;
     box-shadow: 0 0 2px rgba(0,0,0,0.2);

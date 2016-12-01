@@ -1,6 +1,6 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav nav-now="homepage" :current-user="currentUser"></top-nav>
+    <top-nav nav-now="homepage" :current-user="currentUser" :notification="notification"></top-nav>
     <div class="weibo-frame">
       <left-col class="weibo-left-col" current="comment"></left-col>
       <middle-col class="weibo-mid-col" v-ref:middle-col :comments="comments" :current-user="currentUser"></middle-col>
@@ -26,7 +26,7 @@ import topNav from '../../components/comp/top-nav';
 import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
-  props: ['comments','currentUser'],
+  props: ['comments','currentUser','notification'],
   data () {
     return {
 

@@ -29,11 +29,11 @@
                 <div class="menu">
                   <!--tip start-->
                   <ul>
-                    <li><a href="/at/">@我的</a>
+                    <li><a href="/at">@我的</a>
                     </li>
-                    <li><a href="/comment/">评论</a>
+                    <li><a href="/comment">评论</a>
                     </li>
-                    <li><a href="/like/">赞</a>
+                    <li><a href="/like">赞</a>
                     </li>
                   </ul>
                   <!--tip end-->
