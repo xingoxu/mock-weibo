@@ -9,4 +9,14 @@
     <app :timeline="timeline" :current-user="currentUser"></app>
     <!-- built files will be auto injected -->
   </body>
+  <script type="text/javascript">
+    window.vm = new Vue({
+      el: 'body',
+      data: {
+        timeline: ${timeline},
+        currentUser: ${currentUser},
+        notification: ${notification},
+      }
+    });
+  </script>
 </html>

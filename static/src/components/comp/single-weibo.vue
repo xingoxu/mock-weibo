@@ -17,7 +17,7 @@
         <div class="forward-weibo" v-if="weibo.forwardWeibo">
           <div class="content-wrapper">
             <div class="nickname-title">
-              <user-card>
+              <user-card :userid="weibo.forwardWeibo.user.userid">
                 <a href="/user/{{weibo.forwardWeibo.user.userid}}" class="name-title-link">@{{weibo.forwardWeibo.user.username}}</a>
               </user-card>
             </div>
@@ -80,14 +80,22 @@ export default {
   },
   methods: {
     forwardWeiboLike(){
-      //提交业务逻辑
-      this.weibo.forwardWeibo.liked = !this.weibo.forwardWeibo.liked;
-      if(this.weibo.forwardWeibo.liked){
-        this.weibo.forwardWeibo.like++;
-      }
-      else {
-        this.weibo.forwardWeibo.like--;
-      }
+      var like = !this.weibo.forwardWeibo.liked;
+      var ajaxURL = like ? '/like' : '/like/delete';
+      var operation = app.operationFactory(app.currentUser.userid);
+      operation.weiboid = this.weibo.forwardWeibo.weiboid;
+      this.$http.post(ajaxURL,operation)
+        .then((response)=>{
+          this.weibo.forwardWeibo.liked = like;
+        })
+        .then(()=>{
+          if(this.weibo.forwardWeibo.liked){
+            this.weibo.forwardWeibo.like++;
+          }
+          else{
+            this.weibo.forwardWeibo.like--;
+          }
+        })
     }
   },
   components: {

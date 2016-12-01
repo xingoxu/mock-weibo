@@ -27,7 +27,7 @@
           </ul>
         </div>
         <div class="replyWrapper" v-show="showReplyWrapper">
-          <publish-container :current-user="currentUser" :weibo="weibo" :is-popup="true" :is-forward="isForward" v-ref:publish-container :is-reply-others="true"></publish-container>
+          <publish-container :current-user="currentUser" :weibo="weibo" :is-popup="true" :is-forward="isForward" v-ref:publish-container :is-reply-others="true" :commentid="weibo.commentid" ></publish-container>
         </div>
       </div>
     </div>
@@ -49,17 +49,31 @@ export default {
   methods: {
     likeComment() {
       //并不只是comment,还有forward
-      this.weibo.liked = !this.weibo.liked;
-      if(this.weibo.liked){
-        this.weibo.like++;
+      var like = !this.weibo.liked;
+      var ajaxURL = like ? '/like' : '/like/delete';
+      var operation = app.operationFactory(app.currentUser.userid);
+      if(this.isForward){
+        operation.weiboid = this.weibo.weiboid;
       }
       else {
-        this.weibo.like--;
+        operation.commentid = this.weibo.commentid;
       }
+      this.$http.post(ajaxURL,operation)
+        .then((response)=>{
+          this.weibo.liked = like;
+        })
+        .then(()=>{
+          if(this.weibo.liked){
+            this.weibo.like++;
+          }
+          else{
+            this.weibo.like--;
+          }
+        })
     },
     toggleReplyWrapper() {
       this.$refs.publishContainer.$emit('show');
-       this.showReplyWrapper=!this.showReplyWrapper;
+      this.showReplyWrapper=!this.showReplyWrapper;
     }
   },
   components: {

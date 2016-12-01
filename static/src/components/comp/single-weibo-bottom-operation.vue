@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import { app } from '../../common.js';
+
 export default {
   props: ['isSingleWeibo','weibo'],//是否为单条微博，是的话转发则显示三角形
   data(){
@@ -91,8 +93,13 @@ export default {
     favouriteWeibo(){
       if(!this.weibo.favourited){
         //处理业务
-        this.$dispatch('weiboFavourited');
-        this.weibo.favourited = true;
+        var operation = app.operationFactory(app.currentUser.userid);
+        operation.weiboid = this.weibo.weiboid;
+        this.$http.post('/favourite',operation)
+          .then(()=>{
+            this.$dispatch('weiboFavourited');
+            this.weibo.favourited = true;
+          });
       }
       else {
         this.$dispatch('cancelFavourite',this.weibo.weiboid);//发送事件给顶层，让顶层转发给popup
@@ -100,13 +107,22 @@ export default {
     },
     likeWeibo(){
       //提交业务逻辑
-      this.weibo.liked = !this.weibo.liked;
-      if(this.weibo.liked){
-        this.weibo.like++;
-      }
-      else{
-        this.weibo.like--;
-      }
+      var like = !this.weibo.liked;
+      var ajaxURL = like ? '/like' : '/like/delete';
+      var operation = app.operationFactory(app.currentUser.userid);
+      operation.weiboid = this.weibo.weiboid;
+      this.$http.post(ajaxURL,operation)
+        .then((response)=>{
+          this.weibo.liked = like;
+        })
+        .then(()=>{
+          if(this.weibo.liked){
+            this.weibo.like++;
+          }
+          else{
+            this.weibo.like--;
+          }
+        })
     }
   },
   events: {

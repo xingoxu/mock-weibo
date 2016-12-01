@@ -61,23 +61,25 @@ export default {
       this.inputDisabled = true;
 
 
-
-
-      var weibo = app.weiboFactory();
-      weibo.weiboid = '8938295392';
-      weibo.user = this.currentUser;
+      var weibo = app.weiboFactory(app.currentUser);
       weibo.text = this.inputWeibo;
+      weibo.ats = app.getAts(weibo.text);
       //weibo.pics =
-      weibo.time = `${Date.now()}`;
 
-      this.inputWeibo = '';
-
-      this.successSended = true;
-      setTimeout(()=>{
-        this.successSended = false;
-        this.$dispatch('newWeiboSended',weibo);
-        this.inputDisabled = false;
-      },2000)//animation 2s
+      this.$http.post('/weibo',weibo)
+        .then((response)=>{
+          var data = JSON.parse(response.data);
+          weibo.weiboid = data.id;
+        })
+        .then(()=>{
+          this.inputWeibo = '';
+          this.successSended = true;
+          setTimeout(()=>{
+            this.successSended = false;
+            this.$dispatch('newWeiboSended',weibo);
+            this.inputDisabled = false;
+          },2000)//animation 2s
+        })
     },
     enterSubmit(event) {
       if(this.ctrlPressed && event.keyCode==13) {

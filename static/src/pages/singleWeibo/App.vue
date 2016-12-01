@@ -2,7 +2,7 @@
   <div class="weibo-main-app">
     <top-nav nav-now="homepage" :current-user="currentUser"></top-nav>
     <div class="weibo-frame">
-      <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser"></middle-col>
+      <middle-col class="weibo-mid-col" v-ref:middle-col :weibo="weibo" :current-user="currentUser"></middle-col>
       <div class="weibo-right-col">
         <right-col :current-user="currentUser"></right-col>
       </div>
@@ -30,9 +30,9 @@ import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
   created() {
-    document.title="【#你的名字#初次见面发布会】新海诚中国行... 来自你的名字官微 - 微博";
+    document.title= `${weibo.text.substring(0,10)}... - 微博`;
   },
-  props: ['timeline','currentUser'],
+  props: ['weibo','currentUser'],
   data () {
     return {
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="weibo-wrapper">
-      <single-weibo class="weibo-single-weibo" :weibo="timeline[0]" :current-user="currentUser" transition="show-weibo"></single-weibo>
+      <single-weibo class="weibo-single-weibo" :weibo="weibo" :current-user="currentUser" transition="show-weibo"></single-weibo>
     </div>
   </div>
 
@@ -12,7 +12,7 @@ import sendWeiboInput from '../../components/comp/send-weibo-input';
 import singleWeibo from '../../components/comp/comment-single-weibo';
 
 export default {
-  props:['timeline','currentUser'],
+  props:['weibo','currentUser'],
   data () {
     return {
 

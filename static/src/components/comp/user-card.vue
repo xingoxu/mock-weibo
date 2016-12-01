@@ -1,19 +1,19 @@
 <template lang="html">
   <span class="user-card-component">
-    <span class="content-wrapper" @mouseenter="isHover=true" @mouseleave="isHover=false">
+    <span class="content-wrapper" @mouseenter="setHover" @mouseleave="isHover=false">
       <slot></slot>
     </span>
-    <div class="card" v-show="isHover" @mouseenter="isHover=true" @mouseleave="isHover=false" transition="user-card">
-      <div class="wrapper" v-show="user">
+    <div class="card" v-show="isHover" @mouseenter="setHover" @mouseleave="isHover=false" transition="user-card">
+      <div class="wrapper" v-show="user && !userLoading">
         <div class="upper">
           <a class="pic">
             <img :src="user.avatar" width="50" height="50"/>
           </a>
           <div class="name">
-            <a href="#">xingo</a>
+            <a href="/user/{{user.userid}}">{{user.username}}</a>
           </div>
           <div class="intro">
-            {{user.intro}}没有的话先测试一下
+            {{user.intro}}
           </div>
         </div>
         <div class="lower">
@@ -24,27 +24,27 @@
               <li><a href="#">微博<em>8326</em></a></li>
             </ul>
           </div>
-          <div class="operation">
+          <div class="operation" v-if="currentUser.userid != user.userid">
             <div class="button-wrapper">
               <button href="javascript:void(0);" class="W_btn_b" @click="handleFollow">
-                <span v-if="following&&beFollowed&&!loading">
+                <span v-if="user.followed && user.beFollowed &&!loading">
                   <em class="W_ficon ficon_addtwo S_ficon">Z</em>互相关注
                   <!-- <em class="W_ficon ficon_arrow_down_lite S_ficon">g</em> -->
                 </span>
-                <span v-if="loading&&following">
+                <span v-if="loading && user.followed ">
                   <i class="W_loading"></i>关注中
                 </span>
-                <span v-if="following&&!beFollowed&&!loading">
+                <span v-if="user.followed && !user.beFollowed &&!loading">
                   <em class="W_ficon ficon_right S_ficon">Y</em>已关注
                   <!-- <em class="W_ficon ficon_arrow_down_lite S_ficon">g</em> -->
                 </span>
-                <span v-if="loading&&!following">
+                <span v-if="loading && !user.followed ">
                   <i class="W_loading"></i>取消关注中
                 </span>
-                <span v-if="!following&&beFollowed&&!loading">
+                <span v-if="!user.followed && user.beFollowed &&!loading">
                   <em class="W_ficon ficon_right S_ficon">Y</em><em class="W_vline S_line1"></em><em class="W_ficon ficon_add">+</em>关注
                 </span>
-                <span v-if="!following&&!beFollowed&&!loading">
+                <span v-if="!user.followed && !user.beFollowed &&!loading">
                   <em class="W_ficon ficon_add S_ficon">+</em>关注
                 </span>
               </button>
@@ -53,13 +53,13 @@
               <a href="javascript:void(0);" class="W_btn_b W_btn_pf_menu">
                 <em class="W_ficon ficon_menu S_ficon">=</em>
               </a>
-              <div class="menu">
+              <div class="menu" v-if="user.beFollowed">
                 <div class="list_wrap">
                   <div class="list_content W_f14">
                     <ul class="list_ul">
-                      <li class="item" v-if="beFollowed"><a class="tlink">移除粉丝</a></li>
+                      <li class="item" v-if="user.beFollowed" @click="removeFan"><a class="tlink">移除粉丝</a></li>
                       <!-- <li class="item"><a class="tlink">加入黑名单</a></li> -->
-                      <li class="item"><a class="tlink">举报他</a></li>
+                      <!-- <li class="item"><a class="tlink">举报他</a></li> -->
                     </ul>
                   </div>
                 </div>
@@ -68,7 +68,7 @@
           </div>
         </div>
       </div>
-      <div class="wrapper not-exist" v-show="!user">
+      <div class="wrapper not-exist" v-show="!user && !userLoading">
         <span>抱歉，这个昵称不存在哦！^_^</span>
       </div>
       <div class="wrapper loading" v-show="userLoading">
@@ -87,26 +87,74 @@ export default {
   data(){
     return {
       isHover: false,
-      user: {
-        avatar: 'http://tva2.sinaimg.cn/crop.802.675.420.420.180/6b8bbe7ejw8f8ixud41otj21kw17uqmz.jpg',
-      },
-      timeout: 0,
-      following: false,
-      beFollowed: false,
+      user: null,
+      // timeout: 0,
+      // following: false,
+      // beFollowed: false,
       loading: false,
       userLoading: false,
     }
   },
   methods: {
-    getUserInfo(){
-
-    },
     handleFollow(){
       this.loading = true;
-      this.following = !this.following;
-      setTimeout(()=>{
-        this.loading = false;
-      },1000);
+      this.user.followed = !this.user.followed;
+      var currentUser = app.currentUser;
+      var operation = app.operationFactory(currentUser.userid);
+      operation.target_userid = this.user.userid;
+      if(this.following){
+        this.$http.post('/follow',operation)
+          .then((response)=>{
+            this.loading = false;
+          })
+      }
+      else {
+        this.$http.post('/follow/delete',operation)
+          .then((response)=>{
+            this.loading = false;
+          })
+      }
+      // setTimeout(()=>{
+      // },1000);
+    },
+    removeFan(){
+      this.user.beFollowed = false;
+      var currentUser = app.currentUser;
+      var operation = app.operationFactory(currentUser.userid);
+      this.$http.post('/follower/delete',operation)
+        .then((response)=>{
+
+        });
+    },
+    setHover(){
+      this.isHover = true;
+      if(this.userLoading)
+        return;
+      this.userLoading = true;
+
+      if(this.userid){
+        if(app.userCardCache[this.userid] || app.userCardCache[this.userid]===null){
+          this.user = app.userCardCache[this.userid];
+          this.userLoading = false;
+          return;
+        }
+      }
+      if(this.name){
+        if(app.userCardCache[this.name] || app.userCardCache[this.name]===null){
+          this.user = app.userCardCache[this.name];
+          this.userLoading = false;
+          return;
+        }
+      }
+      var ajaxURL = this.userid ? `/userCard/id/${this.userid}` : `/userCard/name/${this.name}`;
+
+      this.$http.get(ajaxURL)
+        .then((response)=>{
+          var data = JSON.parse(response.data);
+          app.userCardCache[(this.userid ? this.userid : this.name)] = data;
+          this.user = data;
+          this.userLoading = false;
+        });
     }
   }
 }

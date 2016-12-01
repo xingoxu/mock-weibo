@@ -2,7 +2,7 @@
   <popup class="forward popup-wrapper" :show.sync="showForward">
     <span slot="title">转发微博</span>
     <div class="popup-body" slot="body">
-      <publish-container :is-popup="true" :is-forward="true" :is-white="true" :weibo="weibo" :current-user="currentUser" v-ref:publish-container></publish-container>
+      <publish-container :is-popup="true" :is-forward="true" :is-white="true" :weibo.sync="weibo" :current-user="currentUser" v-ref:publish-container></publish-container>
     </div>
   </popup>
 </template>

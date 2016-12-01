@@ -28,8 +28,13 @@
     methods: {
       cancelWeiboFavourite(){
         //业务
-        this.$dispatch('weiboFavouritCancelled',this.weiboID);
-        this.showCancelFavouritePopup = false;
+        var operation = app.operationFactory(app.currentUser.userid);
+        operation.weiboid = this.weiboID;
+        this.$http.post('/favourite/delete',operation)
+          .then(()=>{
+            this.$dispatch('weiboFavouritCancelled',this.weiboID);
+            this.showCancelFavouritePopup = false;
+          });
       }
     },
     events: {

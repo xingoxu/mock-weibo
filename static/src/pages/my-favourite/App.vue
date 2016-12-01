@@ -1,6 +1,6 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav nav-now="homepage" :current-user="currentUser"></top-nav>
+    <top-nav nav-now="homepage" :current-user="currentUser" :notification="notification"></top-nav>
     <div class="weibo-frame">
       <left-col class="weibo-left-col" current="favourite"></left-col>
       <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser"></middle-col>
@@ -32,16 +32,14 @@ import cancelFavouritePopup from '../../components/comp/cancel-favourite-popup';
 import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
-  props: ['timeline','currentUser'],
+  props: ['timeline','currentUser','notification'],
   data () {
     return {
 
     }
   },
   methods: {
-    test() {
-      console.log(this.$refs);
-    }
+
   },
   events: {
     expandForward(weibo){

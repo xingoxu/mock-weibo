@@ -1,4 +1,4 @@
-var currentUser = {
+var currentUser = { //userCard Type
   userid: '12345',
   username: 'xingo',
   intro: '立派なショタコン',

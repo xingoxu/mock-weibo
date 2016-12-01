@@ -3,8 +3,7 @@
  */
 
 import com.google.gson.Gson;
-import dataObject.loginRequest;
-import dataObject.operationRequest;
+import dataObject.*;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -17,7 +16,6 @@ import java.util.Map;
 import static spark.Spark.*;
 
 import DAO.DAO;
-import dataObject.operationResponse;
 
 public class Router {
     public static void checkIfLogin(Request request, Response response) {
@@ -54,38 +52,144 @@ public class Router {
             return operationResponse;
         }, (new Gson())::toJson);
 
-        before("/login", (request, response) -> {
-            checkIfLogin(request, response);
-        });
+        before("/login", Router::checkIfLogin);
         get("/login", (request, response) -> {
             return new ModelAndView(new HashMap<>(), "login.html");
         }, new FreeMarkerEngine());
 
-        before("/register", (request, response) -> {
-            checkIfLogin(request, response);
-        });
+        post("/register", (req, res) -> {
+            operationResponse operationResponse = DAO.register(req.body());
+            if (operationResponse.success) {
+                req.session().attribute("userid", operationResponse.id + "");
+            }
+            return operationResponse;
+        }, (new Gson())::toJson);
+
+        before("/register", Router::checkIfLogin);
         get("/register", (req, res) -> {
             return new ModelAndView(new HashMap<>(), "register.html");
         }, new FreeMarkerEngine());
+
+
+        get("/my-like",(req,res)->{
+            int userid = Integer.parseInt(req.session().attribute("userid"));
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("timeline", json_enc(DAO.likeTimeline(userid)));
+            attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+            attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
+            //hotTopic
+            return new ModelAndView(attributes, "my-like.html");
+        },new FreeMarkerEngine());
         post("/like", (req, res) -> {
             DAO.newLike(req.body());
             return new operationResponse(true, 0);
         }, (new Gson())::toJson);
+        post("/like/delete", (req, res) -> {
+            DAO.cancelLike(req.body());
+            return new operationResponse(true, 0);
+        }, (new Gson())::toJson);
 
-//        get("/comments/:id",(req,res)->{
-//
-//        })
+
+        get("/favourite",(req,res)->{
+            int userid = Integer.parseInt(req.session().attribute("userid"));
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("timeline", json_enc(DAO.favouriteTimeline(userid)));
+            attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+            attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
+            //hotTopic
+            return new ModelAndView(attributes, "my-favourite.html");
+        },new FreeMarkerEngine());
+        post("/favourite", (req, res) -> {
+            DAO.favourite(req.body());
+            return new operationResponse(true, 0);
+        }, (new Gson())::toJson);
+
+        post("/favourite/delete", (req, res) -> {
+            DAO.cancelFavourite(req.body());
+            return new operationResponse(true, 0);
+        }, (new Gson())::toJson);
+
+        get("/weibo/:weiboid",(req,res)->{
+            try{
+                int userid = Integer.parseInt(req.session().attribute("userid"));
+                int weiboid = Integer.parseInt(req.params(":weiboid"));
+                singleWeibo weibo = DAO.getSingleWeibo(weiboid);
+                weibo.favourited = DAO.getFavourited(userid,weiboid);
+                weibo.liked = DAO.getLiked(userid,weiboid,false);
+                Map<String, Object> attributes = new HashMap<>();
+                attributes.put("weibo", json_enc(weibo));
+                attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+                attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
+                return new ModelAndView(attributes,"singleWeibo.html");
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                return new ModelAndView(new HashMap<>(),"singleWeibo.html");
+            }
+        },new FreeMarkerEngine());
+        post("/weibo", (req, res) -> {
+            return new operationResponse(true, DAO.newWeibo(req.body()));
+        }, (new Gson())::toJson);
+
+        post("/comment", (req, res) -> {
+            return new operationResponse(true, DAO.newComment(req.body()));
+        }, (new Gson())::toJson);
+
+        post("/follow",(req, res) -> {
+            DAO.follow(req.body());
+            return new operationResponse(true, null);
+        }, (new Gson())::toJson);
+        post("/follow/delete",(req,res)->{
+            DAO.cancelFollow(req.body());
+            return new operationResponse(true, null);
+        }, (new Gson())::toJson);
+        post("/follower/delete",(req,res)->{
+            DAO.removeFollower(req.body());
+            return new operationResponse(true, null);
+        }, (new Gson())::toJson);
 
 
-        before("/", (request, response) -> {
-            checkIfNotLogin(request, response);
-        });
+
+        get("/comments/:weiboid", (req, res) -> {
+            try {
+                int userid = Integer.parseInt(req.session().attribute("userid"));
+                int weiboid = Integer.parseInt(req.params(":weiboid"));
+                singleComment[] comments = DAO.getWeiboComments(weiboid);
+                for (int i = 0; i < comments.length; i++) {
+                    comments[i].liked = DAO.getLiked(userid, comments[i].commentid, true);
+                }
+                return new weiboCommentsResponse(comments, comments.length);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }, (new Gson())::toJson);
+
+
+        get("/userCard/id/:userid", (req, res) -> {
+            int userid = Integer.parseInt(req.params(":userid"));
+            int login_userid = Integer.parseInt(req.session().attribute("userid"));
+            UserCard userCard = DAO.getUserCard(userid);
+            DAO.setRelation(login_userid, userCard);
+            return userCard;
+        }, (new Gson())::toJson);
+        get("/userCard/name/:username", (req, res) -> {
+            String username = req.params(":username");
+            int userid = Integer.parseInt(req.session().attribute("userid"));
+            UserCard userCard = DAO.getUserCard(username);
+            DAO.setRelation(userid, userCard);
+            return userCard;
+        }, (new Gson())::toJson);
+
+
+        before("/", Router::checkIfNotLogin);
         get("/", (req, res) -> {
             int userid = Integer.parseInt(req.session().attribute("userid"));
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("timeline", json_enc(DAO.indexTimeline(userid)));
             attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
-            //hotTopic,notification
+            attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
+            //hotTopic
             return new ModelAndView(attributes, "index.html");
         }, new FreeMarkerEngine());
 

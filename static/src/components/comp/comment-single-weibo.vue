@@ -33,7 +33,7 @@
             <li class="WB_innerwrap no-comment" v-if="forwards.total == 0">
               <div class="empty_con">
                 <p class="icon_bed"><i class="W_icon icon_warnB icon icon-background"></i></p>
-                <p class="text">还没有人评论，赶快抢个沙发</p>
+                <p class="text">还没有人转发，赶快分享给你的好友</p>
               </div>
             </li>
           </ul>
@@ -63,7 +63,10 @@ export default {
       commentLoaded: false,
       forwardLoaded: false,
       forwards: {},
-      comments: {},
+      comments: {
+        total: 0,
+        comments: [],
+      },
     }
   },
   events: {
@@ -72,10 +75,21 @@ export default {
       this.showForwardWrapper = false;
       if(!this.commentLoaded) {
         // 请求comment数据
-        setTimeout(()=>{
-          this.comments = comments;
-          this.commentLoaded = true;
-        },3000);
+        // setTimeout(()=>{
+        //   this.comments = comments;
+        //   this.commentLoaded = true;
+        // },3000);
+        this.$http.get(`/comments/${this.weibo.weiboid}`)
+          .then((response)=>{
+            var data = JSON.parse(response.data);
+            if(data==null)
+              data={
+                comments: [],
+                total: 0,
+              };
+            this.comments = data;
+            this.commentLoaded = true;
+          });
       }
     },
     closeComment(){

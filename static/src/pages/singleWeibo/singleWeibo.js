@@ -7,10 +7,11 @@ import { timeline } from '../../mockdata/weiboData.js';
 import { currentUser } from '../../mockdata/personalData.js';
 /* eslint-disable no-new */
 Vue.component('App', App);
-new Vue({
-  el: 'body',
-  data: {
-    timeline: timeline,
-    currentUser: currentUser,
-  }
-});
+window.Vue = Vue;
+// new Vue({
+//   el: 'body',
+//   data: {
+//     weibo: timeline[0],
+//     currentUser: currentUser,
+//   }
+// });

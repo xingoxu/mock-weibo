@@ -33,19 +33,19 @@
             <ul>
               <li v-if="isForward">
                 <label>
-                  <input type="checkbox" />
+                  <input type="checkbox" v-model="alsoComment" />
                   <span>同时评论给{{weibo.user.username}}</span>
                 </label>
               </li>
               <li v-if="!isForward">
                 <label>
-                  <input type="checkbox" />
+                  <input type="checkbox" v-model="alsoForward" />
                   <span>同时转发到我的微博</span>
                 </label>
               </li>
               <li v-if="weibo.forwardWeibo">
                 <label>
-                  <input type="checkbox" />
+                  <input type="checkbox" v-model="alsoCommentForward"/>
                   <span>同时评论给原文作者{{weibo.forwardWeibo.user.username}}</span>
                 </label>
               </li>
@@ -74,6 +74,7 @@
       isForward: Boolean,
       isReplyOthers: Boolean,
       currentUser: Object,
+      commentid: null,
       weibo: {
         type: Object,
         default(){
@@ -91,52 +92,84 @@
         commentInputFocus: false,
         successSended: false,
         inputDisabled: false,
+        alsoComment: false,
+        alsoForward: false,
+        alsoCommentForward: false,
       }
     },
     methods:{
       submit(){
-        if(this.isForward)
+        if(this.isForward){
           this.submitForward();
-        else
+          if(this.alsoComment){
+            this.submitComment();
+          }
+        }
+        else{
           this.submitComment();
+          if(this.alsoForward){
+            this.submitForward();
+          }
+        }
+        if(this.alsoCommentForward){
+          this.submitCommentForward();
+        }
       },
       submitForward(){
         if(this.inputWeibo.length == 0) return;
         this.inputDisabled = true;
 
 
-
-        var weibo = app.weiboFactory();
-        weibo.weiboid = '8938295392';
-        weibo.user = this.currentUser;
+        var weibo = app.weiboFactory(app.currentUser);
         weibo.text = this.inputWeibo;
-        weibo.forwardWeibo = this.weibo.forwardWeibo || this.weibo;
+        weibo.ats = app.getAts(weibo.text);
+        weibo.forward_weiboid = this.weibo.forwardWeibo ? this.weibo.forwardWeibo.weiboid : this.weibo.weiboid;
 
-        this.weibo.forward++;
+        //weibo.pics =
 
-        this.inputWeibo = '';
-
-        this.successSended = true;
-        setTimeout(()=>{
-          this.successSended = false;
-          this.$dispatch('newWeiboSended',weibo);
-          this.inputDisabled = false;
-        },2000)//animation 2s
+        this.$http.post('/weibo',weibo)
+          .then((response)=>{
+            var data = JSON.parse(response.data);
+            weibo.weiboid = data.id;
+          })
+          .then(()=>{
+            this.weibo.forward++;
+            this.inputWeibo = '';
+            this.successSended = true;
+            weibo.forwardWeibo = this.weibo.forwardWeibo ? this.weibo.forwardWeibo : this.weibo;
+            setTimeout(()=>{
+              this.successSended = false;
+              this.$dispatch('newWeiboSended',weibo);
+              this.inputDisabled = false;
+            },2000)//animation 2s
+          })
       },
       submitComment(){
         if(this.inputWeibo.length == 0) return;
         this.inputDisabled = true;
 
-        var comment = app.commentFactory();
-        comment.commentid = '8938295392';
-        comment.user = this.currentUser;
+        var comment = app.commentFactory(app.currentUser);
+        comment.weiboid = this.weibo.weiboid;
+        if(this.isReplyOthers)
+          comment.comment_commentid = this.commentid;
         comment.text = this.inputWeibo;
+        comment.ats = app.getAts(comment.text);
+        this.$http.post('/comment',comment)
+          .then((response)=>{
+            comment.commentid = JSON.parse(response.data).id;
+            this.inputWeibo = '';
+            this.successSended = true;
+            this.$dispatch('newCommentSended',comment);
+            this.inputDisabled = false;
+          })
 
-        this.inputWeibo = '';
-
-        this.successSended = true;
-        this.$dispatch('newCommentSended',comment);
-        this.inputDisabled = false;
+      },
+      submitCommentForward(){
+        var comment = app.commentFactory(app.currentUser);
+        comment.weiboid = this.weibo.forwardWeibo.weiboid;
+        comment.text = this.inputWeibo;
+        comment.ats = app.getAts(comment.text);
+        this.$http.post('/comment',comment);
       },
       enterSubmit(event) {
         if(this.ctrlPressed && event.keyCode==13) {

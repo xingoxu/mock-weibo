@@ -11,4 +11,6 @@ public class UserCard {
     public int fans;
     public int weibo;
     public String avatar;
+    public boolean followed =false;
+    public boolean beFollowed = false;
 }

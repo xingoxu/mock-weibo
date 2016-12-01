@@ -6,7 +6,16 @@
     <title>微博</title>
   </head>
   <body>
-    <app :timeline="timeline" :current-user="currentUser"></app>
+    <app :weibo="weibo" :current-user="currentUser"></app>
     <!-- built files will be auto injected -->
   </body>
+  <script type="text/javascript">
+    window.vm = new Vue({
+        el: 'body',
+        data: {
+          weibo: ${weibo},
+          currentUser: ${currentUser},
+        }
+      });
+  </script>
 </html>

@@ -35,7 +35,10 @@ export default {
     return {
       showCommentWrapper: false,
       commentLoaded: false,
-      comments: {},
+      comments: {
+        total: 0,
+        comments: [],
+      },
     }
   },
   events: {
@@ -43,15 +46,25 @@ export default {
       this.showCommentWrapper = true;
       if(!this.commentLoaded) {
         // 请求comment数据
-        setTimeout(()=>{
-          this.comments = comments;
-          this.commentLoaded = true;
-        },3000);
+        // setTimeout(()=>{
+        //   this.comments = comments;
+        //   this.commentLoaded = true;
+        // },3000);
+        this.$http.get(`/comments/${this.weibo.weiboid}`)
+          .then((response)=>{
+            var data = JSON.parse(response.data);
+            if(data==null)
+              data={
+                comments: [],
+                total: 0,
+              };
+            this.comments = data;
+            this.commentLoaded = true;
+          });
       }
     },
     closeComment(){
       this.showCommentWrapper = false;
-
     },
     newCommentSended(comment) {
       this.comments.comments.unshift(comment);
