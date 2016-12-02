@@ -12,7 +12,7 @@ import sendWeiboInput from '../../components/comp/send-weibo-input';
 import singleWeibo from '../../components/comp/index-single-weibo';
 
 export default {
-  props:['timeline','currentUser','keywords'],
+  props:['timeline','currentUser','keywords','users'],
   data () {
     return {
 

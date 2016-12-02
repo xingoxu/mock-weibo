@@ -737,4 +737,80 @@ public class DAO {
         String sql = "SELECT * FROM `like` WHERE target_userid=" + userid;
         return likePageLikes(query(sql));
     }
+
+    public static UserCard[] getFollowingUsers(int userid) {
+        String sql = "SELECT * FROM follow WHERE userid=" + userid;
+        ResultSet useridResultSet = query(sql);
+        ArrayList<Integer> arrayList = new ArrayList<>(0);
+        try {
+            while (useridResultSet.next()) {
+                arrayList.add(useridResultSet.getInt("followingid"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new UserCard[0];
+        }
+        int length = arrayList.size();
+        UserCard[] cards = new UserCard[length];
+        for (int i = 0; i < length; i++) {
+            cards[i] = getUserCard(arrayList.get(i));
+            setRelation(userid, cards[i]);
+        }
+        return cards;
+    }
+
+    public static UserCard[] getFollowerUsers(int userid) {
+        String sql = "SELECT * FROM follow WHERE followingid=" + userid;
+        ResultSet useridResultSet = query(sql);
+        ArrayList<Integer> arrayList = new ArrayList<>(0);
+        try {
+            while (useridResultSet.next()) {
+                arrayList.add(useridResultSet.getInt("userid"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new UserCard[0];
+        }
+        int length = arrayList.size();
+        UserCard[] cards = new UserCard[length];
+        for (int i = 0; i < length; i++) {
+            cards[i] = getUserCard(arrayList.get(i));
+            setRelation(userid, cards[i]);
+        }
+        return cards;
+    }
+
+    public static singleWeibo[] getSearchWeibos(String keyword, int userid) {
+        String sql = "SELECT * from weibo WHERE text like '%" + keyword + "%' order by time+0 desc";
+
+        singleWeibo[] weibos = getSingleWeibos(query(sql));
+        for (int i = 0; i < weibos.length; i++) {
+            int weiboid = weibos[i].weiboid;
+            weibos[i].favourited = getFavourited(userid, weiboid);
+            weibos[i].liked = getLiked(userid, weiboid, false);
+        }
+        return weibos;
+    }
+
+    public static UserCard[] getSearchUsers(String keywords, int userid) {
+        String sql = "SELECT * FROM user WHERE username like '%" + keywords + "%'";
+        ResultSet useridResultSet = query(sql);
+        ArrayList<Integer> arrayList = new ArrayList<>(0);
+        try {
+            while (useridResultSet.next()) {
+                arrayList.add(useridResultSet.getInt("userid"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new UserCard[0];
+        }
+        int length = arrayList.size();
+        UserCard[] cards = new UserCard[length];
+        for (int i = 0; i < length; i++) {
+            cards[i] = getUserCard(arrayList.get(i));
+            setRelation(userid, cards[i]);
+        }
+        return cards;
+    }
+
 }

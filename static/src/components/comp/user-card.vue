@@ -102,7 +102,7 @@ export default {
       var currentUser = app.currentUser;
       var operation = app.operationFactory(currentUser.userid);
       operation.target_userid = this.user.userid;
-      if(this.following){
+      if(this.user.followed){
         this.$http.post('/follow',operation)
           .then((response)=>{
             this.loading = false;

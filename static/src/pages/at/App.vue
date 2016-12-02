@@ -38,6 +38,9 @@ export default {
 
     }
   },
+  created(){
+    app.currentUser = this.currentUser;
+  },
   methods: {
 
   },

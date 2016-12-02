@@ -8,8 +8,8 @@
           </a>
         </div>
         <div class="search" :class="{'focus': searchFocus}">
-          <form action="index.html" target="_blank" method="get">
-            <input type="text" name="q" autocomplete="off" value="" class="W_input" placeholder="搜索微博、找人" @focus="searchFocus=true" @blur="searchFocus=false" />
+          <form action="/search" target="_blank" method="get">
+            <input type="text" name="keywords" autocomplete="off" class="W_input" placeholder="搜索微博、找人" @focus="searchFocus=true" @blur="searchFocus=false" />
             <button title="搜索" class="W_ficon ficon_search S_ficon" >f</button>
           </form>
         </div>
@@ -46,12 +46,12 @@
                 <div class="menu">
                   <!--tip start-->
                   <ul>
-                    <li><a href="/profile/">个人资料</a>
+                    <li><a href="/profile">个人资料</a>
                     </li>
-                    <li><a href="/password/">账号安全</a>
+                    <li><a href="/password">账号安全</a>
                     </li>
                     <li class="line S_line2"></li>
-                    <li><a href="/logout/">退出</a>
+                    <li><a href="/logout">退出</a>
                     </li>
                   </ul>
                   <!--tip end-->
@@ -65,7 +65,7 @@
               <!--tip start-->
               <a href="javascript:void(0);" class="W_ficon ficon_close S_ficon">X</a>
               <ul>
-                <li>1条新评论，<a href="/comment/">查看</a>
+                <li>1条新评论，<a href="/comment">查看</a>
                 </li>
               </ul>
             </div>
@@ -81,7 +81,7 @@
 
 <script>
   export default {
-    props: ['currentUser','navNow'],
+    props: ['currentUser','navNow','notification'],
     ready() {
       window.addEventListener('scroll',this.windowScroll);
       window.addEventListener('keyup',(event)=>{
@@ -188,6 +188,7 @@
         font-size: 12px;
         line-height: 20px;
         background: transparent;
+        color: #000;
         &:focus {
           outline: 0;
         }

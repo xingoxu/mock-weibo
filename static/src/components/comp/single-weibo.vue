@@ -70,6 +70,10 @@
           <a href="/weibo/{{weibo.weiboid}}">{{weibo.time | showTime}}</a>
         </div>
       </div>
+      <!-- 删除，举报 -->
+      <!-- <div class="pull-right">
+
+      </div> -->
     </div>
     <div class="lower">
       <operation class="operation" :weibo="weibo" :is-single-weibo="isSingleWeibo"></operation>
@@ -82,7 +86,7 @@ import weiboText from './weibo-text';
 import userAvatar from './normal-user-avatar';
 import operation from './single-weibo-bottom-operation';
 export default {
-  props: ['weibo','isSingleWeibo','keywords'],
+  props: ['weibo','isSingleWeibo','keywords','currentUser'],
   ready(){
   },
   methods: {

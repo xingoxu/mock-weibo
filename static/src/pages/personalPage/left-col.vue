@@ -6,8 +6,8 @@
         <div class="status">
           <ul>
             <li v-for="status in cardLowerStatus">
-              <a href="/user/{{user.userid}}/{{status.link}}">
-                <strong>{{user[status.key]}}</strong>
+              <a href="/user/{{targetUserCard.userid}}{{status.link}}">
+                <strong>{{targetUserCard[status.key]}}</strong>
                 <span>{{status.showText}}</span>
               </a>
             </li>
@@ -17,21 +17,21 @@
       <!-- 个人资料 -->
       <li>
         <ul class="detail">
-          <li class="item S_line2 clrfloat">
+          <li class="item S_line2 clrfloat" v-if="targetUser.area">
             <span class="item_ico W_fl"><em class="W_ficon ficon_cd_place S_ficon">2</em></span>
-            <span class="item_text W_fl">广东 广州 </span>
+            <span class="item_text W_fl">{{targetUser.area}}</span>
           </li>
           <li class="item S_line2 clrfloat">
             <span class="item_ico W_fl"><em class="W_ficon ficon_constellation S_ficon">ö</em></span>
-            <span class="item_text W_fl">1997年4月23日</span>
+            <span class="item_text W_fl">{{targetUser.birthday}}</span>
           </li>
           <li class="item S_line2 clrfloat">
             <span class="item_ico W_fl"><em class="W_ficon ficon_pinfo S_ficon">Ü</em></span>
-            <span class="item_text W_fl">简介： ＝岩.||*els动画待机.我是艾索德的狗.红毛主IS紫毛主VP.喜特里普||主艾索德/爱莎主红紫后杂食/els人在华东||半个红毛分子.欢迎安利红发.||选择性回fo/ </span>
+            <span class="item_text W_fl">{{targetUser.intro ? targetUser.intro : '还没有做自我介绍哦'}}</span>
           </li>
           <li class="item S_line2 clrfloat">
             <span class="item_ico W_fl"><em class="W_ficon ficon_email S_ficon">ý</em></span>
-            <span class="item_text W_fl">984419538@qq.com</span>
+            <span class="item_text W_fl">{{targetUser.mail}}</span>
           </li>
         </ul>
       </li>
@@ -41,15 +41,15 @@
 
 <script>
   export default {
-    props: ['user'],
+    props: ['user','targetUserCard','targetUser'],
     data() {
       var cardLowerStatus = [{
         key: 'following',
-        link: 'follow',
+        link: '/follow',
         showText: '关注'
       },{
         key: 'fans',
-        link: 'fans',
+        link: '/fans',
         showText: '粉丝'
       },{
         key: 'weibo',

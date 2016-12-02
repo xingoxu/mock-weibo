@@ -1,6 +1,6 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav :current-user="currentUser"></top-nav>
+    <top-nav :current-user="currentUser" :notification="notification"></top-nav>
     <div class="weibo-frame">
       <div class="search-box">
         <div class="search_head_formbox">
@@ -9,7 +9,7 @@
           </div>
           <ul class="formbox_tab clrfloat formbox_tab2" node-type="searchItems">
             <li>
-              <a action-type="searchItem" href="javascript:void(0);">综合</a>
+              <a action-type="searchItem" href="/search?keywords={{keywords}}">综合</a>
               <a action-type="searchItem" class="cur">找人</a>
             </li>
           </ul>
@@ -28,9 +28,9 @@
           <!-- /search_input -->
         </div>
       </div>
-      <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser" :keywords.once="keywords"></middle-col>
+      <middle-col class="weibo-mid-col" v-ref:middle-col :users="users"></middle-col>
       <div class="weibo-right-col">
-        <right-col :current-user="currentUser"></right-col>
+        <right-col ></right-col>
       </div>
     </div>
     <footer>
@@ -38,53 +38,31 @@
       <p>京ICP证100780号 互联网药品服务许可证 互联网医疗保健许可证 京网文[2014]2046-296号 京ICP备12002058号 增值电信业务经营许可证B2-20140447</p>
       <p>Copyright © 2009-2016 WEIBO 北京微梦创科网络技术有限公司 京公网安备11000002000019号</p>
     </footer>
-    <new-weibo-popup v-ref:new-weibo-popup :current-user="currentUser"></new-weibo-popup>
-    <forward-popup v-ref:forward-popup :current-user="currentUser"></forward-popup>
-    <cancel-favourite-popup v-ref:cancel-favourite-popup></cancel-favourite-popup>
-    <favourite-success-popup v-ref:favourite-success-popup></favourite-popup>
   </div>
 </template>
 
 <script>
 import middleCol from './middle-col';
-import rightCol from './right-col';
+import rightCol from '../search/right-col';
 import topNav from '../../components/comp/top-nav';
-import forwardPopup from '../../components/comp/forward-popup';
-import favouriteSuccessPopup from '../../components/comp/favourite-success-popup';
-import cancelFavouritePopup from '../../components/comp/cancel-favourite-popup';
 import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
-  props: ['timeline','currentUser'],
+  props: ['users','notification','currentUser','keywords'],
   data () {
     return {
-      keywords: 'abcdefg',
     }
   },
+  created(){
+    app.currentUser = this.currentUser;
+  },
   methods: {
-    test() {
-      console.log(this.$refs);
-    }
+
   },
   computed: {
 
   },
   events: {
-    expandForward(weibo){
-      this.$refs.forwardPopup.$emit('show',weibo);
-    },
-    weiboFavourited(){
-      this.$refs.favouriteSuccessPopup.$emit('show');
-    },
-    cancelFavourite(weiboID){
-      this.$refs.cancelFavouritePopup.$emit('show',weiboID);
-    },
-    weiboFavouritCancelled(weiboID) {
-      this.$refs.middleCol.$broadcast('weiboFavouritCancelled',weiboID);
-    },
-    newWeiboSended(weibo) {
-      this.$refs.middleCol.$emit('newWeiboSended',weibo);
-    },
     showNewWeiboPopup(){
       this.$refs.newWeiboPopup.$emit('show');
     }
@@ -93,9 +71,6 @@ export default {
     middleCol,
     rightCol,
     topNav,
-    forwardPopup,
-    favouriteSuccessPopup,
-    cancelFavouritePopup,
     newWeiboPopup,
   }
 }

@@ -6,10 +6,11 @@ import { app as commonApp } from '../../common.js';
 import { currentUser,fullUserData } from '../../mockdata/personalData.js';
 /* eslint-disable no-new */
 Vue.component('App', App);
-new Vue({
-  el: 'body',
-  data: {
-    currentUser: currentUser,
-    fullUserData: fullUserData
-  }
-});
+window.Vue = Vue;
+// new Vue({
+//   el: 'body',
+//   data: {
+//     currentUser: currentUser,
+//     fullUserData: fullUserData
+//   }
+// });

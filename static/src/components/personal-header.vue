@@ -7,37 +7,37 @@
       <div class="shadow">
         <!-- canSelect -->
         <div class="pf_photo">
-          <img :src="user.avatar" />
+          <img :src="user.avatar ? user.avatar :'http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif'" />
         </div>
         <div class="pf_username">
           <span>{{user.username}}</span>
         </div>
         <div class="pf_intro">
-          <span>{{user.intro}}</span>
+          <span>{{user.intro ? user.intro : '他还没有填自我介绍'}}</span>
         </div>
          <!-- v-if="user.userid!=currentUser.userid" -->
         <div class="pf_opt">
           <ul class="opt_box clearfix">
               <li class="btn_bed W_fl" >
-                <button href="javascript:void(0);" class="W_btn_d btn_34px {{following ? 'hasFollowed': 'notFollowed'}}" :disabled="loading" @click="handleFollow">
-                  <span v-if="following&&beFollowed&&!loading">
+                <button href="javascript:void(0);" class="W_btn_d btn_34px {{user.followed  ? 'hasFollowed': 'notFollowed'}}" :disabled="loading" @click="handleFollow">
+                  <span v-if="user.followed && user.beFollowed &&!loading">
                     <em class="W_ficon ficon_addtwo S_ficon">Z</em>互相关注
                     <!-- <em class="W_ficon ficon_arrow_down_lite S_ficon">g</em> -->
                   </span>
-                  <span v-if="loading&&following">
+                  <span v-if="loading && user.followed ">
                     <i class="W_loading"></i>关注中
                   </span>
-                  <span v-if="following&&!beFollowed&&!loading">
+                  <span v-if="user.followed && !user.beFollowed &&!loading">
                     <em class="W_ficon ficon_right S_ficon">Y</em>已关注
                     <!-- <em class="W_ficon ficon_arrow_down_lite S_ficon">g</em> -->
                   </span>
-                  <span v-if="loading&&!following">
+                  <span v-if="loading && !user.followed ">
                     <i class="W_loading"></i>取消关注中
                   </span>
-                  <span v-if="!following&&beFollowed&&!loading">
+                  <span v-if="!user.followed && user.beFollowed &&!loading">
                     <em class="W_ficon ficon_right S_ficon">Y</em><em class="W_vline S_line1"></em><em class="W_ficon ficon_add">+</em>关注
                   </span>
-                  <span v-if="!following&&!beFollowed&&!loading">
+                  <span v-if="!user.followed && !user.beFollowed && !loading">
                     <em class="W_ficon ficon_add S_ficon">+</em>关注
                   </span>
                 </button>
@@ -46,11 +46,11 @@
                 <a href="javascript:;" class="W_btn_d W_btn_pf_menu btn_34px">
                   <em class="W_ficon ficon_menu S_ficon">=</em>
                 </a>
-                <div class="menu">
+                <div class="menu" v-if="user.beFollowed">
                   <div class="list_wrap">
                     <div class="list_content W_f14">
                       <ul class="list_ul">
-                        <li class="item" v-if="beFollowed"><a class="tlink">移除粉丝</a></li>
+                        <li class="item" v-if="user.beFollowed" @click="removeFan"><a class="tlink">移除粉丝</a></li>
                         <!-- <li class="item"><a class="tlink">加入黑名单</a></li> -->
                         <!-- <li class="item"><a class="tlink">举报他</a></li> -->
                       </ul>
@@ -73,19 +73,40 @@ export default {
   props:['currentUser','user'],
   data(){
     return {
-      following: false,
-      beFollowed: false,
       loading: false,
     }
   },
   methods:{
     handleFollow(){
       this.loading = true;
-      this.following = !this.following;
-      setTimeout(()=>{
-        this.loading = false;
-      },1000);
-    }
+      this.user.followed = !this.user.followed;
+      var currentUser = app.currentUser;
+      var operation = app.operationFactory(currentUser.userid);
+      operation.target_userid = this.user.userid;
+      if(this.user.followed){
+        this.$http.post('/follow',operation)
+          .then((response)=>{
+            this.loading = false;
+          })
+      }
+      else {
+        this.$http.post('/follow/delete',operation)
+          .then((response)=>{
+            this.loading = false;
+          })
+      }
+      // setTimeout(()=>{
+      // },1000);
+    },
+    removeFan(){
+      this.user.beFollowed = false;
+      var currentUser = app.currentUser;
+      var operation = app.operationFactory(currentUser.userid);
+      this.$http.post('/follower/delete',operation)
+        .then((response)=>{
+
+        });
+    },
   }
 }
 </script>

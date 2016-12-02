@@ -24,7 +24,7 @@ export default {
         var username = match.substr(1).trim();
         return `
           <user-card name="${username}">
-            <a href="/user/${username}"><span>@${username}</span></a>
+            <a href="/user/name/${username}"><span>@${username}</span></a>
           </user-card>`.trim();
       });
       var topicRegex = /#[0-9a-zA-Z\u0391-\uFFE5]+#/g;

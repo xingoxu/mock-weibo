@@ -1,7 +1,7 @@
 <template>
   <div class="search-user">
     <div>
-      <user-list></user-list>
+      <user-list :users="users"></user-list>
     </div>
   </div>
 
@@ -10,7 +10,7 @@
 <script>
   import userList from '../../components/comp/search-user-list';
   export default {
-    props:[],
+    props:['users'],
     data () {
       return {
 

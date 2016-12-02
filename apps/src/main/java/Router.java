@@ -184,6 +184,52 @@ public class Router {
             DAO.setRelation(userid, userCard);
             return userCard;
         }, (new Gson())::toJson);
+        get("/user/:id", (req, res) -> {
+            int login_userid = Integer.parseInt(req.session().attribute("userid"));
+            int target_userid = Integer.parseInt(req.params(":id"));
+            UserCard targetUserCard = DAO.getUserCard(target_userid);
+            DAO.setRelation(login_userid, targetUserCard);
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("timeline", json_enc(DAO.userTimeline(target_userid, login_userid)));
+            attributes.put("currentUser", json_enc(DAO.getUserCard(login_userid)));
+            attributes.put("targetUserCard", json_enc(targetUserCard));
+            attributes.put("targetUser", json_enc(DAO.getUser(target_userid)));
+            attributes.put("notification", json_enc(DAO.getUserNotificationNumber(login_userid)));
+            return new ModelAndView(attributes, "personalPage.html");
+        }, new FreeMarkerEngine());
+        get("/user/name/:name", (req, res) -> {
+            User user = DAO.getUser(req.params(":name"));
+            if (user == null) {
+                res.status(404);
+                return new ModelAndView(new HashMap<>(), "404.html");
+            }
+            res.redirect("/user/" + user.userid);
+            return new ModelAndView(new HashMap<>(), "404.html");
+        }, new FreeMarkerEngine());
+        get("/user/:id/follow", (req, res) -> {
+            int login_userid = Integer.parseInt(req.session().attribute("userid"));
+            int target_userid = Integer.parseInt(req.params(":id"));
+            UserCard targetUserCard = DAO.getUserCard(target_userid);
+            DAO.setRelation(login_userid, targetUserCard);
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("users", json_enc(DAO.getFollowingUsers(target_userid)));
+            attributes.put("currentUser", json_enc(DAO.getUserCard(login_userid)));
+            attributes.put("targetUserCard", json_enc(targetUserCard));
+            attributes.put("targetUser", json_enc(DAO.getUser(target_userid)));
+            attributes.put("notification", json_enc(DAO.getUserNotificationNumber(login_userid)));
+            return new ModelAndView(attributes, "following.html");
+        }, new FreeMarkerEngine());
+        get("/user/:id/fans", (req, res) -> {
+            int login_userid = Integer.parseInt(req.session().attribute("userid"));
+            int target_userid = Integer.parseInt(req.params(":id"));
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("users", json_enc(DAO.getFollowerUsers(target_userid)));
+            attributes.put("currentUser", json_enc(DAO.getUserCard(login_userid)));
+            attributes.put("targetUserCard", json_enc(DAO.getUserCard(target_userid)));
+            attributes.put("targetUser", json_enc(DAO.getUser(target_userid)));
+            attributes.put("notification", json_enc(DAO.getUserNotificationNumber(login_userid)));
+            return new ModelAndView(attributes, "following.html");
+        }, new FreeMarkerEngine());
 
         get("/at", (req, res) -> {
             int userid = Integer.parseInt(req.session().attribute("userid"));
@@ -194,7 +240,6 @@ public class Router {
 //            DAO.setAtHasRead(userid);
             //hotTopic
             return new ModelAndView(attributes, "at.html");
-
         }, new FreeMarkerEngine());
 
         get("/comment", (req, res) -> {
@@ -220,6 +265,38 @@ public class Router {
             return new ModelAndView(attributes, "like.html");
         }, new FreeMarkerEngine());
 
+        get("/search", (req, res) -> {
+            String keyword = req.queryParams("keywords");
+            int userid = Integer.parseInt(req.session().attribute("userid"));
+
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("keywords", json_enc(keyword));
+            attributes.put("timeline", json_enc(DAO.getSearchWeibos(keyword, userid)));
+            attributes.put("users", json_enc(DAO.getSearchUsers(keyword, userid)));
+            attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+            attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
+            return new ModelAndView(attributes, "search.html");
+        }, new FreeMarkerEngine());
+
+        get("/search/user", (req, res) -> {
+            String keyword = req.queryParams("keywords");
+            int userid = Integer.parseInt(req.session().attribute("userid"));
+
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("keywords", json_enc(keyword));
+            attributes.put("users", json_enc(DAO.getSearchUsers(keyword, userid)));
+            attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+            attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
+            return new ModelAndView(attributes, "searchUser.html");
+        }, new FreeMarkerEngine());
+
+
+        get("/logout", (req, res) -> {
+            req.session().attribute("userid", null);
+            res.redirect("/login");
+            return "ok";
+        });
+
         before("/", Router::checkIfNotLogin);
         get("/", (req, res) -> {
             int userid = Integer.parseInt(req.session().attribute("userid"));
@@ -230,6 +307,7 @@ public class Router {
             //hotTopic
             return new ModelAndView(attributes, "index.html");
         }, new FreeMarkerEngine());
+
 
     }
 }

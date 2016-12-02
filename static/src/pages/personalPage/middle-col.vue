@@ -19,9 +19,7 @@ export default {
     }
   },
   events: {
-    newWeiboSended(weibo){
-      this.timeline.unshift(weibo);
-    }
+
   },
   components: {
     singleWeibo
@@ -38,5 +36,8 @@ export default {
     .weibo-single-weibo {
       margin-top: 10px;
     }
+  }
+  .weibo-single-weibo .forward-weibo .time-func:after {
+    clear: right;
   }
 </style>

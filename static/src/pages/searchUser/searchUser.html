@@ -6,7 +6,18 @@
     <title>微博搜索 - abc - 微博</title>
   </head>
   <body>
-    <app :timeline="timeline" :current-user="currentUser"></app>
+    <app :users="users" :current-user="currentUser" :notification="notification" :keywords="keywords"></app>
     <!-- built files will be auto injected -->
   </body>
+  <script type="text/javascript">
+    window.vm = new Vue({
+      el: 'body',
+      data: {
+        users: ${users},
+        currentUser: ${currentUser},
+        notification: ${notification},
+        keywords: ${keywords},
+      }
+    });
+  </script>
 </html>

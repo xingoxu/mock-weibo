@@ -1,6 +1,6 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav :current-user="currentUser"></top-nav>
+    <top-nav :current-user="currentUser" :notification="notification"></top-nav>
     <div class="weibo-frame">
       <div class="search-box">
         <div class="search_head_formbox">
@@ -10,7 +10,7 @@
           <ul class="formbox_tab clrfloat formbox_tab2" node-type="searchItems">
             <li>
               <a action-type="searchItem" href="javascript:void(0);" class="cur">综合</a>
-              <a action-type="searchItem" >找人</a>
+              <a action-type="searchItem" href="/search/user?keywords={{keywords}}">找人</a>
             </li>
           </ul>
           <form class="search_input clearfix">
@@ -28,7 +28,7 @@
           <!-- /search_input -->
         </div>
       </div>
-      <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser" :keywords.once="keywords"></middle-col>
+      <middle-col class="weibo-mid-col" v-ref:middle-col :timeline="timeline" :current-user="currentUser" :keywords.once="keywords" :users="users"></middle-col>
       <div class="weibo-right-col">
         <right-col :current-user="currentUser"></right-col>
       </div>
@@ -55,16 +55,15 @@ import cancelFavouritePopup from '../../components/comp/cancel-favourite-popup';
 import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
-  props: ['timeline','currentUser'],
+  props: ['users','notification','currentUser','keywords','timeline'],
   data () {
     return {
-      keywords: 'abcdefg',
     }
   },
+  created(){
+    app.currentUser = this.currentUser;
+  },
   methods: {
-    test() {
-      console.log(this.$refs);
-    }
   },
   computed: {
 
@@ -81,9 +80,6 @@ export default {
     },
     weiboFavouritCancelled(weiboID) {
       this.$refs.middleCol.$broadcast('weiboFavouritCancelled',weiboID);
-    },
-    newWeiboSended(weibo) {
-      this.$refs.middleCol.$emit('newWeiboSended',weibo);
     },
     showNewWeiboPopup(){
       this.$refs.newWeiboPopup.$emit('show');

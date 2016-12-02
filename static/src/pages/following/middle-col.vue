@@ -5,23 +5,41 @@
     </header>
     <div class="wrapper">
       <ul class="members clrfloat">
-        <li>
+        <li v-for="user in users">
           <div>
             <div class="pic-wrapper">
-              <a href="#">
-                <img src="http://tva2.sinaimg.cn/crop.157.181.589.589.50/005D4NPMjw8f15pcd6v37j30pb0qcmyt.jpg" width="50" height="50">
+              <a href="/user/{{user.userid}}">
+                <img :src="user.avatar ? user.avatar :'http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif'" width="50" height="50">
               </a>
             </div>
             <div class="info">
               <div class="title">
-                <a target="_blank" href="/u/5158086142?from=myfollow_all" class="S_txt1" >Splendent 丶 star 太上...</a>
+                <a href="/user/{{user.userid}}" class="S_txt1" >{{user.username}}</a>
               </div>
               <div class="status">
-                <em class="W_ficon ficon_right S_ficon">Y</em>
-                <span class="S_txt1"> 已关注</span>
+                <span v-if="user.followed && user.beFollowed &&!loading">
+                  <em class="W_ficon ficon_addtwo S_ficon">Z</em>互相关注
+                  <!-- <em class="W_ficon ficon_arrow_down_lite S_ficon">g</em> -->
+                </span>
+                <span v-if="loading && user.followed ">
+                  <i class="W_loading"></i>关注中
+                </span>
+                <span v-if="user.followed && !user.beFollowed &&!loading">
+                  <em class="W_ficon ficon_right S_ficon">Y</em>已关注
+                  <!-- <em class="W_ficon ficon_arrow_down_lite S_ficon">g</em> -->
+                </span>
+                <span v-if="loading && !user.followed ">
+                  <i class="W_loading"></i>取消关注中
+                </span>
+                <span v-if="!user.followed && user.beFollowed &&!loading">
+                  <em class="W_ficon ficon_right S_ficon">Y</em><em class="W_vline S_line1"></em><em class="W_ficon ficon_add">+</em>关注
+                </span>
+                <span v-if="!user.followed && !user.beFollowed &&!loading">
+                  <em class="W_ficon ficon_add S_ficon">+</em>关注
+                </span>
               </div>
               <div class="intro">
-                简介： 1234567
+                <span>{{user.intro ? user.intro : '他还没有填自我介绍'}}</span>
               </div>
             </div>
           </div>
@@ -35,7 +53,7 @@
 <script>
 
 export default {
-  props:['currentUser'],
+  props:['users'],
   data () {
     return {
     }

@@ -29,6 +29,7 @@ export default {
   props: ['fullUserData','currentUser'],
   created(){
     document.title= `${this.currentUser.username} 的微博_微博`;
+    app.currentUser = this.currentUser;
   },
   data () {
     return {

@@ -1,1 +1,9 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>微博搜索 - abc - 微博</title><link href=/static/css/searchUser.483f1b911f98ae923cc404ef2f46f7e2.css rel=stylesheet></head><body><app :timeline=timeline :current-user=currentUser></app><script type=text/javascript src=/static/js/manifest.c21daded6069bc8d81c6.js></script><script type=text/javascript src=/static/js/vendor.64fd172821f775fcebbc.js></script><script type=text/javascript src=/static/js/searchUser.04c39f27c91ee0d3ea21.js></script></body></html>
+<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>微博搜索 - abc - 微博</title><link href=/static/css/searchUser.c8acba8c59417de59e3db460f0c298d3.css rel=stylesheet></head><body><app :users=users :current-user=currentUser :notification=notification :keywords=keywords></app><script type=text/javascript src=/static/js/manifest.f4c9f1208e7c446ac861.js></script><script type=text/javascript src=/static/js/vendor.04c803ce36f9dcae78d9.js></script><script type=text/javascript src=/static/js/searchUser.bd7737603d852587a516.js></script></body><script>window.vm = new Vue({
+      el: 'body',
+      data: {
+        users: ${users},
+        currentUser: ${currentUser},
+        notification: ${notification},
+        keywords: ${keywords},
+      }
+    });</script></html>

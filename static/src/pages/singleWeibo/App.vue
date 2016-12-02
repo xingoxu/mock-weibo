@@ -31,6 +31,7 @@ import newWeiboPopup from '../../components/comp/new-weibo-popup';
 export default {
   created() {
     document.title= `${this.weibo.text.substring(0,10)}... - 微博`;
+    app.currentUser = this.currentUser;
   },
   props: ['weibo','currentUser','notification'],
   data () {
