@@ -813,4 +813,20 @@ public class DAO {
         return cards;
     }
 
+    public static void updateUser(String json) {
+        User user = (new Gson()).fromJson(json, User.class);
+        String sql = "UPDATE user SET username='" + user.username + "',intro='" + user.intro + "',area='" + user.area + "',birthday='" + user.birthday + "',mail='" + user.mail + "' WHERE userid=" + user.userid;
+        update(sql);
+    }
+
+    public static void updatePassword(int userid, String password) {
+        String sql = "UPDATE user SET password='" + password + "' WHERE userid=" + userid;
+        update(sql);
+    }
+
+    public static void deleteWeibo(int weiboid){
+        String sql = "DELETE FROM weibo WHERE weiboid="+weiboid;
+        delete(sql);
+    }
+
 }

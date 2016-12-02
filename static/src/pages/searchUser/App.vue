@@ -13,9 +13,9 @@
               <a action-type="searchItem" class="cur">找人</a>
             </li>
           </ul>
-          <form class="search_input clearfix">
+          <form class="search_input clearfix" action="/search/user">
             <div class="search_input_wrap">
-              <input class="searchInp_form" type="text" autocomplete="off" name="q" @keyup.stop="false" v-model="keywords">
+              <input class="searchInp_form" type="text" autocomplete="off" name="keywords" @keyup.stop="false" v-model="keywords">
               <!-- <div class="searchInp_box">
                 <div class="searchInp_auto">
                 </div>

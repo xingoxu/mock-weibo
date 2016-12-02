@@ -6,7 +6,7 @@
           <fieldset class="S_line2">
             <legend class="tit S_txt1">{{profilePage.text}}</legend>
             <div class="btns" v-if="$index == 0">
-              <a class="W_btn_round" href="javascript:void(0)" @click="isEditing = !isEditing"><span>{{isEditing ? '保存' : '编辑'}}</span></a>
+              <a class="W_btn_round" href="javascript:void(0)" @click="toggleEditing"><span>{{isEditing ? '保存' : '编辑'}}</span></a>
             </div>
           </fieldset>
           <ul>
@@ -74,8 +74,19 @@ export default {
       birthday: birthday,
     }
   },
-  events: {
-
+  methods: {
+    toggleEditing(){
+      var editing = !this.isEditing;
+      if(editing){
+        this.isEditing = editing;
+        return;
+      }
+      this.fullUserData.birthday = this.birthday.join('-');
+      this.$http.post('/profile',this.fullUserData)
+        .then(()=>{
+          this.isEditing = false;
+        })
+    }
   },
   components: {
   }

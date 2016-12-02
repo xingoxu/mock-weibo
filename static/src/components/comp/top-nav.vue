@@ -9,7 +9,7 @@
         </div>
         <div class="search" :class="{'focus': searchFocus}">
           <form action="/search" target="_blank" method="get">
-            <input type="text" name="keywords" autocomplete="off" class="W_input" placeholder="搜索微博、找人" @focus="searchFocus=true" @blur="searchFocus=false" />
+            <input type="text" name="keywords" autocomplete="off" class="W_input" placeholder="搜索微博、找人" @focus="searchFocus=true" @blur="searchFocus=false" @keyup.stop="false" />
             <button title="搜索" class="W_ficon ficon_search S_ficon" >f</button>
           </form>
         </div>

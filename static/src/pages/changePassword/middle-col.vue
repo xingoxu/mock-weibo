@@ -22,7 +22,7 @@
                 </li>
                 <li class="item">
                     <span class="tit">新密码：</span>
-                    <input type="password" class="W_input" placeholder="请输入新密码">
+                    <input type="password" class="W_input" placeholder="请输入新密码" v-model="password">
                 </li>
                 <li class="item">
                     <span class="tit">确认新密码：</span>
@@ -38,7 +38,7 @@
                   <i class="icon_rederrorS icon-background"></i>{{failReason}}
                 </div>
               </div>
-              <button class="W_btn_a btn_34px" @click="status='success'">修改</button>
+              <button class="W_btn_a btn_34px" @click="submit">修改</button>
             </div>
         </div>
       </div>
@@ -50,14 +50,31 @@
 <script>
 
 export default {
+  props: ['currentUser'],
   data () {
     return {
       failReason: '',
       status: '',
+      password: '',
     }
   },
-  events: {
-
+  methods: {
+    submit(){
+      this.$http.post('/password',{
+        userid: this.currentUser.userid,
+        weiboid: 0,
+        name: this.password,
+        target_userid: 0,
+        commentid: 0,
+        time: Date.now() + '',
+      })
+        .then(()=>{
+          this.status='success';
+          setTimeout(()=>{
+            window.location.href="/logout";
+          },3000);
+        })
+    }
   },
   components: {
   }

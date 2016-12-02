@@ -1,8 +1,8 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav :current-user="currentUser" ></top-nav>
+    <top-nav :current-user="currentUser" :notification="notification"></top-nav>
     <div class="weibo-frame">
-      <middle-col class="weibo-mid-col"></middle-col>
+      <middle-col class="weibo-mid-col" :current-user="currentUser"></middle-col>
     </div>
     <footer>
       <p>服务热线：4000 960 960（个人/企业）服务时间9:00-21:00 4000 980 980（广告主）服务时间9:00-18:00 （按当地市话标准计算）</p>
@@ -18,7 +18,7 @@ import middleCol from './middle-col';
 import topNav from '../../components/comp/top-nav';
 
 export default {
-  props: ['currentUser'],
+  props: ['currentUser','notification'],
   data () {
     return {
 

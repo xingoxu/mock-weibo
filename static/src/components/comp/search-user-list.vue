@@ -12,9 +12,9 @@
             </a>
           </p>
           <p class="person_num">
-            <span> 关注 <a class="W_linkb" href="/user/{{user.userid}}" target="_blank" >{{user.following}}</a></span>
+            <span> 关注 <a class="W_linkb" href="/user/{{user.userid}}/follow" target="_blank" >{{user.following}}</a></span>
             <span> 粉丝 <a class="W_linkb" href="/user/{{user.userid}}/fans" target="_blank">{{user.fans}}</a></span>
-            <span> 微博 <a class="W_linkb" href="/user/{{user.userid}}/follow" target="_blank">{{user.weibo}}</a></span></p>
+            <span> 微博 <a class="W_linkb" href="/user/{{user.userid}}" target="_blank">{{user.weibo}}</a></span></p>
           <div class="person_info">
             <p>简介： {{user.intro ? user.intro : '还没有做自我介绍哦'}}</p>
           </div>

@@ -1,10 +1,10 @@
 <template>
   <div class="weibo-main-app">
-    <top-nav :current-user="currentUser" ></top-nav>
+    <top-nav :current-user="currentUser" :notification="notification" ></top-nav>
     <div class="weibo-frame">
       <personal-header class="weibo-personal-header" :current-user="currentUser" :user="currentUser"></personal-header>
-      <left-col class="weibo-left-col" :user="currentUser"></left-col>
-      <middle-col class="weibo-mid-col" :full-user-data="fullUserData" :current-user="currentUser"></middle-col>
+      <left-col class="weibo-left-col" :target-user="fullUserData" :target-user-card="currentUser"></left-col>
+      <middle-col class="weibo-mid-col" :full-user-data="editUserData" :current-user="currentUser"></middle-col>
     </div>
     <footer>
       <p>服务热线：4000 960 960（个人/企业）服务时间9:00-21:00 4000 980 980（广告主）服务时间9:00-18:00 （按当地市话标准计算）</p>
@@ -26,14 +26,18 @@ import cancelFavouritePopup from '../../components/comp/cancel-favourite-popup';
 import newWeiboPopup from '../../components/comp/new-weibo-popup';
 
 export default {
-  props: ['fullUserData','currentUser'],
+  props: ['fullUserData','currentUser','notification'],
   created(){
     document.title= `${this.currentUser.username} 的微博_微博`;
     app.currentUser = this.currentUser;
   },
   data () {
+    var userdata = {};
+    for(var i in this.fullUserData){
+      userdata[i] = this.fullUserData[i];
+    }
     return {
-
+      editUserData: userdata
     }
   },
   methods: {

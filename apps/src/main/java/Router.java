@@ -109,6 +109,20 @@ public class Router {
             return new operationResponse(true, 0);
         }, (new Gson())::toJson);
 
+        get("/profile", (req, res) -> {
+            int userid = Integer.parseInt(req.session().attribute("userid"));
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("fullUserData", json_enc(DAO.getUser(userid)));
+            attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+            attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
+            //hotTopic
+            return new ModelAndView(attributes, "profile.html");
+        }, new FreeMarkerEngine());
+        post("/profile", (req, res) -> {
+            DAO.updateUser(req.body());
+            return new operationResponse(true, 0);
+        }, (new Gson())::toJson);
+
         get("/weibo/:weiboid", (req, res) -> {
             try {
                 int userid = Integer.parseInt(req.session().attribute("userid"));
@@ -130,6 +144,10 @@ public class Router {
         post("/weibo", (req, res) -> {
             return new operationResponse(true, DAO.newWeibo(req.body()));
         }, (new Gson())::toJson);
+        delete("/weibo/:weiboid",(req,res)->{
+            DAO.deleteWeibo(Integer.parseInt(req.params("weiboid")));
+          return new operationResponse(true,0);
+        },(new Gson())::toJson);
 
 
         post("/comment", (req, res) -> {
@@ -290,6 +308,34 @@ public class Router {
             return new ModelAndView(attributes, "searchUser.html");
         }, new FreeMarkerEngine());
 
+        get("/report/:weiboid", (req, res) -> {
+            int weiboid = Integer.parseInt(req.params("weiboid"));
+            int userid = Integer.parseInt(req.session().attribute("userid"));
+            singleWeibo weibo = DAO.getSingleWeibo(weiboid);
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("weibo", json_enc(weibo));
+            attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+            return new ModelAndView(attributes, "report-spam.html");
+        }, new FreeMarkerEngine());
+        post("/report", (req, res) -> {
+            DAO.newSpam(req.body());
+            return new operationResponse(true, 0);
+        }, (new Gson())::toJson);
+
+        get("/password", (req, res) -> {
+            int userid = Integer.parseInt(req.session().attribute("userid"));
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+            attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
+            return new ModelAndView(attributes, "changePassword.html");
+        }, new FreeMarkerEngine());
+
+        post("/password", (req, res) -> {
+            operationRequest request = (new Gson()).fromJson(req.body(), operationRequest.class);
+            int userid = Integer.parseInt(req.session().attribute("userid"));
+            DAO.updatePassword(userid, request.name);
+            return new operationResponse(true, 0);
+        }, (new Gson())::toJson);
 
         get("/logout", (req, res) -> {
             req.session().attribute("userid", null);
@@ -307,7 +353,5 @@ public class Router {
             //hotTopic
             return new ModelAndView(attributes, "index.html");
         }, new FreeMarkerEngine());
-
-
     }
 }

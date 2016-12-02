@@ -9,7 +9,7 @@
         <li v-for="hotTopicPage in hotTopicPages" v-show="$index == topicPageNow" transition="right-hot-topic" class="hot-topic-page" >
           <ul>
             <li v-for="hotTopic in hotTopicPage" class="topic">
-              <a href="/topic/{{hotTopic.text}}">#{{hotTopic.text}}#</a>
+              <a href="/search?keywords={{hotTopic.text}}">#{{hotTopic.text}}#</a>
               <span class="pull-right">{{getFuzzyNumber(hotTopic.number)}}</span>
             </li>
           </ul>

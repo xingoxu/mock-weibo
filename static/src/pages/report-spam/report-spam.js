@@ -7,9 +7,4 @@ import { singleWeibo } from '../../mockdata/weiboData.js';
 import { currentUser } from '../../mockdata/personalData.js';
 /* eslint-disable no-new */
 Vue.component('App', App);
-new Vue({
-  el: 'body',
-  data: {
-    weibo: singleWeibo
-  }
-});
+window.Vue = Vue;

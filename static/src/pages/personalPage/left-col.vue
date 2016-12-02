@@ -41,7 +41,7 @@
 
 <script>
   export default {
-    props: ['user','targetUserCard','targetUser'],
+    props: ['targetUserCard','targetUser'],
     data() {
       var cardLowerStatus = [{
         key: 'following',

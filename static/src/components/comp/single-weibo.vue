@@ -71,9 +71,17 @@
         </div>
       </div>
       <!-- 删除，举报 -->
-      <!-- <div class="pull-right">
-
-      </div> -->
+      <div class="pull-right delete-weibo-operation">
+        <div class="screen_box">
+          <a href="javascript:void(0);" class="toggle-link"><i class="W_ficon ficon_arrow_down S_ficon">c</i></a>
+          <div class="layer_menu_list " node-type="fl_menu_right" style="position: absolute; z-index: 999;">
+            <ul>
+              <li><a href="/report/{{weibo.weiboid}}" target="_blank">举报</a></li>
+              <li><a href="javascript:;" @click="deleteWeibo(weibo.weiboid)" v-if="weibo.user.userid == currentUser.userid">删除</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="lower">
       <operation class="operation" :weibo="weibo" :is-single-weibo="isSingleWeibo"></operation>
@@ -107,7 +115,13 @@ export default {
             this.weibo.forwardWeibo.like--;
           }
         })
-    }
+    },
+    deleteWeibo(id){
+      this.$http.delete('/weibo/'+id)
+        .then(()=>{
+          this.$dispatch('weiboDeleted',this.weibo);
+        });
+    },
   },
   components: {
     weiboText,
@@ -118,6 +132,59 @@ export default {
 </script>
 
 <style lang="less">
+  .delete-weibo-operation {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    font-size: 12px;
+    em,i {
+      font-style: normal;
+    }
+    .toggle-link {
+      &:hover+.layer_menu_list {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .layer_menu_list {
+      width: 80px;
+      right: 0;
+      background: #fff;
+      color: #333;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      padding: 2px;
+      box-shadow: 0px 2px 8px 1px rgba(0,0,0,0.2);
+
+      visibility: hidden;
+      transition: .3s all ease;
+      opacity: 0;
+      transform: translateY(-10px);
+      &:hover {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+      }
+      a {
+        white-space: nowrap;
+        min-width: 50px;
+        padding: 7px 13px;
+        color: #333;
+        display: block;
+        cursor: pointer;
+        text-decoration: none;
+        &:hover {
+          background-color: #f2f2f5;
+          text-decoration: none;
+          color: #eb7350;
+        }
+      }
+    }
+  }
+  .screen_box {
+    position: relative;
+  }
   .deleted {
     text-align: center;
     line-height: 35px;
@@ -129,6 +196,7 @@ export default {
     border-radius: 2px;
     >.upper {
       padding: 20px 20px 4px;
+      position: relative;
       >.avatar {
         width: 50px;
         float: left;

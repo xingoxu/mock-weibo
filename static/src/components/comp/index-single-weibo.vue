@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="index-weibo-single-weibo">
-    <single-weibo class="single-weibo-component" @click="showForward=true" :weibo="weibo" :is-single-weibo="false" :keywords="keywords"></single-weibo>
+    <single-weibo class="single-weibo-component" @click="showForward=true" :weibo="weibo" :is-single-weibo="false" :keywords="keywords" :current-user="currentUser"></single-weibo>
     <expand-operation class="comment expand-operation-wrapper" v-show="showCommentWrapper">
       <div class="container" v-show="commentLoaded">
         <publish-container :current-user="currentUser" :weibo="weibo"></publish-container>

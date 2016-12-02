@@ -4,17 +4,17 @@
       <!--头部-->
       <div class="cp_paper_head clrfloat">
         <!--我要举报的是-->
-        <div class="cp_txt_to">我要举报的是 “<a href="miit" class="cp_link_blue">@工信微报</a>” 发的微博：</div>
+        <div class="cp_txt_to">我要举报的是 “<a class="cp_link_blue">@{{weibo.user.username}}</a>” 发的微博：</div>
         <!--//我要举报的是-->
         <!--举报的微博-->
         <div class="cp_wb_short" node-type="abstract">
           <dl class="clrfloat">
             <dt>
-              <a target="_blank" href="miit"><img src="http://tva2.sinaimg.cn/crop.0.0.149.149.50/005CvelIjw1ev7n15yxc6j3046046glq.jpg"></a>
+              <a target="_blank" href="miit"><img :src="weibo.user.avatar ? weibo.user.avatar :'http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif'"></a>
             </dt>
             <dd>
-              <a target="_blank" href="miit" class="cp_link_blue">@工信微报</a>
-              ：为完善云服务市场环境，促进互联网产业健康有序发展，工信部起草了《关于规范云服务...
+              <a target="_blank" href="miit" class="cp_link_blue">@{{weibo.user.username}}</a>
+              ：{{weibo.text.substring(0,10)}}...
             </dd>
           </dl>
         </div>
@@ -39,11 +39,11 @@
         <div class="cp_input_intro" style="visibility: visible; overflow: hidden; height: 130px;">
           <span class="intro_txt">补充举报说明：</span>
           <span class="intro_num">还可以输入<span>140</span>字</span>
-          <textarea style="color: rgb(51, 51, 51);" placeholder="请详细填写，以确保举报能够被受理"></textarea>
+          <textarea style="color: rgb(51, 51, 51);" placeholder="请详细填写，以确保举报能够被受理" v-model="other"></textarea>
         </div>
         <div class="cp_btnbox">
           <div>
-            <button type="button" @click="submit">提交</button>
+            <button type="button" @click="submit">{{isSuccess ? '提交成功！' : '提交'}}</button>
           </div>
         </div>
       </div>
@@ -59,19 +59,32 @@
 </template>
 
 <script>
+import {app} from '../../common.js';
 
 export default {
-  props: ['weibo'],
+  props: ['weibo','currentUser'],
+  created(){
+    app.currentUser = this.currentUser;
+  },
   data () {
     var types=['垃圾营销','不实信息','有害信息','违法信息','淫秽色情','人身攻击我'];
     return {
       types: types,
       selected: '',
+      other: '',
+      isSuccess: false,
     }
   },
   methods: {
     submit(){
       //去首页
+      var spam = app.weiboFactory(app.currentUser);
+      spam.text = this.selected +' '+this.other;
+      spam.weiboid = this.weibo.weiboid;
+      this.$http.post('/report',spam)
+        .then(()=>{
+          this.isSuccess = true;
+        })
     }
   },
   computed: {

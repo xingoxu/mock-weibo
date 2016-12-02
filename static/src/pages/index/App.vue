@@ -64,6 +64,10 @@ export default {
     },
     showNewWeiboPopup(){
       this.$refs.newWeiboPopup.$emit('show');
+    },
+    weiboDeleted(weibo){
+      var index = this.timeline.indexOf(weibo);
+      this.timeline.splice(index,1);
     }
   },
   components: {
