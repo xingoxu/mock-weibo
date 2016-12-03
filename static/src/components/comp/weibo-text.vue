@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import {emotions} from '../../mockdata/emotions.js';
+
 export default {
   props: ['weiboText','keywords'],
   partials: {
@@ -30,7 +32,6 @@ export default {
       var topicRegex = /#[0-9a-zA-Z\u0391-\uFFE5]+#/g;
 
 
-
       if(this.keywords&&this.keywords!=''){
         var htmlCode = /"|&|'|<|>|[\x00-\x20]|[\x7F-\xFF]|[\u0100-\u2700]/g;
         this.keywords = this.keywords.replace(htmlCode,(match)=>{
@@ -43,6 +44,12 @@ export default {
         text = text.replace(eval(`/${this.keywords}/g`),(match)=>{
           return `<span class="red">${match}</span>`
         });
+      }
+
+      for(var i = 0;i<emotions.length;i++){
+        text = text.replace(eval(`/\\${emotions[i].text}/g`),(match)=>{
+          return `<img src=${emotions[i].src} />`;
+        })
       }
       return text;
     }

@@ -7,7 +7,7 @@
       <div class="wrapper" v-show="user && !userLoading">
         <div class="upper">
           <a class="pic">
-            <img :src="user.avatar" width="50" height="50"/>
+            <img :src="(user.avatar && user.avatar!='null') ? user.avatar : 'http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif'" width="50" height="50"/>
           </a>
           <div class="name">
             <a href="/user/{{user.userid}}">{{user.username}}</a>
@@ -19,9 +19,9 @@
         <div class="lower">
           <div class="count">
             <ul>
-              <li><a href="#">关注<em>275</em></a></li>
-              <li><a href="#">粉丝<em>860</em></a></li>
-              <li><a href="#">微博<em>8326</em></a></li>
+              <li><a href="/user/{{user.userid}}/follow">关注<em>{{user.following}}</em></a></li>
+              <li><a href="/user/{{user.userid}}/fans">粉丝<em>{{user.fans}}</em></a></li>
+              <li><a href="/user/{{user.userid}}">微博<em>{{user.weibo}}</em></a></li>
             </ul>
           </div>
           <div class="operation" v-if="currentUser.userid != user.userid">
@@ -49,7 +49,7 @@
                 </span>
               </button>
             </div>
-            <div class="button-wrapper">
+            <div class="button-wrapper" v-if="user.beFollowed">
               <a href="javascript:void(0);" class="W_btn_b W_btn_pf_menu">
                 <em class="W_ficon ficon_menu S_ficon">=</em>
               </a>
@@ -93,6 +93,7 @@ export default {
       // beFollowed: false,
       loading: false,
       userLoading: false,
+      currentUser: app.currentUser,
     }
   },
   methods: {
@@ -121,6 +122,7 @@ export default {
       this.user.beFollowed = false;
       var currentUser = app.currentUser;
       var operation = app.operationFactory(currentUser.userid);
+      operation.target_userid = this.user.userid;
       this.$http.post('/follower/delete',operation)
         .then((response)=>{
 

@@ -8,3 +8,11 @@ import { currentUser } from '../../mockdata/personalData.js';
 /* eslint-disable no-new */
 Vue.component('App', App);
 window.Vue = Vue;
+
+// new Vue({
+//   el: 'body',
+//   data: {
+//     timeline: timeline,
+//     currentUser: currentUser,
+//   }
+// });

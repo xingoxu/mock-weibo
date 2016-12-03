@@ -2,16 +2,16 @@
   <div>
     <div class="personal-card">
       <div class="upper">
-        <a href="/{{currentUser.userid}}" class="avatar"></a>
+        <a href="/{{currentUser.userid}}" class="avatar" style="background-image: {{(currentUser.avatar && currentUser.avatar != 'null') ? ('url('+currentUser.avatar+')') : 'url(http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif)'}}"></a>
       </div>
       <div class="lower">
         <div class="name">
-          <a href="/{{currentUser.userid}}">{{currentUser.username}}</a>
+          <a href="/user/{{currentUser.userid}}">{{currentUser.username}}</a>
         </div>
         <div class="status">
           <ul>
             <li v-for="status in cardLowerStatus">
-              <a href="/{{currentUser.userid}}/{{status.link}}">
+              <a href="/user/{{currentUser.userid}}{{status.link}}">
                 <strong>{{currentUser[status.key]}}</strong>
                 <span>{{status.showText}}</span>
               </a>
@@ -47,11 +47,11 @@ export default {
   data () {
     var cardLowerStatus = [{
       key: 'following',
-      link: 'follow',
+      link: '/follow',
       showText: '关注'
     },{
       key: 'fans',
-      link: 'fans',
+      link: '/fans',
       showText: '粉丝'
     },{
       key: 'weibo',

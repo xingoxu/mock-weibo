@@ -27,7 +27,9 @@
         </div>
         <div class="options clrfloat">
           <span class="icons pull-left">
-            <a href="#">表情</a>
+            <!-- <a href="#">表情</a> -->
+            <emotion></emotion>
+
           </span>
           <div class="selections pull-left">
             <ul>
@@ -60,6 +62,7 @@
 <script>
   import autoresizeTextarea from './auto-resize-textarea';
   import userAvatar from './normal-user-avatar';
+  import emotion from '../emtion';
   import {app} from '../../common.js';
 
   export default {
@@ -188,6 +191,9 @@
             this.inputWeibo = `回复@${this.weibo.user.username} :`;
           }
         }, 0);
+      },
+      emotion(text){
+        this.inputWeibo += text;
       }
     },
     watch: {
@@ -200,7 +206,8 @@
     },
     components: {
       autoresizeTextarea,
-      userAvatar
+      userAvatar,
+      emotion,
     }
   }
 </script>
@@ -281,6 +288,13 @@
           position: relative;
           top: -1px;
           margin: 0 5px 0 0;
+        }
+      }
+      .emotion-wrapper {
+        margin-right: 10px;
+        .emotion-link {
+          line-height: 18px;
+          color: #000;
         }
       }
     }

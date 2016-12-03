@@ -26,8 +26,10 @@
     <div class="input-func">
       <div class="multi pull-left">
         <ul>
-          <li>表情</li>
-          <li>图片</li>
+          <li>
+            <emotion></emotion>
+          </li>
+          <!-- <li>图片</li> -->
         </ul>
       </div>
       <div class="func pull-right">
@@ -41,6 +43,7 @@
 
 <script>
 import autoResizeTextarea from './auto-resize-textarea';
+import emotion from '../emtion';
 import {app} from '../../common.js';
 
 export default {
@@ -88,8 +91,14 @@ export default {
       event.stopPropagation();
     },
   },
+  events: {
+    emotion(text){
+      this.inputWeibo += text;
+    }
+  },
   components: {
-    autoResizeTextarea
+    autoResizeTextarea,
+    emotion
   }
 }
 </script>

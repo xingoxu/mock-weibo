@@ -9,7 +9,7 @@
           <div>
             <div class="pic-wrapper">
               <a href="/user/{{user.userid}}">
-                <img :src="user.avatar ? user.avatar :'http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif'" width="50" height="50">
+                <img :src="(user.avatar && user.avatar!='null') ? user.avatar :'http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif'" width="50" height="50">
               </a>
             </div>
             <div class="info">
@@ -17,25 +17,14 @@
                 <a href="/user/{{user.userid}}" class="S_txt1" >{{user.username}}</a>
               </div>
               <div class="status">
-                <span v-if="user.followed && user.beFollowed &&!loading">
+                <span v-if="user.followed && user.beFollowed">
                   <em class="W_ficon ficon_addtwo S_ficon">Z</em>互相关注
                   <!-- <em class="W_ficon ficon_arrow_down_lite S_ficon">g</em> -->
                 </span>
-                <span v-if="loading && user.followed ">
-                  <i class="W_loading"></i>关注中
-                </span>
-                <span v-if="user.followed && !user.beFollowed &&!loading">
+
+                <span v-if="user.followed && !user.beFollowed">
                   <em class="W_ficon ficon_right S_ficon">Y</em>已关注
                   <!-- <em class="W_ficon ficon_arrow_down_lite S_ficon">g</em> -->
-                </span>
-                <span v-if="loading && !user.followed ">
-                  <i class="W_loading"></i>取消关注中
-                </span>
-                <span v-if="!user.followed && user.beFollowed &&!loading">
-                  <em class="W_ficon ficon_right S_ficon">Y</em><em class="W_vline S_line1"></em><em class="W_ficon ficon_add">+</em>关注
-                </span>
-                <span v-if="!user.followed && !user.beFollowed &&!loading">
-                  <em class="W_ficon ficon_add S_ficon">+</em>关注
                 </span>
               </div>
               <div class="intro">

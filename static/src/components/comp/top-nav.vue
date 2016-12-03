@@ -29,11 +29,20 @@
                 <div class="menu">
                   <!--tip start-->
                   <ul>
-                    <li><a href="/at">@我的</a>
+                    <li>
+                      <a href="/at">@我的
+                        <span class="number" v-if="notification.at>0">{{notification.at}}</span>
+                      </a>
                     </li>
-                    <li><a href="/comment">评论</a>
+                    <li>
+                      <a href="/comment">评论
+                        <span class="number" v-if="notification.comments>0">{{notification.comments}}</span>
+                      </a>
                     </li>
-                    <li><a href="/like">赞</a>
+                    <li>
+                      <a href="/like">赞
+                        <span class="number" v-if="notification.like>0">{{notification.like}}</span>
+                      </a>
                     </li>
                   </ul>
                   <!--tip end-->
@@ -61,11 +70,15 @@
                 <a href="javascript:void(0);" @click="showNewWeiboPopup"><em class="W_ficon ficon_send S_ficon" title="新微博">ß</em></a>
               </li>
             </ul>
-            <div class="gn_topmenulist_tips">
+            <div class="gn_topmenulist_tips" v-if="hasNotification">
               <!--tip start-->
-              <a href="javascript:void(0);" class="W_ficon ficon_close S_ficon">X</a>
+              <a href="javascript:void(0);" class="W_ficon ficon_close S_ficon" @click="hasNotification=false">X</a>
               <ul>
-                <li>1条新评论，<a href="/comment">查看</a>
+                <li v-if="notification.comments>0">{{notification.comments}}条新评论，<a href="/comment">查看</a>
+                </li>
+                <li v-if="notification.at>0">{{notification.at}}条新@我的，<a href="/at">查看</a>
+                </li>
+                <li v-if="notification.like>0">{{notification.like}}个新的赞，<a href="/like">查看</a>
                 </li>
               </ul>
             </div>
@@ -93,9 +106,11 @@
       window.removeEventListener('scroll',this.windowScroll);
     },
     data(){
+      var hasNotification = (this.notification && (this.notification.at>0 || this.notification.comments>0 || this.notification.like>0));
       return {
         searchFocus: false,
         isTop: true,
+        hasNotification: hasNotification
       }
     },
     methods: {
@@ -345,10 +360,15 @@
                 display: block;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                position: relative;
                 &:hover {
                   background-color: #f2f2f5;
                   text-decoration: none;
                   color: #eb7350;
+                }
+                span.number {
+                  position: absolute;
+                  right: 0;
                 }
               }
               .line {

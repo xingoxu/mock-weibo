@@ -7,16 +7,15 @@
       <div class="shadow">
         <!-- canSelect -->
         <div class="pf_photo">
-          <img :src="user.avatar ? user.avatar :'http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif'" />
+          <img :src="(user.avatar&&user.avatar!='null') ? user.avatar :'http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif'" />
         </div>
         <div class="pf_username">
           <span>{{user.username}}</span>
         </div>
         <div class="pf_intro">
-          <span>{{user.intro ? user.intro : '他还没有填自我介绍'}}</span>
+          <span>{{user.intro&&user.intro!='null' ? user.intro : '他还没有填自我介绍'}}</span>
         </div>
-         <!-- v-if="user.userid!=currentUser.userid" -->
-        <div class="pf_opt">
+        <div class="pf_opt" v-if="user.userid!=currentUser.userid">
           <ul class="opt_box clearfix">
               <li class="btn_bed W_fl" >
                 <button href="javascript:void(0);" class="W_btn_d btn_34px {{user.followed  ? 'hasFollowed': 'notFollowed'}}" :disabled="loading" @click="handleFollow">
@@ -102,6 +101,7 @@ export default {
       this.user.beFollowed = false;
       var currentUser = app.currentUser;
       var operation = app.operationFactory(currentUser.userid);
+      operation.target_userid = this.user.userid;
       this.$http.post('/follower/delete',operation)
         .then((response)=>{
 

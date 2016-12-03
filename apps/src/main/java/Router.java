@@ -254,8 +254,8 @@ public class Router {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("timeline", json_enc(DAO.atTimeline(userid)));
             attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+            DAO.setAtHasRead(userid);
             attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
-//            DAO.setAtHasRead(userid);
             //hotTopic
             return new ModelAndView(attributes, "at.html");
         }, new FreeMarkerEngine());
@@ -265,8 +265,8 @@ public class Router {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("comments", json_enc(DAO.commentPageComments(userid)));
             attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+            DAO.setCommentHasRead(userid);
             attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
-//            DAO.setCommentHasRead(userid);
             //hotTopic
             return new ModelAndView(attributes, "comment.html");
         }, new FreeMarkerEngine());
@@ -276,8 +276,8 @@ public class Router {
             Map<String, Object> attributes = new HashMap<>();
             attributes.put("likes", json_enc(DAO.likePageLikes(userid)));
             attributes.put("currentUser", json_enc(DAO.getUserCard(userid)));
+            DAO.setLikeHasRead(userid);
             attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
-//            DAO.setLikeHasRead(userid);
 
             //hotTopic
             return new ModelAndView(attributes, "like.html");
