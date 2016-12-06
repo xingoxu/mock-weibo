@@ -824,9 +824,14 @@ public class DAO {
         update(sql);
     }
 
-    public static void deleteWeibo(int weiboid){
-        String sql = "DELETE FROM weibo WHERE weiboid="+weiboid;
+    public static void deleteWeibo(int weiboid) {
+        String sql = "DELETE FROM weibo WHERE weiboid=" + weiboid;
         delete(sql);
+    }
+
+    public static void updateAvatar(int userid, String url) {
+        String sql = "UPDATE user SET avatar='/avatars/" + url + "' WHERE userid=" + userid;
+        update(sql);
     }
 
 }

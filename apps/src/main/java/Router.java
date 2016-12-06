@@ -319,7 +319,7 @@ public class Router {
 
 
         post("/avatar", (request, response) -> {
-//            int userid = Integer.parseInt(request.session().attribute("userid"));
+            int userid = Integer.parseInt(request.session().attribute("userid"));
             try {
                 Path tempFile = Files.createTempFile(uploadDir.toPath(), "avatar", ".png");
 
@@ -329,9 +329,10 @@ public class Router {
                     Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
                 }
 
+                DAO.updateAvatar(userid, tempFile.getFileName() + "");
+
                 return "<h1>You uploaded this image:<h1><img src='" + tempFile.getFileName() + "'>";
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return "500";

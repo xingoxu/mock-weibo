@@ -2,7 +2,7 @@
   <div>
     <div class="personal-card">
       <div class="upper">
-        <a href="/{{currentUser.userid}}" class="avatar" style="background-image: {{(currentUser.avatar && currentUser.avatar != 'null') ? ('url('+currentUser.avatar+')') : 'url(http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif)'}}"></a>
+        <a href="/user/{{currentUser.userid}}" class="avatar" style="background-image: {{(currentUser.avatar && currentUser.avatar != 'null') ? ('url('+currentUser.avatar+')') : 'url(http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif)'}}"></a>
       </div>
       <div class="lower">
         <div class="name">

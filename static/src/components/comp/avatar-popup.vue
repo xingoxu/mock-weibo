@@ -1,25 +1,29 @@
 <template lang="html">
-  <popup class="forward popup-wrapper" :show.sync="showAvatarPopup">
+  <popup class="avatar popup-wrapper" :show.sync="showAvatarPopup">
     <span slot="title">设置头像</span>
     <div class="popup-body" slot="body">
       <div>
         <div class="wrapper">
-          <input type="file" accept="images/*" @change="inputChange">
+          <input type="file" accept="images/*" @change="inputChange" v-el:file>
+          <button @click="$els.file.click()" v-show="!showCanvas && !haveImg">
+            <em class="W_ficon ficon_add S_ficon">+</em>
+            选择图片</button>
           <div class="container">
             <div class="resizer" :class="{'have-img': haveImg}">
               <div class="inner" v-el:inner>
-                <img / v-el:img>
+                <img v-el:img ></img>
                 <div class="frames" v-el:frames @mouseup="lastPoint=null" @mousedown="getOffset" @mousemove="mouseMove">
-                  
                 </div>
               </div>
-              <button class="ok" v-el:ok-button @click="clipImage">&#10003;</button>
+              <!-- <button class="ok" v-el:ok-button @click="clipImage">&#10003;</button> -->
               <canvas :width="canvasSize" :height="canvasSize" v-el:canvas v-if="showCanvas"></canvas>
             </div>
           </div>
         </div>
-        <button class="submit">确认</button>
-        <button>取消</button>
+        <div class="buttons">
+          <button class="submit" @click="submit">确认</button>
+          <button @click="showAvatarPopup=false">取消</button>
+        </div>
       </div>
     </div>
   </popup>
@@ -65,7 +69,7 @@
     },
     ready(){
       if(Uint8Array&&HTMLCanvasElement&&atob&&Blob){
-          
+
       }else{
         return false;
       }
@@ -96,7 +100,7 @@
               y=this.resizer.frameOffset.top*scale,
               w=this.resizer.frameOffset.size*scale,
               h=this.resizer.frameOffset.size*scale;
-          
+
           ctx.drawImage(this.resizer.image,x,y,w,h,0,0,size,size);
           var src=canvas.toDataURL();
           this.haveImg = false;
@@ -105,14 +109,13 @@
           if(!src)
             return this.resizer.doneCallback(null);
           src=window.atob(src);
-          
+
           var ia = new Uint8Array(src.length);
           for (var i = 0; i < src.length; i++) {
               ia[i] = src.charCodeAt(i);
           };
-          
+
           this.resizer.doneCallback(new Blob([ia], {type:"image/png"}));
-          console.log('test');
         })
       },
       resize(file,done){
@@ -140,15 +143,12 @@
         this.showCanvas = false;
       },
       getDefaultSize(){
-        console.log(this.$els.inner.offsetWidth);
-        console.log(this.$els.inner.offsetHeight);
         var width = this.$els.inner.offsetWidth,
             height = this.$els.inner.offsetHeight;
         this.offset={
             width: width,
             height: height
         };
-        console.log(this.offset)
         return width>height? height:width;
       },
       setFrameSize(size){
@@ -164,13 +164,13 @@
             size=this.resizer.frameOffset.size,
             width=this.offset.width,
             height=this.offset.height;
-        
+
         if(x+size+left>width){
             x=width-size;
         }else{
             x=x+left;
         };
-        
+
         if(y+size+top>height){
             y=height-size;
         }else{
@@ -180,7 +180,7 @@
         y=y<0?0:y;
         this.$els.frames.style.top = y+'px';
         this.$els.frames.style.left = x+'px';
-        
+
         this.resizer.frameOffset.top=y;
         this.resizer.frameOffset.left=x;
       },
@@ -192,6 +192,7 @@
         var file = event.target.files[0];
         this.resize(file,(file)=>{
             this.resizedImage = file;
+            console.log(this);
         });
       },
       getOffset(event){
@@ -204,14 +205,14 @@
             x=event.clientX;
             y=event.clientY;
         }
-        
+
         if(!this.lastPoint){
             this.lastPoint={
                 x:x,
                 y:y
             };
         };
-        
+
         var offset={
             x:x-this.lastPoint.x,
             y:y-this.lastPoint.y
@@ -228,15 +229,17 @@
         this.moveFrames(offset);
       },
       submit(){
-        var url=$('input.url').val();
-        if(!url||!resizedFile)return;
-        var fd=new FormData();
-        fd.append('file',resizedFile);
-        $.ajax({
-            type:'POST',
-            url:url,
-            data:fd
-        });
+        this.clipImage();
+        setTimeout(()=>{
+          var image = this.resizedImage;
+          var fd = new FormData();
+          fd.append('uploaded_file',image);
+          this.$http.post('/avatar',fd)
+            .then(()=>{
+              window.location.reload();
+            });
+        },1000)
+
       },
       test(){
         // $.imageResizer=function(){
@@ -261,48 +264,95 @@
   div.popup-body {
     // padding-top: 16px;
     padding-top: 10px;
-    padding-bottom: 6px;
+    padding-bottom: 0px;
   }
-  .container{
-      width: 300px;
-  }
-  .resizer{
-      overflow: hidden;
-  }
-  .resizer.have-img button.ok{
-      display: inline-block;
-  }
-  .resizer.have-img .inner {
-      display: block;
-  }
-  .inner{
-      width: 100%;
-      position: relative;
-      font-size: 0;
-      overflow: hidden;
+  .avatar.popup-wrapper {
+    .popup-body {
+      text-align: center;
+      .wrapper {
+        padding-bottom: 20px;
+        button {
+          padding: 0 10px;
+        }
+      }
+    }
+    .container{
+        width: 300px;
+        margin: 0 auto;
+    }
+    .resizer{
+        overflow: hidden;
+    }
+    .resizer.have-img button.ok{
+        display: inline-block;
+    }
+    .resizer.have-img .inner {
+        display: block;
+    }
+    .inner{
+        width: 100%;
+        position: relative;
+        font-size: 0;
+        overflow: hidden;
+        display: none;
+    }
+    img{
+        width: 100%;
+    }
+    .frames{
+        position: absolute;
+        top: 0;
+        left: 0;
+        // border: 1px solid black;
+        cursor: move;
+        outline: rgba(0, 0, 0, 0.6) solid 10000px;
+    }
+    canvas{
+        max-width: 100%;
+        margin:auto;
+        display: block;
+    }
+    input[type=file]{
       display: none;
-  }
-  img{
-      width: 100%;
+    }
+    div.buttons {
+      padding: 10px 0;
+      background: #f2f2f5;
+    }
+    button {
+      padding: 0;
+      white-space: nowrap;
+      display: inline-block;
+      border-radius: 2px;
+      line-height: 25px;
+      text-decoration: none;
+      font-size: 12px;
+      min-width: 60px;
+      text-align: center;
+      outline: none;
+      background: #FFF;
+      border: 1px solid #d9d9d9;
+      color: #333;
+      box-shadow: 0px 1px 2px rgba(0,0,0,0.1);
+      cursor: pointer;
+      &:hover {
+        border-color: #cccccc;
+        box-shadow: 0px 1px 1px rgba(0,0,0,0.15);
+      }
+      em {
+        color: #fa7d3c;
+      }
+      &.submit {
+        background: #ff8140;
+        border: 1px solid #f77c3d;
+        color: #FFF;
+        &:hover {
+          background: #f7671d;
+          border: 1px solid #f06923;
+        }
+      }
+    }
   }
 
-  .frames{
-      position: absolute;
-      top: 0;
-      left: 0;
-      border: 1px solid black;
-      cursor: move;
-      outline: rgba(0, 0, 0, 0.6) solid 10000px;
-  }
-  button.ok{
-      float:right;
-      margin-left: 5px;
-      display: none;
-  }
-  canvas{
-      max-width: 100%;
-      margin:auto;
-      display: block;
-  }
 
 </style>
