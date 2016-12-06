@@ -3,10 +3,17 @@ package DAO;
 import com.google.gson.Gson;
 import config.mysql;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.ArrayList;
 
 import dataObject.*;
+import spark.Request;
+
+import javax.servlet.MultipartConfigElement;
 
 /**
  * Created by xingo on 2016/11/28.
@@ -832,6 +839,20 @@ public class DAO {
     public static void updateAvatar(int userid, String url) {
         String sql = "UPDATE user SET avatar='/avatars/" + url + "' WHERE userid=" + userid;
         update(sql);
+    }
+
+    public static void compressPic(Request request){
+        new Thread(()->{
+            request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+
+            try (InputStream input = request.raw().getPart("uploaded_file").getInputStream()) { // getPart needs to use same "name" as input field in form
+                Files.copy(input, Files.createTempFile(Paths.get("").toAbsolutePath(), "avatar", ".png"), StandardCopyOption.REPLACE_EXISTING);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        });
+
     }
 
 }

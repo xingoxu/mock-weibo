@@ -88,7 +88,7 @@
       display: block;
       width: 140px;
       height: 48px;
-      background: url("http://img.t.sinajs.cn/t6/style/images/global_nav/WB_logo.png?id=1404211047727") no-repeat 0 50%;
+      background: url("https://ooo.0o0.ooo/2016/12/06/5846c3063e23e.png") no-repeat 0 50%;
       background-position: 50% 40%;
       background-size: 70%;
       margin-top: 23px;
