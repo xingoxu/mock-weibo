@@ -9,10 +9,12 @@ import { currentUser } from '../../mockdata/personalData.js';
 Vue.component('App', App);
 window.Vue = Vue;
 
-// new Vue({
-//   el: 'body',
-//   data: {
-//     timeline: timeline,
-//     currentUser: currentUser,
-//   }
-// });
+new Vue({
+  el: 'body',
+  data: {
+    timeline: timeline,
+    currentUser: currentUser,
+    targetUser: currentUser,
+    targetUserCard: currentUser,
+  }
+});

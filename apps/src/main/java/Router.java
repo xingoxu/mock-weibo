@@ -9,13 +9,20 @@ import spark.Request;
 import spark.Response;
 import spark.template.freemarker.FreeMarkerEngine;
 
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
 import static spark.Spark.*;
 
 import DAO.DAO;
+
+import javax.servlet.MultipartConfigElement;
 
 public class Router {
     public static void checkIfLogin(Request request, Response response) {
@@ -42,6 +49,8 @@ public class Router {
     public static void main(String[] args) {
         port(8888);
         staticFiles.externalLocation(Paths.get("").toAbsolutePath().toString() + "/src/main/resources/public"); // Static files
+        File uploadDir = new File(Paths.get("").toAbsolutePath().toString() + "/src/main/resources/public/avatars");
+        uploadDir.mkdir(); // create the upload directory if it doesn't exist
 
         post("/login", (request, response) -> {
             loginRequest loginRequest = (new Gson()).fromJson(request.body(), loginRequest.class);
@@ -144,10 +153,10 @@ public class Router {
         post("/weibo", (req, res) -> {
             return new operationResponse(true, DAO.newWeibo(req.body()));
         }, (new Gson())::toJson);
-        delete("/weibo/:weiboid",(req,res)->{
+        delete("/weibo/:weiboid", (req, res) -> {
             DAO.deleteWeibo(Integer.parseInt(req.params("weiboid")));
-          return new operationResponse(true,0);
-        },(new Gson())::toJson);
+            return new operationResponse(true, 0);
+        }, (new Gson())::toJson);
 
 
         post("/comment", (req, res) -> {
@@ -307,6 +316,26 @@ public class Router {
             attributes.put("notification", json_enc(DAO.getUserNotificationNumber(userid)));
             return new ModelAndView(attributes, "searchUser.html");
         }, new FreeMarkerEngine());
+
+
+        post("/avatar", (request, response) -> {
+//            int userid = Integer.parseInt(request.session().attribute("userid"));
+            try {
+                Path tempFile = Files.createTempFile(uploadDir.toPath(), "avatar", ".png");
+
+                request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+
+                try (InputStream input = request.raw().getPart("uploaded_file").getInputStream()) { // getPart needs to use same "name" as input field in form
+                    Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                return "<h1>You uploaded this image:<h1><img src='" + tempFile.getFileName() + "'>";
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+            return "500";
+        });
 
         get("/report/:weiboid", (req, res) -> {
             int weiboid = Integer.parseInt(req.params("weiboid"));

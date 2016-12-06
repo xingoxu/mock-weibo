@@ -11,6 +11,7 @@
       <p>京ICP证100780号 互联网药品服务许可证 互联网医疗保健许可证 京网文[2014]2046-296号 京ICP备12002058号 增值电信业务经营许可证B2-20140447</p>
       <p>Copyright © 2009-2016 WEIBO 北京微梦创科网络技术有限公司 京公网安备11000002000019号</p>
     </footer>
+    <avatar-popup v-ref:avatar-popup ></avatar-popup>
     <new-weibo-popup v-ref:new-weibo-popup :current-user="currentUser"></new-weibo-popup>
     <forward-popup v-ref:forward-popup :current-user="currentUser"></forward-popup>
     <cancel-favourite-popup v-ref:cancel-favourite-popup></cancel-favourite-popup>
@@ -27,6 +28,7 @@ import forwardPopup from '../../components/comp/forward-popup';
 import favouriteSuccessPopup from '../../components/comp/favourite-success-popup';
 import cancelFavouritePopup from '../../components/comp/cancel-favourite-popup';
 import newWeiboPopup from '../../components/comp/new-weibo-popup';
+import avatarPopup from '../../components/comp/avatar-popup';
 
 export default {
   props: ['timeline','currentUser','notification','targetUser','targetUserCard'],
@@ -60,6 +62,9 @@ export default {
     },
     showNewWeiboPopup(){
       this.$refs.newWeiboPopup.$emit('show');
+    },
+    showAvatarUpload(){
+      this.$refs.avatarPopup.$emit('show');
     }
   },
   components: {
@@ -70,7 +75,8 @@ export default {
     favouriteSuccessPopup,
     cancelFavouritePopup,
     newWeiboPopup,
-    personalHeader
+    personalHeader,
+    avatarPopup
   }
 }
 </script>

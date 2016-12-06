@@ -6,7 +6,7 @@
       </div>
       <div class="shadow">
         <!-- canSelect -->
-        <div class="pf_photo">
+        <div class="pf_photo" :class="{'canSelect': user.userid==currentUser.userid}" @click="showUpload">
           <img :src="(user.avatar&&user.avatar!='null') ? user.avatar :'http://tva1.sinaimg.cn/default/images/default_avatar_female_50.gif'" />
         </div>
         <div class="pf_username">
@@ -106,6 +106,11 @@ export default {
         .then((response)=>{
 
         });
+    },
+    showUpload(){
+      if(this.user.userid!=this.currentUser.userid)
+        return;
+      this.$dispatch('showAvatarUpload');
     },
   }
 }
