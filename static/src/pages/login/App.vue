@@ -55,7 +55,7 @@
         this.inputDisabled = true;
         this.$http.post('/login',this.model)
         .then((response)=>{
-          var data = JSON.parse(response.data);
+          var data = response.data;
           if(data.success){
             document.cookie = response.headers.get('Set-Cookie');
             location.href = "/";

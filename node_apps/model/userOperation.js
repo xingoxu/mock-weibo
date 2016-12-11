@@ -1,7 +1,7 @@
 /**
  * Created by xingo on 2016/12/07.
  */
-var curryPromise = require('./utils/curryPromise');
+var curryPromise = require('./curryPromise');
 
 var SQLQuotes = {
         byName: 'SELECT * FROM user WHERE username=?',

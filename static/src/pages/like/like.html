@@ -13,9 +13,9 @@
     window.vm = new Vue({
       el: 'body',
       data: {
-        likes: ${likes},
-        currentUser: ${currentUser},
-        notification: ${notification},
+        likes: <%- JSON.stringify(likes) %>,
+        currentUser: <%- JSON.stringify(currentUser) %>,
+        notification: <%- JSON.stringify(notification) %>,
       }
     });
   </script>

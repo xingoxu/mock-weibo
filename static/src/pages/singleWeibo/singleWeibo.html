@@ -13,9 +13,9 @@
     window.vm = new Vue({
         el: 'body',
         data: {
-          weibo: ${weibo},
-          currentUser: ${currentUser},
-          notification: ${notification},
+          weibo: <%- JSON.stringify(weibo) %>,
+          currentUser: <%- JSON.stringify(currentUser) %>,
+          notification: <%- JSON.stringify(notification) %>,
         }
       });
   </script>

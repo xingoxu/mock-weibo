@@ -1,0 +1,9 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>微博搜索 - abc - 微博</title><link href=/static/css/searchUser.3a026c1769c7699f6d4cf5ff25812493.css rel=stylesheet></head><body><app :users=users :current-user=currentUser :notification=notification :keywords=keywords></app><script type=text/javascript src=/static/js/manifest.6c018eb3caa28fe79555.js></script><script type=text/javascript src=/static/js/vendor.a8d8ea2a1b6272f1d6fa.js></script><script type=text/javascript src=/static/js/searchUser.49be8427c1c49722e564.js></script></body><script>window.vm = new Vue({
+      el: 'body',
+      data: {
+        currentUser: <%- JSON.stringify(currentUser) %>,
+        notification: <%- JSON.stringify(notification) %>,
+        keywords: <%- JSON.stringify(keywords) %>,
+        users: <%- JSON.stringify(users) %>,
+      }
+    });</script></html>

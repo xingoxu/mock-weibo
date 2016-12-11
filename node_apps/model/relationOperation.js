@@ -1,7 +1,7 @@
 /**
  * Created by xingo on 2016/12/09.
  */
-var curryPromise = require('./utils/curryPromise');
+var curryPromise = require('./curryPromise');
 
 var SQLQuotes = {
         follow: 'INSERT INTO follow (userid,followingid,time) VALUES (?,?,?)',

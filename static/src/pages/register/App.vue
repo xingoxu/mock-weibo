@@ -92,7 +92,7 @@
             }
             this.$http.post('/register',registerForm)
               .then((response)=>{
-                var data = JSON.parse(response.data);
+                var data = response.data;
                 if(data.success){
                   this.registerSuccess = true;
                   document.cookie = response.headers.get('Set-Cookie');

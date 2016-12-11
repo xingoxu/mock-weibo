@@ -13,8 +13,8 @@
     window.vm = new Vue({
       el: 'body',
       data: {
-        weibo: ${weibo},
-        currentUser: ${currentUser},
+        weibo: <%- JSON.stringify(weibo) %>,
+        currentUser: <%- JSON.stringify(currentUser) %>,
       }
     });
   </script>

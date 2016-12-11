@@ -13,9 +13,9 @@
     window.vm = new Vue({
       el: 'body',
       data: {
-        fullUserData: ${fullUserData},
-        currentUser: ${currentUser},
-        notification: ${notification},
+        fullUserData: <%- JSON.stringify(fullUserData) %>,
+        currentUser: <%- JSON.stringify(currentUser) %>,
+        notification: <%- JSON.stringify(notification) %>,
       }
     });
   </script>

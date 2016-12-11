@@ -71,7 +71,7 @@ export default {
 
       this.$http.post('/weibo',weibo)
         .then((response)=>{
-          var data = JSON.parse(response.data);
+          var data = response.data;
           weibo.weiboid = data.id;
         })
         .then(()=>{

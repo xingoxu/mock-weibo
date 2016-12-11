@@ -4,7 +4,7 @@
 /**
  * Created by xingo on 2016/12/07.
  */
-var curryPromise = require('./utils/curryPromise');
+var curryPromise = require('./curryPromise');
 
 var SQLQuotes = {
         newWeibo: 'INSERT INTO weibo (userid,text,time) VALUES (?,?,?)',
@@ -35,7 +35,7 @@ var SQLQuotes = {
         newWeibo: curryPromise(SQLQuotes.newWeibo),
         newForward: curryPromise(SQLQuotes.newForward),
         at: curryPromise(SQLQuotes.at),
-        getLikeCountWeibo: curryPromise(SQLQuotes.at),
+        getLikeCountWeibo: curryPromise(SQLQuotes.getLikeCountWeibo),
         getLikeCountComment: curryPromise(SQLQuotes.getLikeCountComment),
         getForwardCount: curryPromise(SQLQuotes.getForwardCount),
         getCommentCount: curryPromise(SQLQuotes.getCommentCount),

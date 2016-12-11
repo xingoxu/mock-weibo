@@ -3,7 +3,7 @@
  */
 module.exports = (function () {
     var mysql = require('mysql'),
-        conf = require('../config/connection'),
+        conf = require('../config/mysql'),
         connectionPool = mysql.createPool(conf);
     return connectionPool;
 })();

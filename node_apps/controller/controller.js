@@ -35,15 +35,15 @@ function getUserCard(user) {
     userCard.intro = user.intro;
     userCard.avatar = user.avatar;
     return userOperation.getFansNumber(userCard.userid)
-        .then((result)=> {
+        .then((result) => {
             userCard.fans = getNumber(result);
             return userOperation.getFollowNumber(userCard.userid);
         })
-        .then((result)=> {
+        .then((result) => {
             userCard.following = getNumber(result);
             return userOperation.getWeiboNumber(userCard.userid);
         })
-        .then((result)=> {
+        .then((result) => {
             userCard.weibo = getNumber(result);
             return userCard;
         });
@@ -62,13 +62,14 @@ function getUserCardByName(username) {
 }
 function register(username, password, email) {
     return getUserByName(username)
-        .then((user)=> {
+        .then((user) => {
             if (user)
                 return {
-                    success: false
+                    success: false,
+                    reason: '用户名已存在'
                 };
             return userOperation.register(username, password, email)
-                .then((result)=> {
+                .then((result) => {
                     return {
                         success: true,
                         id: result.insertId
@@ -78,14 +79,14 @@ function register(username, password, email) {
 }
 function login(username, password) {
     return getUserByName(username)
-        .then((user)=> {
+        .then((user) => {
             if (!user)
                 return Promise.resolve({
                     success: false,
                     reason: '没有此用户',
                 });
             return userOperation.getUserByID(user.userid)
-                .then((result)=> {
+                .then((result) => {
                     if (result[0].password != password)
                         return Promise.resolve({
                             success: false,
@@ -125,27 +126,27 @@ function getSingleWeibo(result) {
         time: result[0].time,
     };
     var promise = getUserCardByID(weiboUserid)
-        .then((usercard)=> {
+        .then((usercard) => {
             weibo.user = usercard;
             return getLikeCount(weibo.weiboid, false);
         })
-        .then((number)=> {
+        .then((number) => {
             weibo.like = number;
             return getCommentCount(weibo.weiboid);
         })
-        .then((number)=> {
+        .then((number) => {
             weibo.comment = number;
             return getForwardCount(weibo.weiboid);
         })
-        .then((number)=> {
+        .then((number) => {
             weibo.forward = number;
             return weibo;
         });
-    if (!weibo.forward_weiboid)
-        promise.then(()=> {
+    if (weibo.forward_weiboid)
+        promise.then(() => {
             return getSingleWeiboByID(weibo.weiboid);
         })
-            .then((forwardWeibo)=> {
+            .then((forwardWeibo) => {
                 weibo.forwardWeibo = forwardWeibo;
                 return weibo;
             });
@@ -170,23 +171,23 @@ function getSingleWeibos(result) {
         };
         var promise = (function (weibo, weiboUserid) {
             return getUserCardByID(weiboUserid)
-                .then((user)=> {
+                .then((user) => {
                     weibo.user = user;
                     return getLikeCount(weibo.weiboid, false);
                 })
-                .then((number)=> {
+                .then((number) => {
                     weibo.like = number;
                     return getCommentCount(weibo.weiboid);
                 })
-                .then((number)=> {
+                .then((number) => {
                     weibo.comment = number;
                     return getForwardCount(weibo.weiboid);
                 })
-                .then((number)=> {
+                .then((number) => {
                     weibo.forward = number;
-                    if (!weibo.forward_weiboid) {
+                    if (weibo.forward_weiboid) {
                         return getSingleWeiboByID(weibo.forward_weiboid)
-                            .then((forwardWeibo)=> {
+                            .then((forwardWeibo) => {
                                 weibo.forwardWeibo = forwardWeibo;
                             })
                     }
@@ -198,7 +199,7 @@ function getSingleWeibos(result) {
         promises.push(promise);
     }
     return Promise.all(promises)
-        .then(()=> {
+        .then(() => {
             return weibos;
         });
 }
@@ -211,7 +212,7 @@ function newWeibo(weibo) {
     else {
         promise = weiboOperation.newForward(weibo.user.userid, weibo.text, weibo.time, weibo.forward_weiboid);
     }
-    return promise.then((result)=> {
+    return promise.then((result) => {
         if (weibo.ats && weibo.ats.length > 0) {
             atPeoples(weibo.ats, weibo.user.userid, result.insertId, weibo.time);
         }
@@ -223,7 +224,7 @@ function newWeibo(weibo) {
 }
 function newSpam(spam) {
     return weiboOperation.newSpam(spam.user.userid, spam.weiboid, spam.text)
-        .then(()=> {
+        .then(() => {
             return {
                 success: true,
                 id: result.insertId
@@ -234,18 +235,18 @@ function newComment(comment) {
     var promise;
     if (comment.comment_commentid) {
         promise = getSingleCommentByID(comment.comment_commentid)
-            .then((comment_comment)=> {
+            .then((comment_comment) => {
                 return weiboOperation.newCommentOnOther(comment.user.userid, comment.text, comment.time, comment.weiboid, comment.comment_commentid, comment_comment.user.userid);
             });
     }
     else {
         promise = getSingleWeiboByID(comment.weiboid)
-            .then((weibo)=> {
+            .then((weibo) => {
                 return weiboOperation.newComment(comment.user.userid, comment.text, comment.time, comment.weiboid, weibo.user.userid);
             });
     }
     return promise
-        .then((result)=> {
+        .then((result) => {
             if (comment.ats && comment.ats.length > 0) {
                 atPeoples(comment.ats, comment.user.userid, result.insertId, comment.time);
             }
@@ -265,9 +266,16 @@ function getSingleComment(result) {
         time: result[0].time,
         comment_commentid: result[0].comment_commentid,
     };
-    return getLikeCount(comment.commentid, true)
-        .then((number)=> {
+    var userCardPromise = getUserCardByID(result[0].userid)
+        .then((usercard) => {
+            comment.user = usercard;
+        });
+    var likeCountPromise = getLikeCount(comment.commentid, true)
+        .then((number) => {
             comment.like = number;
+        });
+    return Promise.all([userCardPromise, likeCountPromise])
+        .then(() => {
             return comment;
         });
 }
@@ -290,11 +298,11 @@ function getSingleComments(result) {
         };
         var promise = (function (comment, weiboUserid) {
             return getUserCardByID(weiboUserid)
-                .then((user)=> {
+                .then((user) => {
                     comment.user = user;
-                    return getLikeCount(comment.weiboid, false);
+                    return getLikeCount(comment.commentid, true);
                 })
-                .then((number)=> {
+                .then((number) => {
                     comment.like = number;
                     return comment;
                 })
@@ -303,7 +311,7 @@ function getSingleComments(result) {
         promises.push(promise);
     }
     return Promise.all(promises)
-        .then(()=> {
+        .then(() => {
             return comments;
         });
 }
@@ -313,32 +321,32 @@ function getWeiboComments(weiboid) {
 
 function follow(request) {
     return relationOperation.follow(request.userid, request.target_userid, request.time)
-        .then(()=> {
+        .then(() => {
             return successObject
         });
 }
 function cancelFollow(request) {
     return relationOperation.cancelFollow(request.userid, request.target_userid)
-        .then(()=> {
+        .then(() => {
             return successObject
         });
 }
 function removeFollower(request) {
     return relationOperation.cancelFollow(request.target_userid, request.userid)
-        .then(()=> {
+        .then(() => {
             return successObject
         });
 }
 
 function favourite(request) {
     return relationOperation.favourite(request.userid, request.weiboid, request.time)
-        .then(()=> {
+        .then(() => {
             return successObject
         });
 }
 function cancelFavourite(request) {
     return relationOperation.cancelFavourite(request.userid, request.weiboid)
-        .then(()=> {
+        .then(() => {
             return successObject
         });
 }
@@ -347,17 +355,17 @@ function newLike(request) {
     var promise;
     if (request.weiboid) {
         promise = getSingleWeiboByID(request.weiboid)
-            .then((weibo)=> {
+            .then((weibo) => {
                 return relationOperation.newWeiboLike(request.userid, request.weiboid, request.time, weibo.user.userid);
             })
     }
     else {
         promise = getSingleCommentByID(request.commentid)
-            .then((comment)=> {
-                return relationOperation.newCommentLike(request.userid, request.weiboid, request.time, comment.user.userid);
+            .then((comment) => {
+                return relationOperation.newCommentLike(request.userid, request.commentid, request.time, comment.user.userid);
             })
     }
-    return promise.then(()=> {
+    return promise.then(() => {
         return successObject;
     })
 }
@@ -367,15 +375,15 @@ function cancelLike(request) {
     if (request.weiboid)
         promise = relationOperation.cancelWeiboLike(request.userid, request.weiboid);
     else
-        promise = relationOperation.cancelCommentLike(request.userid, request.weiboid);
-    return promise.then(()=> {
+        promise = relationOperation.cancelCommentLike(request.userid, request.commentid);
+    return promise.then(() => {
         return successObject
     });
 }
 
 function atOne(userid, weiboid, username, time) {
     return getUserByName(username)
-        .then((user)=> {
+        .then((user) => {
             if (!user)
                 return Promise.reject();
             return weiboOperation.at(userid, weiboid, user.userid, time);
@@ -389,7 +397,7 @@ function atPeoples(atsName, userid, weiboid, time) {
 }
 
 function getFavourited(userid, weiboid) {
-    return relationOperation.getFavourited(weiboid, userid).then(getNumber).then((number)=> {
+    return relationOperation.getFavourited(weiboid, userid).then(getNumber).then((number) => {
         return number > 0
     });
 }
@@ -399,14 +407,14 @@ function getLiked(userid, id, isComment) {
         promise = relationOperation.getCommentLiked(id, userid);
     else
         promise = relationOperation.getWeiboLiked(id, userid);
-    return promise.then(getNumber).then((number)=> {
+    return promise.then(getNumber).then((number) => {
         return number > 0
     });
 }
 
 function getUserFollowingIDs(userid) {
     return userOperation.getUserFollowingIDs(userid)
-        .then((result)=> {
+        .then((result) => {
             var users = [];
             for (var i = 0; i < result.length; i++) {
                 users.push(result[i].followingid);
@@ -415,29 +423,29 @@ function getUserFollowingIDs(userid) {
         });
 }
 function indexTimeline(userid) {
-    return userOperation.getUserFollowingIDs(userid)
-        .then((userids)=> {
+    return getUserFollowingIDs(userid)
+        .then((userids) => {
             return weiboOperation.getTimeLine(userids).then(getSingleWeibos);
         })
-        .then((weibos)=> {
+        .then((weibos) => {
             var promises = [];
             for (var i = 0; i < weibos.length; i++) {
                 var favouritePromise = (function (weibo) {
                     return getFavourited(userid, weibo.weiboid)
-                        .then((isFavourited)=> {
+                        .then((isFavourited) => {
                             weibo.favourited = isFavourited;
                         });
                 })(weibos[i]);
                 var likePromise = (function (weibo) {
                     return getLiked(userid, weibo.weiboid, false)
-                        .then((isLiked)=> {
+                        .then((isLiked) => {
                             weibo.liked = isLiked;
                         });
                 })(weibos[i]);
                 promises.push(favouritePromise);
                 promises.push(likePromise);
             }
-            return Promise.all(promises).then(()=> {
+            return Promise.all(promises).then(() => {
                 return weibos;
             });
         })
@@ -446,44 +454,44 @@ function indexTimeline(userid) {
 function getUserNotificationNumber(userid) {
     var notification = {};
     var atPromise = relationOperation.getAtUnReadCount(userid).then(getNumber)
-        .then((number)=> {
+        .then((number) => {
             notification.at = number;
         });
     var commentPromise = relationOperation.getCommentUnReadCount(userid).then(getNumber)
-        .then((number)=> {
-            notification.comment = number;
+        .then((number) => {
+            notification.comments = number;
         });
     var likePromise = relationOperation.getLikeUnReadCount(userid).then(getNumber)
-        .then((number)=> {
+        .then((number) => {
             notification.like = number;
         });
     return Promise.all([atPromise, commentPromise, likePromise])
-        .then(()=> {
+        .then(() => {
             return notification;
         })
 }
 function userTimeline(userid, login_userid) {
     return weiboOperation.getUserTimeline(userid)
         .then(getSingleWeibos)
-        .then((weibos)=> {
+        .then((weibos) => {
             var promises = [];
             for (var i = 0; i < weibos.length; i++) {
                 var favouritePromise = (function (weibo) {
                     return getFavourited(login_userid, weibo.weiboid)
-                        .then((isFavourited)=> {
+                        .then((isFavourited) => {
                             weibo.favourited = isFavourited;
                         });
                 })(weibos[i]);
                 var likePromise = (function (weibo) {
                     return getLiked(login_userid, weibo.weiboid, false)
-                        .then((isLiked)=> {
+                        .then((isLiked) => {
                             weibo.liked = isLiked;
                         });
                 })(weibos[i]);
                 promises.push(favouritePromise);
                 promises.push(likePromise);
             }
-            return Promise.all(promises).then(()=> {
+            return Promise.all(promises).then(() => {
                 return weibos;
             });
         })
@@ -491,27 +499,28 @@ function userTimeline(userid, login_userid) {
 
 function favouriteTimeline(userid) {
     return weiboOperation.getFavouriteWeiboIDs(userid)
-        .then((result)=> {
+        .then((result) => {
             var weiboids = [];
             for (var i = 0; i < result.length; i++) {
-                weiboids.push(result[0].weiboid);
+                if (result[i].weiboid)
+                    weiboids.push(result[i].weiboid);
             }
             return weiboOperation.getWeiboInID(weiboids);
         })
         .then(getSingleWeibos)
-        .then((weibos)=> {
+        .then((weibos) => {
             var promises = [];
             for (var i = 0; i < weibos.length; i++) {
-                weibo.favourited = true;
+                weibos[i].favourited = true;
                 var likePromise = (function (weibo) {
                     return getLiked(userid, weibo.weiboid, false)
-                        .then((isLiked)=> {
+                        .then((isLiked) => {
                             weibo.liked = isLiked;
                         });
                 })(weibos[i]);
                 promises.push(likePromise);
             }
-            return Promise.all(promises).then(()=> {
+            return Promise.all(promises).then(() => {
                 return weibos;
             });
         })
@@ -519,27 +528,28 @@ function favouriteTimeline(userid) {
 
 function likeTimeline(userid) {
     return weiboOperation.getLikeWeiboIDs(userid)
-        .then((result)=> {
+        .then((result) => {
             var weiboids = [];
             for (var i = 0; i < result.length; i++) {
-                weiboids.push(result[0].weiboid);
+                if (result[i].weiboid)
+                    weiboids.push(result[i].weiboid);
             }
             return weiboOperation.getWeiboInID(weiboids);
         })
         .then(getSingleWeibos)
-        .then((weibos)=> {
+        .then((weibos) => {
             var promises = [];
             for (var i = 0; i < weibos.length; i++) {
                 var favouritePromise = (function (weibo) {
                     return getFavourited(userid, weibo.weiboid)
-                        .then((isFavourited)=> {
+                        .then((isFavourited) => {
                             weibo.favourited = isFavourited;
                         });
                 })(weibos[i]);
-                weibo.liked = true;
+                weibos[i].liked = true;
                 promises.push(favouritePromise);
             }
-            return Promise.all(promises).then(()=> {
+            return Promise.all(promises).then(() => {
                 return weibos;
             });
         })
@@ -556,48 +566,51 @@ function setLikeHasRead(userid) {
 }
 
 function setRelation(userid, usercard) {
+    if (!usercard)
+        return Promise.resolve(usercard);
     var followPromise = relationOperation.getFollowed(userid, usercard.userid).then(getNumber)
-        .then((number)=> {
+        .then((number) => {
             usercard.followed = number > 0;
         });
     var beFollowedPromise = relationOperation.getFollowed(usercard.userid, userid).then(getNumber)
-        .then((number)=> {
+        .then((number) => {
             usercard.beFollowed = number > 0;
         });
-    return Promise.all([followPromise, beFollowedPromise]).then(()=> {
+    return Promise.all([followPromise, beFollowedPromise]).then(() => {
         return usercard;
     });
 }
 
 function atTimeline(userid) {
     return weiboOperation.getAtWeiboIDs(userid)
-        .then((result)=> {
+        .then((result) => {
             var weiboids = [];
             for (var i = 0; i < result.length; i++) {
-                weiboids.push(result[0].weiboid);
+                if (result[i].weiboid)
+                    weiboids.push(result[i].weiboid);
             }
             return weiboOperation.getWeiboInID(weiboids);
         })
         .then(getSingleWeibos)
-        .then((weibos)=> {
+        .then((weibos) => {
             var promises = [];
             for (var i = 0; i < weibos.length; i++) {
                 var favouritePromise = (function (weibo) {
                     return getFavourited(userid, weibo.weiboid)
-                        .then((isFavourited)=> {
+                        .then((isFavourited) => {
                             weibo.favourited = isFavourited;
                         });
                 })(weibos[i]);
                 var likePromise = (function (weibo) {
                     return getLiked(userid, weibo.weiboid, false)
-                        .then((isLiked)=> {
+                        .then((isLiked) => {
                             weibo.liked = isLiked;
                         });
                 })(weibos[i]);
                 promises.push(likePromise);
                 promises.push(favouritePromise);
             }
-            return Promise.all(promises).then(()=> {
+            return Promise.all(promises).then(() => {
                 return weibos;
             });
         })
@@ -609,7 +622,7 @@ function forwardWeibos(weiboid) {
 
 function commentPageComments(userid) {
     return weiboOperation.commentPageComments(userid)
-        .then((result)=> {
+        .then((result) => {
             var comments = [];
             var promises = [];
             for (var i = 0; i < result.length; i++) {
@@ -620,21 +633,21 @@ function commentPageComments(userid) {
                 };
                 var userPromise = (function (comment) {
                     return getUserCardByID(result[i].userid)
-                        .then((usercard)=> {
+                        .then((usercard) => {
                             comment.user = usercard;
                         })
                 })(comment);
                 var commentPromise;
                 if (result[i].comment_commentid) {
                     commentPromise = (function (comment, commentid) {
-                        return getSingleCommentByID(commentid).then((commentResult)=> {
+                        return getSingleCommentByID(commentid).then((commentResult) => {
                             comment.comment = commentResult;
                         });
                     })(comment, result[i].comment_commentid);
                 }
                 else {
                     commentPromise = (function (comment, weiboid) {
-                        return getSingleWeiboByID(weiboid).then((weibo)=> {
+                        return getSingleWeiboByID(weiboid).then((weibo) => {
                             comment.weibo = weibo;
                         });
                     })(comment, result[i].weiboid);
@@ -644,7 +657,7 @@ function commentPageComments(userid) {
                 comments.push(comment);
             }
             return Promise.all(promises)
-                .then(()=> {
+                .then(() => {
                     return comments;
                 });
         })
@@ -652,7 +665,7 @@ function commentPageComments(userid) {
 
 function likePageLikes(userid) {
     return weiboOperation.likePageLikes(userid)
-        .then((result)=> {
+        .then((result) => {
             var likes = [];
             var promises = [];
             for (var i = 0; i < result.length; i++) {
@@ -662,21 +675,21 @@ function likePageLikes(userid) {
                 };
                 var userPromise = (function (like) {
                     return getUserCardByID(result[i].userid)
-                        .then((usercard)=> {
+                        .then((usercard) => {
                             like.user = usercard;
                         })
                 })(like);
                 var commentPromise;
                 if (result[i].commentid) {
                     commentPromise = (function (like, commentid) {
-                        return getSingleCommentByID(commentid).then((commentResult)=> {
+                        return getSingleCommentByID(commentid).then((commentResult) => {
                             like.comment = commentResult;
                         });
                     })(like, result[i].commentid);
                 }
                 else {
                     commentPromise = (function (like, weiboid) {
-                        return getSingleWeiboByID(weiboid).then((weibo)=> {
+                        return getSingleWeiboByID(weiboid).then((weibo) => {
                             like.weibo = weibo;
                         });
                     })(like, result[i].weiboid);
@@ -686,7 +699,7 @@ function likePageLikes(userid) {
                 likes.push(like);
             }
             return Promise.all(promises)
-                .then(()=> {
+                .then(() => {
                     return likes;
                 });
         })
@@ -694,20 +707,20 @@ function likePageLikes(userid) {
 
 function getFollowingUsers(userid) {
     return userOperation.getUserFollowingIDs(userid)
-        .then((result)=> {
+        .then((result) => {
             var usercards = [];
             var promise = Promise.resolve();
             for (var i = 0; i < result.length; i++) {
                 (function (result) {
-                    promise.then(()=> {
-                        return getUserCardByID(result.followingid).then((usercard)=> {
+                    promise = promise.then(() => {
+                        return getUserCardByID(result.followingid).then((usercard) => {
                             usercards.push(usercard);
-                            return setRelation(userid,usercard);
+                            return setRelation(userid, usercard);
                         });
                     });
                 })(result[i]);
             }
-            promise.then(()=>{
+            promise = promise.then(() => {
                 return usercards;
             });
             return promise;
@@ -716,89 +729,128 @@ function getFollowingUsers(userid) {
 
 function getFollowerusers(userid) {
     return userOperation.getFollowerUsers(userid)
-        .then((result)=> {
+        .then((result) => {
             var usercards = [];
             var promise = Promise.resolve();
             for (var i = 0; i < result.length; i++) {
                 (function (result) {
-                    promise.then(()=> {
-                        return getUserCardByID(result.userid).then((usercard)=> {
+                    promise = promise.then(() => {
+                        return getUserCardByID(result.userid).then((usercard) => {
                             usercards.push(usercard);
-                            return setRelation(userid,usercard);
+                            return setRelation(userid, usercard);
                         });
                     });
                 })(result[i]);
             }
-            promise.then(()=>{
+            promise = promise.then(() => {
                 return usercards;
             });
             return promise;
         })
 }
-function getSearchWeibos(keyword,userid){
+function getSearchWeibos(keyword, userid) {
     return weiboOperation.getSearchWeibos(`%${keyword}%`)
         .then(getSingleWeibos)
-        .then((weibos)=> {
+        .then((weibos) => {
+            if (!weibos)
+                return null;
             var promises = [];
             for (var i = 0; i < weibos.length; i++) {
                 var favouritePromise = (function (weibo) {
                     return getFavourited(userid, weibo.weiboid)
-                        .then((isFavourited)=> {
+                        .then((isFavourited) => {
                             weibo.favourited = isFavourited;
                         });
                 })(weibos[i]);
                 var likePromise = (function (weibo) {
                     return getLiked(userid, weibo.weiboid, false)
-                        .then((isLiked)=> {
+                        .then((isLiked) => {
                             weibo.liked = isLiked;
                         });
                 })(weibos[i]);
                 promises.push(favouritePromise);
                 promises.push(likePromise);
             }
-            return Promise.all(promises).then(()=> {
+            return Promise.all(promises).then(() => {
                 return weibos;
             });
         })
 }
 
 function getSearchUsers(keywords, userid) {
-    return userOperation.getSearchUsers(`%${keyword}%`)
-        .then((result)=> {
+    return userOperation.getSearchUsers(`%${keywords}%`)
+        .then((result) => {
             var usercards = [];
             var promise = Promise.resolve();
             for (var i = 0; i < result.length; i++) {
                 (function (result) {
-                    promise.then(()=> {
-                        return getUserCardByID(result.userid).then((usercard)=> {
+                    promise = promise.then(() => {
+                        return getUserCardByID(result.userid).then((usercard) => {
                             usercards.push(usercard);
-                            return setRelation(userid,usercard);
+                            return setRelation(userid, usercard);
                         });
                     });
                 })(result[i]);
             }
-            promise.then(()=>{
+            promise = promise.then(() => {
                 return usercards;
             });
             return promise;
         })
 }
-function updateUser(user){
-    return userOperation.updateUser(user.username,user.intro,user.area,user.birthday,user.mail,user.userid);
+function updateUser(user) {
+    return userOperation.updateUser(user.username, user.intro, user.area, user.birthday, user.mail, user.userid);
 }
 function updatePassword(userid, password) {
-    return userOperation.updatePassword(password,userid);
+    return userOperation.updatePassword(password, userid);
 }
 function deleteWeibo(weiboid) {
     return userOperation.deleteWeibo(weiboid);
 }
 function updateAvatar(userid, url) {
-    return userOperation.updateAvatar(url,userid);
+    return userOperation.updateAvatar(url, userid);
 }
 
 module.exports = {
     getUserByID,
     getUserByName,
     getUserCardByID,
-    getUserCardByName
+    getUserCardByName,
+    login,
+    register,
+    likeTimeline,
+    getUserNotificationNumber,
+    newLike,
+    cancelLike,
+    indexTimeline,
+    updatePassword,
+    getSingleWeiboByID,
+    newSpam,
+    userTimeline,
+    setRelation,
+    updateAvatar,
+    favouriteTimeline,
+    favourite,
+    cancelFavourite,
+    updateUser,
+    getFavourited,
+    getLiked,
+    newWeibo,
+    deleteWeibo,
+    newComment,
+    follow,
+    cancelFollow,
+    removeFollower,
+    forwardWeibos,
+    getWeiboComments,
+    setAtHasRead,
+    setCommentHasRead,
+    setLikeHasRead,
+    getFollowerusers,
+    getFollowingUsers,
+    atTimeline,
+    commentPageComments,
+    likePageLikes,
+    getSearchUsers,
+    getSearchWeibos
 };

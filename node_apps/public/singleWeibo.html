@@ -1,0 +1,8 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>微博</title><link href=/static/css/singleWeibo.2d0f0ae387312bca6fab3c245878a9b6.css rel=stylesheet></head><body><app :weibo=weibo :current-user=currentUser :notification=notification></app><script type=text/javascript src=/static/js/manifest.6c018eb3caa28fe79555.js></script><script type=text/javascript src=/static/js/vendor.a8d8ea2a1b6272f1d6fa.js></script><script type=text/javascript src=/static/js/singleWeibo.1abc4d4a6703dfba656f.js></script></body><script>window.vm = new Vue({
+        el: 'body',
+        data: {
+          weibo: <%- JSON.stringify(weibo) %>,
+          currentUser: <%- JSON.stringify(currentUser) %>,
+          notification: <%- JSON.stringify(notification) %>,
+        }
+      });</script></html>

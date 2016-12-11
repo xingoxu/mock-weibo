@@ -132,7 +132,7 @@
 
         this.$http.post('/weibo',weibo)
           .then((response)=>{
-            var data = JSON.parse(response.data);
+            var data = response.data;
             weibo.weiboid = data.id;
           })
           .then(()=>{
@@ -159,7 +159,7 @@
         // comment.ats = app.getAts(comment.text);
         this.$http.post('/comment',comment)
           .then((response)=>{
-            comment.commentid = JSON.parse(response.data).id;
+            comment.commentid = response.data.id;
             this.inputWeibo = '';
             this.successSended = true;
             this.$dispatch('newCommentSended',comment);

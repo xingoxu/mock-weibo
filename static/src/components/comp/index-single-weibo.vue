@@ -52,7 +52,7 @@ export default {
         // },3000);
         this.$http.get(`/comments/${this.weibo.weiboid}`)
           .then((response)=>{
-            var data = JSON.parse(response.data);
+            var data = response.data;
             if(data==null)
               data={
                 comments: [],

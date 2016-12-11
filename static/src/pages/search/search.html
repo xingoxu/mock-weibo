@@ -13,11 +13,11 @@
     window.vm = new Vue({
       el: 'body',
       data: {
-        timeline: ${timeline},
-        users: ${users},
-        currentUser: ${currentUser},
-        notification: ${notification},
-        keywords: ${keywords},
+        timeline: <%- JSON.stringify(timeline) %>,
+        currentUser: <%- JSON.stringify(currentUser) %>,
+        notification: <%- JSON.stringify(notification) %>,
+        keywords: <%- JSON.stringify(keywords) %>,
+        users: <%- JSON.stringify(users) %>,
       }
     });
   </script>

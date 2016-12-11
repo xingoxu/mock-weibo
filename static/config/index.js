@@ -4,8 +4,8 @@ var path = require('path')
 module.exports = {
   build: {
     env: require('./prod.env'),
-    index: path.resolve(__dirname, '../../apps/src/main/resources/spark/template/freemarker/index.html'),
-    assetsRoot: path.resolve(__dirname, '../../apps/src/main/resources/public'),
+    index: path.resolve(__dirname, '../../node_apps/public/index.html'),
+    assetsRoot: path.resolve(__dirname, '../../node_apps/public'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     productionSourceMap: false,

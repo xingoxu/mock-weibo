@@ -152,7 +152,7 @@ export default {
 
       this.$http.get(ajaxURL)
         .then((response)=>{
-          var data = JSON.parse(response.data);
+          var data = response.data;
           app.userCardCache[(this.userid ? this.userid : this.name)] = data;
           this.user = data;
           this.userLoading = false;
