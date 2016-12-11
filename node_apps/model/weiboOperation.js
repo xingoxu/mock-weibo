@@ -61,6 +61,14 @@ var SQLQuotes = {
         commentPageComments: curryPromise(SQLQuotes.commentPageComments),
         likePageLikes: curryPromise(SQLQuotes.likePageLikes),
         getSearchWeibos: curryPromise(SQLQuotes.getSearchWeibos),
-
+        getCustomWeibos(keywords, seq, condition, start, end){//weiboID keywords
+            if(condition == 'keywords'){
+                var sql = `SELECT * FROM weibo WHERE text like '%${keywords}%' AND time+0>${start} AND time+0<${end} order by time+0 ${seq}`;
+                return curryPromise(sql)();
+            }
+            else{
+                return this.getSingleWeibo(Number.parseInt(keywords));
+            }
+        }
     };
 module.exports = weiboOperation;

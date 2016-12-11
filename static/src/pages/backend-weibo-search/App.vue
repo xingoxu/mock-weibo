@@ -28,7 +28,7 @@
                 </n3-form-item>
 
                  <n3-form-item :label-col="3">
-                   <n3-button type="primary" @click="submit" loading>提交</n3-button>
+                   <n3-button type="primary" @click="submit" :loading="loading" :disabled="loading">提交</n3-button>
                 </n3-form-item>
             </n3-form>
           </div>
@@ -57,7 +57,7 @@
 import { backendNav as backendNavData } from '../../mockdata/backendData.js';
 import backendNav from '../../components/backend-comp/backend-nav';
 import {tools} from '../../backend-common.js';
-import {timeline} from '../../mockdata/weiboData.js';
+// import {timeline} from '../../mockdata/weiboData.js';
 
 export default {
   props: [],
@@ -71,6 +71,7 @@ export default {
         start: tools.dateToString(new Date()),
         end: tools.dateToString(new Date()),
       },
+      loading: false,
       results: null,
     }
   },
@@ -79,8 +80,21 @@ export default {
       this.$refs.form.validateFields(result =>{
         if(result.isvalid){
           if(this.conditionValidate()){
-            //ajax逻辑
-            this.results = [];
+            this.loading = true;
+            var params = {
+              keywords: this.model.keywords,
+              seq: this.model.seq,
+              condition: this.model.condition,
+              start: (new Date(this.model.start+' 00:00:00')).getTime(),
+              end: (new Date(this.model.end+' 00:00:00')).getTime()
+            };
+            this.$http.get('/backend/weibos',{
+              params: params
+            })
+            .then((result)=>{
+              this.results = result.data;
+              this.loading = false;
+            });
           }
           else {
             alert('weiboID需要纯数字！');

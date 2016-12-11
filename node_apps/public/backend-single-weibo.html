@@ -1,1 +1,8 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>微博查询 - 微博后台</title><link href=/static/css/backend-single-weibo.1760e9b70186c268700895d10b58c5ae.css rel=stylesheet></head><body><app></app><script type=text/javascript src=/static/js/manifest.6c018eb3caa28fe79555.js></script><script type=text/javascript src=/static/js/vendor.a8d8ea2a1b6272f1d6fa.js></script><script type=text/javascript src=/static/js/backend-single-weibo.b949b8debe191eebc87e.js></script></body></html>
+<!DOCTYPE html><html><head><meta charset=utf-8><link rel="shortcut icon" type=image/x-icon href=/static/favicon.ico><title>微博查询 - 微博后台</title><link href=/static/css/backend-single-weibo.bd3cf02e372fdd1de4f3577d7b76918e.css rel=stylesheet></head><body><app :weibo=weibo :forwards=forwards :comments=comments></app><script type=text/javascript src=/static/js/manifest.f14ffe1cdebf47ebbd52.js></script><script type=text/javascript src=/static/js/vendor.a8d8ea2a1b6272f1d6fa.js></script><script type=text/javascript src=/static/js/backend-single-weibo.5d5bbfebcc1a517877d5.js></script></body><script>window.vm = new Vue({
+      el: 'body',
+      data: {
+        weibo: <%- JSON.stringify(weibo) %>,
+        forwards: <%- JSON.stringify(forwards) %>,
+        comments: <%- JSON.stringify(comments) %>,
+      }
+    });</script></html>

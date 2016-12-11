@@ -12,14 +12,14 @@
             </div>
             <div>
               <p>userID：{{user.userid}}</p>
-              <p>简介</p>
-              <p>地区</p>
-              <p>邮箱</p>
+              <p>简介：{{user.intro}}</p>
+              <p>地区：{{user.area}}</p>
+              <p>邮箱：{{user.mail}}</p>
             </div>
             <div>
               <label>操作：</label>
               <a href="/user/{{user.userid}}"><n3-button type="primary">前台界面</n3-button></a>
-              <n3-button type="danger">封禁</n3-button>
+              <n3-button type="danger" @click="submit">{{user.isForbidden ? '解封' : '封禁'}}</n3-button>
             </div>
           </div>
         </n3-column>
@@ -32,14 +32,14 @@
 import { backendNav as backendNavData } from '../../mockdata/backendData.js';
 import backendNav from '../../components/backend-comp/backend-nav';
 import {tools} from '../../backend-common.js';
-import {currentUser} from '../../mockdata/personalData.js';
+// import {currentUser} from '../../mockdata/personalData.js';
 
 export default {
-  props: [],
+  props: ['user'],
   data () {
     return {
       backendNav: backendNavData,
-      user: currentUser,
+      // user: currentUser,
     }
   },
   methods: {

@@ -37,6 +37,8 @@ app.use('/', index);
 app.use('/login',require('./routes/login'));
 app.use('/register',require('./routes/register'));
 app.use('/users', users);
+app.use('/backend',require('./routes/backend'));
+
 
 
 // catch 404 and forward to error handler

@@ -811,6 +811,33 @@ function updateAvatar(userid, url) {
     return userOperation.updateAvatar(url, userid);
 }
 
+function backendSearchWeibo(keywords, seq, condition, start, end) {
+    if (start == end)
+        end = (end / 1000 + 86400) * 1000;
+    return weiboOperation.getCustomWeibos(keywords, seq, condition, start, end)
+        .then(getSingleWeibos)
+}
+function backendSearchUsers(keywords) {
+    return userOperation.getSearchUsers(`%${keywords}%`)
+        .then((result) => {
+            var usercards = [];
+            var promise = Promise.resolve();
+            for (var i = 0; i < result.length; i++) {
+                (function (result) {
+                    promise = promise.then(() => {
+                        return getUserCardByID(result.userid).then((usercard) => {
+                            usercards.push(usercard);
+                        });
+                    });
+                })(result[i]);
+            }
+            promise = promise.then(() => {
+                return usercards;
+            });
+            return promise;
+        })
+}
+
 module.exports = {
     getUserByID,
     getUserByName,
@@ -852,5 +879,7 @@ module.exports = {
     commentPageComments,
     likePageLikes,
     getSearchUsers,
-    getSearchWeibos
+    getSearchWeibos,
+    backendSearchWeibo,
+    backendSearchUsers,
 };

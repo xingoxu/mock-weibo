@@ -9,6 +9,7 @@
           <div>
             <div>
               <p>weiboID：{{weibo.weiboid}}</p>
+              <p>用户：<a href="/backend/user/{{weibo.user.userid}}">{{weibo.user.username}}</a></p>
               <p>微博内容：{{weibo.text}}</p>
               <p>微博时间：{{new Date(parseInt(weibo.time)) | dateTime}}</p>
             </div>
@@ -72,21 +73,23 @@
 import { backendNav as backendNavData } from '../../mockdata/backendData.js';
 import backendNav from '../../components/backend-comp/backend-nav';
 import {tools} from '../../backend-common.js';
-import {singleWeibo} from '../../mockdata/weiboData.js';
+// import {singleWeibo} from '../../mockdata/weiboData.js';
 
 export default {
-  props: [],
+  props: ['weibo','forwards','comments'],
   data () {
     return {
       backendNav: backendNavData,
-      weibo: singleWeibo,
-      forwards: [],
-      comments: [],
+      // forwards: [],
+      // comments: [],
     }
   },
   methods: {
     submit(){
-
+      this.$http.delete('/weibo/'+this.weibo.weiboid)
+        .then(()=>{
+          window.location.href='/backend';
+        });
     },
   },
   events: {
@@ -99,6 +102,9 @@ export default {
 </script>
 
 <style lang="less">
+  th {
+    min-width: 100px;
+  }
   .main {
     padding: 15px;
   }

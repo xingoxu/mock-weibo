@@ -17,7 +17,7 @@
                 </n3-form-item>
 
                  <n3-form-item :label-col="3">
-                   <n3-button type="primary" @click="submit" loading>提交</n3-button>
+                   <n3-button type="primary" @click="submit" :loading="loading" :disabled="loading">提交</n3-button>
                 </n3-form-item>
             </n3-form>
           </div>
@@ -55,6 +55,7 @@ export default {
         keywords: '',
         condition: 'keywords',
       },
+      loading: false,
       results: null,
     }
   },
@@ -63,8 +64,15 @@ export default {
       this.$refs.form.validateFields(result =>{
         if(result.isvalid){
           if(this.conditionValidate()){
-            //ajax逻辑
-            this.results = [];
+            var params = this.model;
+            this.loading = true;
+            this.$http.get('/backend/users',{
+              params: params
+            })
+            .then((result)=>{
+              this.loading = false;
+              this.results = result.data;
+            })
           }
           else {
             alert('userID需要纯数字！');

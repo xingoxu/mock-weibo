@@ -5,7 +5,7 @@ var userid = 1;
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    // var userid = Number.parseInt(req.session.userid);
+    var userid = Number.parseInt(req.session.userid);
     if (!userid) {
         res.redirect('/login');
         return;
@@ -33,6 +33,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/my-like', function (req, res, next) {
+    var userid = Number.parseInt(req.session.userid);
     var attributes = {};
     var timelinePromise = controller.likeTimeline(userid)
         .then((data) => {
@@ -73,6 +74,7 @@ router.post('/like/delete', (req, res, next) => {
 });
 
 router.get('/password', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var attributes = {};
     var currentUserPromise = controller.getUserCardByID(userid)
         .then((data) => {
@@ -91,6 +93,7 @@ router.get('/password', (req, res, next) => {
         })
 });
 router.post('/password', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     controller.updatePassword(userid, req.body.password)
         .then(() => {
             res.json({
@@ -132,6 +135,7 @@ router.post('/report', (req, res, next) => {
 });
 
 router.post('/avatar', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var path = req.files.uploaded_file.path;
     var index = path.lastIndexOf('\\');
     path = path.substr(index + 1);
@@ -143,6 +147,7 @@ router.post('/avatar', (req, res, next) => {
         });
 });
 router.get('/user/:id', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var target_userid = Number.parseInt(req.params.id);
     var attributes = {};
     var targetUserCardPromise = controller.getUserCardByID(target_userid)
@@ -182,6 +187,7 @@ router.get('/user/:id', (req, res, next) => {
         })
 });
 router.get('/user/name/:name', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     controller.getUserByName(decodeURIComponent(req.params.name))
         .then(user => {
             if (!user)
@@ -195,6 +201,7 @@ router.get('/user/name/:name', (req, res, next) => {
 });
 
 router.get('/favourite', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var attributes = {};
     var timelinePromise = controller.favouriteTimeline(userid)
         .then((data) => {
@@ -217,6 +224,7 @@ router.get('/favourite', (req, res, next) => {
         })
 });
 router.post('/favourite', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     controller.favourite(req.body)
         .then(() => {
             res.json({
@@ -233,6 +241,7 @@ router.post('/favourite/delete', (req, res, next) => {
         });
 });
 router.get('/profile', (req, res) => {
+    var userid = Number.parseInt(req.session.userid);
     var attributes = {};
     var fullUserPromise = controller.getUserByID(userid)
         .then((data) => {
@@ -255,6 +264,7 @@ router.get('/profile', (req, res) => {
         })
 });
 router.post('/profile', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     controller.updateUser(req.body)
         .then(() => {
             res.json({
@@ -264,6 +274,7 @@ router.post('/profile', (req, res, next) => {
 });
 
 router.get('/weibo/:weiboid', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var weiboid = Number.parseInt(req.params.weiboid);
     var attributes = {};
     var weiboPromise = controller.getSingleWeiboByID(weiboid)
@@ -298,6 +309,7 @@ router.get('/weibo/:weiboid', (req, res, next) => {
 });
 
 router.post('/weibo', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     controller.newWeibo(req.body)
         .then((data) => {
             res.json(data)
@@ -305,6 +317,7 @@ router.post('/weibo', (req, res, next) => {
 });
 
 router.delete('/weibo/:weiboid', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var weiboid = Number.parseInt(req.params.weiboid);
     controller.deleteWeibo(weiboid)
         .then(() => {
@@ -315,6 +328,7 @@ router.delete('/weibo/:weiboid', (req, res, next) => {
 });
 
 router.post('/comment', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     controller.newComment(req.body)
         .then((commentid) => {
             res.json({
@@ -325,6 +339,7 @@ router.post('/comment', (req, res, next) => {
 });
 
 router.get('/comments/:weiboid', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var weiboid = Number.parseInt(req.params.weiboid);
     controller.getWeiboComments(weiboid)
         .then((comments) => {
@@ -356,6 +371,7 @@ router.get('/comments/:weiboid', (req, res, next) => {
 });
 
 router.get('/forwards/:weiboid', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var weiboid = Number.parseInt(req.params.weiboid);
     controller.forwardWeibos(weiboid)
         .then((weibos) => {
@@ -370,6 +386,7 @@ router.get('/forwards/:weiboid', (req, res, next) => {
 });
 
 router.get('/userCard/id/:userid', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var target_userid = Number.parseInt(req.params.userid);
     controller.getUserCardByID(target_userid)
         .then((usercard) => {
@@ -382,6 +399,7 @@ router.get('/userCard/id/:userid', (req, res, next) => {
         });
 });
 router.get('/userCard/name/:username', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     controller.getUserCardByName(decodeURIComponent(req.params.username))
         .then((usercard) => {
             return controller.setRelation(userid, usercard).then(() => {
@@ -395,6 +413,7 @@ router.get('/userCard/name/:username', (req, res, next) => {
 
 
 router.post('/follow', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     controller.follow(req.body)
         .then(() => {
             res.json({
@@ -403,6 +422,7 @@ router.post('/follow', (req, res, next) => {
         })
 });
 router.post('/follow/delete', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     controller.cancelFollow(req.body)
         .then(() => {
             res.json({
@@ -411,6 +431,7 @@ router.post('/follow/delete', (req, res, next) => {
         })
 });
 router.post('/follower/delete', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     controller.removeFollower(req.body)
         .then(() => {
             res.json({
@@ -419,6 +440,7 @@ router.post('/follower/delete', (req, res, next) => {
         })
 });
 router.get('/user/:id/follow', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var target_userid = Number.parseInt(req.params.id);
     var attributes = {};
     var usersPromise = controller.getFollowingUsers(target_userid)
@@ -458,6 +480,7 @@ router.get('/user/:id/follow', (req, res, next) => {
         })
 });
 router.get('/user/:id/fans', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var target_userid = Number.parseInt(req.params.id);
     var attributes = {};
     var usersPromise = controller.getFollowerusers(target_userid)
@@ -498,6 +521,7 @@ router.get('/user/:id/fans', (req, res, next) => {
 });
 
 router.get('/at', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var attributes = {};
     var timelinePromise = controller.atTimeline(userid)
         .then((data) => {
@@ -527,6 +551,7 @@ router.get('/at', (req, res, next) => {
 });
 
 router.get('/comment', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var attributes = {};
     var commentsPromise = controller.commentPageComments(userid)
         .then((data) => {
@@ -555,6 +580,7 @@ router.get('/comment', (req, res, next) => {
         })
 });
 router.get('/like', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var attributes = {};
     var likesPromise = controller.likePageLikes(userid)
         .then((data) => {
@@ -584,6 +610,7 @@ router.get('/like', (req, res, next) => {
 });
 
 router.get('/search', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var keywords = req.query.keywords;
     var attributes = {
         keywords: keywords
@@ -614,6 +641,7 @@ router.get('/search', (req, res, next) => {
         })
 });
 router.get('/search/user', (req, res, next) => {
+    var userid = Number.parseInt(req.session.userid);
     var keywords = req.query.keywords;
     var attributes = {
         keywords: keywords
