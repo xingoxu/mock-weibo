@@ -3,6 +3,9 @@ package DAO;
 import com.google.gson.Gson;
 import config.mysql;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,6 +16,9 @@ import java.util.ArrayList;
 import dataObject.*;
 import spark.Request;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
 import javax.servlet.MultipartConfigElement;
 
 /**
@@ -841,14 +847,38 @@ public class DAO {
         update(sql);
     }
 
-    public static void compressPic(Request request){
-        new Thread(()->{
+    public static void compressPic(Request request) {
+        new Thread(() -> {
             request.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
 
             try (InputStream input = request.raw().getPart("uploaded_file").getInputStream()) { // getPart needs to use same "name" as input field in form
                 Files.copy(input, Files.createTempFile(Paths.get("").toAbsolutePath(), "avatar", ".png"), StandardCopyOption.REPLACE_EXISTING);
-            }
-            catch(Exception e){
+                ImageReader reader = ImageIO
+                        .getImageReadersByFormatName("jpg").next();
+                ImageReadParam param = reader.getDefaultReadParam();
+
+                /**
+                 *
+                 * 图片裁剪区域。Rectangle 指定了坐标空间中的一个区域，通过 Rectangle 对象
+                 *
+                 * 的左上顶点的坐标 (x，y)、宽度和高度可以定义这个区域。
+                 */
+                Rectangle rect = new Rectangle(0, 0, 100, 100);
+
+                // 提供一个 BufferedImage，将其用作解码像素数据的目标。
+                param.setSourceRegion(rect);
+
+                /**
+                 *
+                 * 使用所提供的 ImageReadParam 读取通过索引 imageIndex 指定的对象，并将
+                 *
+                 * 它作为一个完整的 BufferedImage 返回。
+                 */
+                BufferedImage bi = reader.read(0, param);
+
+                // 保存新图片
+                ImageIO.write(bi, "jpg", new File("/avatars/"));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });

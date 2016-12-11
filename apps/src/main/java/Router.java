@@ -29,7 +29,6 @@ public class Router {
         if (request.requestMethod().equalsIgnoreCase("POST"))
             return;
         String userid = request.session().attribute("userid");
-        request.session().attribute("test", "12345");
         if (userid != null)
             response.redirect("/");
 
