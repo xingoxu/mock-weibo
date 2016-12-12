@@ -6,7 +6,15 @@
     <title>微博查询 - 微博后台</title>
   </head>
   <body>
-    <app></app>
+    <app :user="user"></app>
     <!-- built files will be auto injected -->
   </body>
+  <script type="text/javascript">
+    window.vm = new Vue({
+      el: 'body',
+      data: {
+        user: <%- JSON.stringify(user) %>,
+      }
+    });
+  </script>
 </html>

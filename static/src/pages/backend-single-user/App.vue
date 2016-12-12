@@ -44,7 +44,13 @@ export default {
   },
   methods: {
     submit(){
-
+      this.$http.post('/backend/forbidUser',{
+        userid: this.user.userid,
+        forbid: !this.user.isForbidden
+      })
+      .then(()=>{
+        this.user.isForbidden = !this.user.isForbidden;
+      });
     },
   },
   events: {
