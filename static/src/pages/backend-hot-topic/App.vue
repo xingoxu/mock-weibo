@@ -30,14 +30,14 @@
 import { backendNav as backendNavData } from '../../mockdata/backendData.js';
 import backendNav from '../../components/backend-comp/backend-nav';
 import {tools} from '../../backend-common.js';
-import {hotTopic} from '../../mockdata/commonData.js';
+// import {hotTopic} from '../../mockdata/commonData.js';
 
 export default {
-  props: [],
+  props: ['hotTopic'],
   data () {
     return {
       backendNav: backendNavData,
-      hotTopic: hotTopic,
+      // hotTopic: hotTopic,
     }
   },
   methods: {
@@ -63,7 +63,14 @@ export default {
     },
     submit(){
       this.$refs.form.validateFields(result=>{
-         console.log(this.hotTopic);
+        if (result.isvalid) {
+          this.$http.post('/backend/hotTopic',{
+            topic: this.hotTopic
+          })
+          .then(()=>{
+            location.reload();
+          })
+        }
       })
     },
   },

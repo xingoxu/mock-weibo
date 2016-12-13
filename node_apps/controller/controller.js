@@ -8,6 +8,13 @@ var successObject = {
     success: true,
 };
 
+function RandomNumBoth(Min, Max) {
+    var Range = Max - Min;
+    var Rand = Math.random();
+    var num = Min + Math.round(Rand * Range); //四舍五入
+    return num;
+}
+
 function getUser(result) {
     if (!result || result.length <= 0)
         return null;
@@ -20,6 +27,7 @@ function getUser(result) {
     user.area = userRow.area;
     user.birthday = userRow.birthday;
     user.mail = userRow.mail;
+    user.isForbidden = userRow.hasForbidden;
     return user;
 }
 function getNumber(result) {
@@ -92,6 +100,12 @@ function login(username, password) {
                             success: false,
                             reason: '密码错误',
                         });
+                    if (result[0].hasForbidden) {
+                        return Promise.resolve({
+                            success: false,
+                            reason: '用户已被禁止登陆',
+                        });
+                    }
                     return Promise.resolve({
                         success: true,
                         id: result[0].userid,
@@ -227,7 +241,6 @@ function newSpam(spam) {
         .then(() => {
             return {
                 success: true,
-                id: result.insertId
             };
         })
 }
@@ -838,6 +851,57 @@ function backendSearchUsers(keywords) {
         })
 }
 
+function setUserForbid(request) {
+    return userOperation.setUserForbidden(request.forbid ? 1 : 0, request.userid)
+}
+
+function setHotTopic(topics) {
+    return weiboOperation.deleteAllTopic()
+        .then(() => {
+            var promise = Promise.resolve();
+            for (var i = 0; i < topics.length; i++) {
+                (function (index, topic) {
+                    promise = promise.then(() => {
+                        return weiboOperation.insertHotTopic(index, topic.text);
+                    });
+                })(i, topics[i]);
+            }
+            return promise;
+        });
+}
+
+function getHotTopic() {
+    return weiboOperation.getHotTopic()
+        .then((result) => {
+            var hotTopic = [];
+            for (var i = 0; i < result.length; i++) {
+                hotTopic.push({
+                    text: result[i].text,
+                    number: RandomNumBoth(16480000, 12312321323),
+                })
+            }
+            return hotTopic;
+        })
+}
+function getSpamsUnread() {
+    return weiboOperation.getSpamsUnread()
+        .then((result) => {
+            var spams = [];
+            for (var i = 0; i < result.length; i++) {
+                spams.push({
+                    spamid: result[i].spamid,
+                    text: result[i].text,
+                    weiboid: result[i].weiboid,
+                });
+            }
+            return spams;
+        });
+}
+function setSpamRead(spamid) {
+    return weiboOperation.setSpamRead(spamid);
+}
+
+
 module.exports = {
     getUserByID,
     getUserByName,
@@ -882,4 +946,9 @@ module.exports = {
     getSearchWeibos,
     backendSearchWeibo,
     backendSearchUsers,
+    setUserForbid,
+    setHotTopic,
+    getHotTopic,
+    getSpamsUnread,
+    setSpamRead
 };

@@ -6,7 +6,15 @@
     <title>举报处理 - 微博后台</title>
   </head>
   <body>
-    <app></app>
+    <app :spam-infos="spamInfos"></app>
     <!-- built files will be auto injected -->
   </body>
+  <script type="text/javascript">
+    window.vm = new Vue({
+      el: 'body',
+      data: {
+        spamInfos: <%- JSON.stringify(spams) %>
+      }
+    });
+  </script>
 </html>

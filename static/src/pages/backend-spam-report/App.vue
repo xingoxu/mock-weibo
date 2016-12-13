@@ -16,7 +16,7 @@
               <tr v-for="spam in spamInfos" track-by="spamid">
                 <td><a href="/backend/weibo/{{spam.weiboid}}">{{spam.weiboid}}</a></td>
                 <td>{{spam.text}}</td>
-                <td><n3-button type="success">处理</n3-button></td>
+                <td><n3-button type="success" @click="submit(spam.spamid,$index)">我已处理</n3-button></td>
               </tr>
             </table>
             <div class="no-spam" v-show="spamInfos.length == 0">
@@ -36,17 +36,21 @@ import {tools} from '../../backend-common.js';
 import {spamInfos} from '../../mockdata/spamInfos.js';
 
 export default {
-  props: [],
+  props: ['spamInfos'],
   data () {
     return {
       backendNav: backendNavData,
-      spamInfos: spamInfos,
-      // spanInfos: [],
+      // spamInfos: spamInfos,
     }
   },
   methods: {
-    submit(){
-
+    submit(spamid, index) {
+      this.$http.post('/backend/processSpam', {
+          spamid: spamid
+        })
+        .then(() => {
+          this.spamInfos.splice(index, 1);
+        });
     },
   },
   events: {

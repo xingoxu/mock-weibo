@@ -30,6 +30,12 @@ var SQLQuotes = {
         commentPageComments: 'SELECT * FROM comments WHERE target_userid=?',
         likePageLikes: 'SELECT * FROM `like` WHERE target_userid=?',
         getSearchWeibos: 'SELECT * FROM weibo WHERE text like ?  order by time+0 desc',
+
+        deleteAllTopic: 'DELETE FROM hotTopic',
+        insertHotTopic: 'INSERT INTO hotTopic (id,text) VALUES (?,?)',
+        getHotTopic: 'SELECT * FROM hotTopic order by id',
+        getSpamsUnread: 'SELECT * FROM spam WHERE hasRead=0',
+        setSpamRead: 'UPDATE spam SET hasRead=1 WHERE spamid=?',
     },
     weiboOperation = {
         newWeibo: curryPromise(SQLQuotes.newWeibo),
@@ -69,6 +75,11 @@ var SQLQuotes = {
             else{
                 return this.getSingleWeibo(Number.parseInt(keywords));
             }
-        }
+        },
+        deleteAllTopic: curryPromise(SQLQuotes.deleteAllTopic),
+        insertHotTopic: curryPromise(SQLQuotes.insertHotTopic),
+        getHotTopic: curryPromise(SQLQuotes.getHotTopic),
+        getSpamsUnread: curryPromise(SQLQuotes.getSpamsUnread),
+        setSpamRead: curryPromise(SQLQuotes.setSpamRead),
     };
 module.exports = weiboOperation;

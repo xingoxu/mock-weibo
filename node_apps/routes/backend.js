@@ -76,17 +76,66 @@ router.get('/weibo/:weiboid', (req, res, next) => {
             next();
         })
 });
-// router.get('/')
-
-
-router.post('/', (req, res, next) => {
-    controller.login(req.body.username, req.body.password)
+router.get('/user/:userid', (req, res, next) => {
+    var userid = Number.parseInt(req.params.userid);
+    var attributes = {};
+    controller.getUserByID(userid)
         .then((data) => {
-            if (data.success) {
-                req.session.userid = data.id;
-            }
-            res.json(data);
+            attributes.user = data;
+        })
+        .then(() => {
+            res.render('backend-single-user.html', attributes);
+        })
+        .catch(err => {
+            console.log(err);
+            next();
+        })
+});
+router.post('/forbidUser', (req, res, next) => {
+    controller.setUserForbid(req.body)
+        .then(() => {
+            res.json({
+                success: true
+            })
+        })
+});
+
+router.post('/hotTopic', (req, res, next) => {
+    controller.setHotTopic(req.body.topic)
+        .then(() => {
+            res.json({
+                success: true
+            });
         });
+});
+
+router.get('/hotTopic', (req, res, next) => {
+    var attributes = {};
+    controller.getHotTopic()
+        .then((hotTopic) => {
+            attributes.hotTopic = hotTopic;
+        })
+        .then(() => {
+            res.render('backend-hot-topic.html', attributes);
+        })
+});
+router.get('/spamReport', (req, res, next) => {
+    var attributes = {};
+    controller.getSpamsUnread()
+        .then((data) => {
+            attributes.spams = data;
+        })
+        .then(() => {
+            res.render('backend-spam-report.html', attributes);
+        })
+});
+router.post('/processSpam', (req, res, next) => {
+    controller.setSpamRead(req.body.spamid)
+        .then(() => {
+            res.json({
+                success: true,
+            })
+        })
 });
 
 module.exports = router;

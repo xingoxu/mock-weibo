@@ -17,6 +17,7 @@ var SQLQuotes = {
         updatePassword: 'UPDATE user SET password=? WHERE userid=?',
         deleteWeibo: 'DELETE FROM weibo WHERE weiboid=?',
         updateAvatar: 'UPDATE user SET avatar=? WHERE userid=?',
+        setUserForbidden: 'UPDATE user SET hasForbidden=? WHERE userid=?',
     },
     userOperation = {
         getUserByName: curryPromise(SQLQuotes.byName),
@@ -32,5 +33,6 @@ var SQLQuotes = {
         updatePassword: curryPromise(SQLQuotes.updatePassword),
         deleteWeibo: curryPromise(SQLQuotes.deleteWeibo),
         updateAvatar: curryPromise(SQLQuotes.updateAvatar),
+        setUserForbidden: curryPromise(SQLQuotes.setUserForbidden),
     };
 module.exports = userOperation;

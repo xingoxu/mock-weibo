@@ -6,7 +6,15 @@
     <title>热门话题 - 微博后台</title>
   </head>
   <body>
-    <app></app>
+    <app :hot-topic="hotTopic"></app>
     <!-- built files will be auto injected -->
   </body>
+  <script type="text/javascript">
+    window.vm = new Vue({
+      el: 'body',
+      data: {
+        hotTopic: <%- JSON.stringify(hotTopic) %>,
+      }
+    });
+  </script>
 </html>
